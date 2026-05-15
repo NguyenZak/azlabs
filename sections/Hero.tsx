@@ -102,14 +102,14 @@ export default function Hero({ slides = [] }: { slides?: any[] }) {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="flex items-center justify-center gap-3 mb-12"
+          className="flex items-center justify-center gap-4 mb-12"
         >
-          <div className="flex items-center gap-2">
-            <div className="flex gap-0.5">
-              <div className="w-2 h-4 bg-[#4285F4] rounded-full transform -rotate-12" />
-              <div className="w-2 h-4 bg-[#EA4335] rounded-full transform rotate-12" />
+          <div className="flex items-center gap-3">
+            <div className="flex gap-1">
+              <div className="w-3 h-6 bg-[#4285F4] rounded-full transform -rotate-12" />
+              <div className="w-3 h-6 bg-[#EA4335] rounded-full transform rotate-12" />
             </div>
-            <span className="text-lg font-medium text-[#5f6368] tracking-tight">
+            <span className="text-2xl font-medium text-[#5f6368] tracking-tight">
               <span className="font-bold text-[#1d1d1f]">AzLabs</span> Digital Studio
             </span>
           </div>
