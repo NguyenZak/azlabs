@@ -74,10 +74,21 @@ export default function Footer({ settings }: { settings?: any }) {
           </div>
         </div>
 
-        <div className="pt-8 border-t border-apple-border flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-[12px] text-apple-text-secondary">
-            {copyright}
-          </p>
+        <div className="pt-8 border-t border-apple-border flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex flex-col items-center md:items-start gap-4">
+            <div className="flex items-center gap-2">
+              <div className="flex gap-0.5">
+                <div className="w-1.5 h-3.5 bg-[#4285F4] rounded-full transform -rotate-12" />
+                <div className="w-1.5 h-3.5 bg-[#EA4335] rounded-full transform rotate-12" />
+              </div>
+              <span className="text-base font-medium text-[#5f6368] tracking-tight">
+                <span className="font-bold text-[#1d1d1f]">AzLabs</span>
+              </span>
+            </div>
+            <p className="text-[12px] text-apple-text-secondary">
+              {copyright}
+            </p>
+          </div>
           <div className="flex gap-6">
             <Link href="#" className="text-[12px] text-apple-text-secondary hover:underline">Privacy Policy</Link>
             <Link href="#" className="text-[12px] text-apple-text-secondary hover:underline">Terms of Service</Link>

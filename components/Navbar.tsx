@@ -39,14 +39,15 @@ export default function Navbar({ settings }: { settings?: any }) {
     >
       <div className="max-w-[1440px] mx-auto w-full px-6 md:px-12 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          {settings?.logo_url ? (
-            <img src={settings.logo_url} alt={settings.site_name} className="h-6 w-auto" />
-          ) : (
-            <span className="text-xl font-bold tracking-tighter text-apple-text">
-              {settings?.site_name || "AZLABS"}
-            </span>
-          )}
+        <Link href="/" className="flex items-center gap-2 group">
+          <div className="flex gap-0.5">
+            <div className="w-1.5 h-3.5 bg-[#4285F4] rounded-full transform -rotate-12 group-hover:-rotate-45 transition-transform duration-500" />
+            <div className="w-1.5 h-3.5 bg-[#EA4335] rounded-full transform rotate-12 group-hover:rotate-45 transition-transform duration-500" />
+          </div>
+          <span className="text-base font-medium text-[#5f6368] tracking-tight">
+            <span className="font-bold text-[#1d1d1f]">AzLabs</span>
+            <span className="hidden sm:inline ml-1 text-sm opacity-60">Digital Studio</span>
+          </span>
         </Link>
 
         {/* Desktop Menu */}

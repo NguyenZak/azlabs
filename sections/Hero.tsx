@@ -14,7 +14,7 @@ const TypewriterHeadline = ({ text }: { text: string }) => {
   const characters = text.split("");
 
   return (
-    <motion.h1 
+    <motion.h1
       className="text-[42px] md:text-[72px] lg:text-[84px] font-bold tracking-tight leading-[1.1] text-[#1d1d1f] max-w-[1000px] mx-auto text-center"
       initial="hidden"
       animate="visible"
@@ -25,9 +25,9 @@ const TypewriterHeadline = ({ text }: { text: string }) => {
           key={`${text}-${index}`}
           variants={{
             hidden: { opacity: 0, y: 10, filter: "blur(4px)" },
-            visible: { 
-              opacity: 1, 
-              y: 0, 
+            visible: {
+              opacity: 1,
+              y: 0,
               filter: "blur(0px)",
               transition: {
                 duration: 0.4,
@@ -43,8 +43,8 @@ const TypewriterHeadline = ({ text }: { text: string }) => {
       ))}
       <motion.span
         animate={{ opacity: [1, 1, 0, 0] }}
-        transition={{ 
-          duration: 0.8, 
+        transition={{
+          duration: 0.8,
           repeat: Infinity,
           times: [0, 0.5, 0.5, 1]
         }}
@@ -99,25 +99,25 @@ export default function Hero({ slides = [] }: { slides?: any[] }) {
 
       <div className="relative z-10 text-center max-w-[1200px] mx-auto">
         {/* Brand Logo Animation */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="flex items-center justify-center gap-3 mb-12"
         >
           <div className="flex items-center gap-2">
-             <div className="flex gap-0.5">
-                <div className="w-2 h-4 bg-[#4285F4] rounded-full transform -rotate-12" />
-                <div className="w-2 h-4 bg-[#EA4335] rounded-full transform rotate-12" />
-             </div>
-             <span className="text-lg font-medium text-[#5f6368] tracking-tight">
-               <span className="font-bold text-[#1d1d1f]">AZLABS</span> Premium
-             </span>
+            <div className="flex gap-0.5">
+              <div className="w-2 h-4 bg-[#4285F4] rounded-full transform -rotate-12" />
+              <div className="w-2 h-4 bg-[#EA4335] rounded-full transform rotate-12" />
+            </div>
+            <span className="text-lg font-medium text-[#5f6368] tracking-tight">
+              <span className="font-bold text-[#1d1d1f]">AzLabs</span> Digital Studio
+            </span>
           </div>
         </motion.div>
 
         {/* Dynamic Content Slider */}
         <AnimatePresence mode="wait">
-          <motion.div 
+          <motion.div
             key={currentIndex}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -141,7 +141,7 @@ export default function Hero({ slides = [] }: { slides?: any[] }) {
                 <div className="absolute inset-0 bg-apple-accent translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500" />
                 <ArrowRight className="absolute right-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 z-10" />
               </Link>
-              
+
               <Link
                 href="/projects"
                 className="group flex items-center gap-3 bg-white/50 backdrop-blur text-[#1d1d1f] px-10 py-4 rounded-full text-lg font-medium hover:bg-white transition-all border border-apple-border/50"
@@ -163,22 +163,21 @@ export default function Hero({ slides = [] }: { slides?: any[] }) {
               <button
                 key={idx}
                 onClick={() => setCurrentIndex(idx)}
-                className={`h-1.5 rounded-full transition-all duration-500 ${
-                  currentIndex === idx ? "w-8 bg-black" : "w-1.5 bg-apple-border hover:bg-gray-400"
-                }`}
+                className={`h-1.5 rounded-full transition-all duration-500 ${currentIndex === idx ? "w-8 bg-black" : "w-1.5 bg-apple-border hover:bg-gray-400"
+                  }`}
               />
             ))}
           </div>
 
           {/* Side Arrows (Desktop) */}
           <div className="hidden lg:block">
-            <button 
+            <button
               onClick={prevSlide}
               className="absolute left-8 top-1/2 -translate-y-1/2 p-4 bg-white/10 hover:bg-white/80 backdrop-blur-sm rounded-full transition-all border border-white/20 text-apple-text-secondary"
             >
               <ChevronLeft className="w-6 h-6" />
             </button>
-            <button 
+            <button
               onClick={nextSlide}
               className="absolute right-8 top-1/2 -translate-y-1/2 p-4 bg-white/10 hover:bg-white/80 backdrop-blur-sm rounded-full transition-all border border-white/20 text-apple-text-secondary"
             >
