@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Upload, ImageIcon, Loader2, CheckCircle2, AlertCircle, FileText, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
+import { uploadToCloudinary } from "@/lib/actions/cms";
 
 interface MediaUploadModalProps {
   isOpen: boolean;
@@ -70,61 +71,101 @@ export default function MediaUploadModal({ isOpen, onClose, onUploadSuccess }: M
     });
   };
 
+  const compressImage = async (file: File): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          let width = img.width;
+          let height = img.height;
+
+          // Max dimensions (e.g., 2000px)
+          const MAX_WIDTH = 2000;
+          const MAX_HEIGHT = 2000;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx?.drawImage(img, 0, 0, width, height);
+
+          canvas.toBlob(
+            (blob) => {
+              if (blob) resolve(blob);
+              else reject(new Error("Canvas toBlob failed"));
+            },
+            "image/webp",
+            0.8 // Quality: 80%
+          );
+        };
+        img.onerror = (err) => reject(err);
+      };
+      reader.onerror = (err) => reject(err);
+    });
+  };
+
   const handleUpload = async () => {
     if (files.length === 0) return;
 
     setIsUploading(true);
     let successCount = 0;
     
-    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-    const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "azlabs";
+    try {
+      for (const fileStatus of files) {
+        if (fileStatus.status === "success") continue;
 
-    if (!cloudName) {
-      toast.error("Cloudinary Cloud Name is missing");
-      setIsUploading(false);
-      return;
-    }
+        setFiles(prev => prev.map(f => f.id === fileStatus.id ? { ...f, status: "uploading" } : f));
 
-    for (const fileStatus of files) {
-      if (fileStatus.status === "success") continue;
+        try {
+          // Compress and convert to WebP at Client
+          const compressedBlob = await compressImage(fileStatus.file);
+          const compressedFile = new File([compressedBlob], fileStatus.file.name.replace(/\.[^/.]+$/, "") + ".webp", {
+            type: "image/webp"
+          });
 
-      setFiles(prev => prev.map(f => f.id === fileStatus.id ? { ...f, status: "uploading" } : f));
+          const formData = new FormData();
+          formData.append("file", compressedFile);
 
-      try {
-        const formData = new FormData();
-        formData.append("file", fileStatus.file);
-        formData.append("upload_preset", uploadPreset);
-        // Force auto-conversion to WebP
-        formData.append("format", "webp");
+          // Use Server Action instead of direct Client Fetch
+          const data = await uploadToCloudinary(formData) as any;
+          
+          const result = {
+            info: {
+              secure_url: data.secure_url,
+              public_id: data.public_id,
+              original_filename: data.original_filename || fileStatus.file.name.split('.')[0],
+              format: data.format,
+              bytes: data.bytes,
+            }
+          };
 
-        const response = await fetch(
-          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-          { method: "POST", body: formData }
-        );
-
-        if (!response.ok) throw new Error("Upload failed");
-
-        const data = await response.json();
-        
-        const result = {
-          info: {
-            secure_url: data.secure_url,
-            public_id: data.public_id,
-            original_filename: data.original_filename || fileStatus.file.name.split('.')[0],
-            format: data.format,
-            bytes: data.bytes,
-          }
-        };
-
-        setFiles(prev => prev.map(f => f.id === fileStatus.id ? { ...f, status: "success" } : f));
-        onUploadSuccess(result);
-        successCount++;
-      } catch (error) {
-        console.error("Upload error for file:", fileStatus.file.name, error);
-        setFiles(prev => prev.map(f => f.id === fileStatus.id ? { ...f, status: "error" } : f));
+          setFiles(prev => prev.map(f => f.id === fileStatus.id ? { ...f, status: "success" } : f));
+          onUploadSuccess(result);
+          successCount++;
+        } catch (error: any) {
+          console.error("Upload error for file:", fileStatus.file.name, error);
+          toast.error(`${fileStatus.file.name}: ${error.message}`);
+          setFiles(prev => prev.map(f => f.id === fileStatus.id ? { ...f, status: "error" } : f));
+        }
       }
+    } catch (error: any) {
+      toast.error(error.message || "Failed to process uploads");
     }
-
     setIsUploading(false);
     if (successCount > 0) {
       toast.success(`Successfully uploaded ${successCount} files!`);

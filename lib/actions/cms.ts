@@ -3,7 +3,15 @@
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { v2 as cloudinary } from "cloudinary";
 import crypto from "crypto";
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
@@ -641,38 +649,43 @@ export async function deleteContact(id: string) {
   revalidatePath("/adminaz/contacts");
 }
 
-/**
- * CLOUDINARY SIGNATURE (For Signed Uploads)
- */
 export async function getCloudinarySignature() {
-  const timestamp = Math.round(new Date().getTime() / 1000);
-  const apiSecret = process.env.CLOUDINARY_API_SECRET;
-  const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "azlabs";
-  
-  if (!apiSecret) {
-    throw new Error("Cloudinary API Secret is missing");
-  }
-
-  // Parameters to sign (must be alphabetical)
-  let paramsToSign = "";
-  if (uploadPreset) {
-    paramsToSign = `timestamp=${timestamp}&upload_preset=${uploadPreset}${apiSecret}`;
-  } else {
-    paramsToSign = `timestamp=${timestamp}${apiSecret}`;
-  }
-  
-  const signature = crypto
-    .createHash("sha1")
-    .update(paramsToSign)
-    .digest("hex");
-
+  // Signature no longer needed for Unsigned uploads
   return {
-    signature,
-    timestamp,
-    uploadPreset,
-    apiKey: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
+    uploadPreset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "azlabs",
     cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
   };
+}
+
+export async function uploadToCloudinary(formData: FormData) {
+  const file = formData.get("file") as File;
+  if (!file) throw new Error("No file provided");
+
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const apiKey = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
+  const apiSecret = process.env.CLOUDINARY_API_SECRET;
+
+  cloudinary.config({
+    cloud_name: cloudName,
+    api_key: apiKey,
+    api_secret: apiSecret,
+  });
+
+  const bytes = await file.arrayBuffer();
+  const buffer = Buffer.from(bytes);
+  const base64Image = `data:${file.type};base64,${buffer.toString("base64")}`;
+
+  try {
+    const result = await cloudinary.uploader.upload(base64Image, {
+      resource_type: "auto",
+      folder: "azlabs",
+      format: "webp",
+    });
+    return result;
+  } catch (error) {
+    console.error("Cloudinary Upload Error:", error);
+    throw error;
+  }
 }
 
 /**
