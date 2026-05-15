@@ -34,7 +34,7 @@ export default function Services({ data = [] }: { data?: any[] }) {
         id: item.id,
         title: language === "vi" ? item.title_vi : item.title_en,
         description: language === "vi" ? item.description_vi : item.description_en,
-        image: serviceImages[index % serviceImages.length],
+        image: item.image_url || serviceImages[index % serviceImages.length],
         bentoClass: bentoClasses[index % bentoClasses.length] || "lg:col-span-1"
       }))
     : dict.services.items.map((item, index) => ({
@@ -106,30 +106,30 @@ export default function Services({ data = [] }: { data?: any[] }) {
                   }
                 }
               }}
-              className={`group relative overflow-hidden rounded-[40px] border border-apple-border bg-[#fbfbfd] transition-all duration-700 ${service.bentoClass}`}
+              className={`group relative overflow-hidden rounded-[40px] border border-apple-border bg-[#fbfbfd] ${service.bentoClass}`}
             >
-              {/* Background Demo Image */}
+              {/* Background Image (Always Colored, No Hover Scale) */}
               <div 
-                className="absolute inset-0 z-0 bg-cover bg-center grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000"
+                className="absolute inset-0 z-0 bg-cover bg-center"
                 style={{ backgroundImage: `url('${service.image}')` }}
               />
               
-              {/* Overlay Gradient for readability */}
-              <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
+              {/* Static Overlay */}
+              <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-80" />
               
               <div className="relative z-20 h-full flex flex-col p-10 justify-end">
                 <div>
-                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-4 transition-colors">
+                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">
                     {service.title}
                   </h3>
-                  <p className="text-lg text-white/80 leading-relaxed line-clamp-2 group-hover:line-clamp-none transition-all duration-500">
+                  <p className="text-lg text-white/80 leading-relaxed">
                     {service.description}
                   </p>
                 </div>
 
                 <Link 
                   href={`/services#${service.id}`}
-                  className="mt-8 flex items-center gap-2 text-white font-bold opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500 underline underline-offset-8 decoration-white/30 hover:decoration-white"
+                  className="mt-8 flex items-center gap-2 text-white font-bold underline underline-offset-8 decoration-white/30 hover:decoration-white transition-all"
                 >
                   Learn More <ArrowRight className="w-4 h-4" />
                 </Link>

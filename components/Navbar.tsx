@@ -39,14 +39,14 @@ export default function Navbar({ settings }: { settings?: any }) {
     >
       <div className="max-w-[1440px] mx-auto w-full px-6 md:px-12 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="flex gap-1">
+        <Link href="/" className="flex items-center gap-2 group">
+          <div className="flex gap-0.5">
             <div className="w-2 h-5 bg-[#4285F4] rounded-full transform -rotate-12 group-hover:-rotate-45 transition-transform duration-500" />
             <div className="w-2 h-5 bg-[#EA4335] rounded-full transform rotate-12 group-hover:rotate-45 transition-transform duration-500" />
           </div>
-          <span className="text-xl font-medium text-[#5f6368] tracking-tight">
+          <span className="text-base font-medium text-[#5f6368] tracking-tight">
             <span className="font-bold text-[#1d1d1f]">AzLabs</span>
-            <span className="hidden sm:inline ml-1 text-base opacity-60">Digital Studio</span>
+            <span className="hidden sm:inline ml-1 text-sm opacity-60">Digital Studio</span>
           </span>
         </Link>
 
@@ -72,7 +72,7 @@ export default function Navbar({ settings }: { settings?: any }) {
             <Languages className="w-3.5 h-3.5" />
             {language === "en" ? "VN" : "EN"}
           </button>
-          
+
           <Link
             href="#contact"
             className="bg-apple-accent hover:bg-apple-accent-hover text-white px-3 py-1.5 rounded-full text-[11px] font-medium transition-all hover:scale-105 active:scale-95"

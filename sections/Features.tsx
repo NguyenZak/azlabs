@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import { motion } from "framer-motion";
-import { ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 interface Feature {
@@ -17,81 +17,115 @@ interface Feature {
 
 export default function Features({ data }: { data: Feature[] }) {
   const { language } = useLanguage();
-  
+  const scrollRef = useRef<HTMLDivElement>(null);
+
   if (!data || data.length === 0) return null;
 
+  const scroll = (direction: "left" | "right") => {
+    if (scrollRef.current) {
+      const { scrollLeft, clientWidth } = scrollRef.current;
+      const scrollTo = direction === "left" 
+        ? scrollLeft - clientWidth * 0.8 
+        : scrollLeft + clientWidth * 0.8;
+      
+      scrollRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
+    }
+  };
+
   return (
-    <section className="py-32 bg-white">
+    <section className="py-24 bg-[#f5f5f7] overflow-hidden">
       <div className="max-w-[1440px] mx-auto px-6 md:px-12">
-        <div className="space-y-40">
+        {/* Section Header */}
+        <div className="flex justify-between items-end mb-12">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-[40px] md:text-[56px] font-bold tracking-tight text-[#1d1d1f]"
+          >
+            {language === "vi" ? "Tìm hiểu AZLABS." : "Get to know AZLABS."}
+          </motion.h2>
+
+          {/* Navigation Controls (Desktop) */}
+          <div className="hidden md:flex gap-3">
+            <button 
+              onClick={() => scroll("left")}
+              className="w-10 h-10 rounded-full bg-black/5 hover:bg-black/10 flex items-center justify-center transition-colors"
+            >
+              <ChevronLeft className="w-6 h-6 text-[#1d1d1f]" />
+            </button>
+            <button 
+              onClick={() => scroll("right")}
+              className="w-10 h-10 rounded-full bg-black/5 hover:bg-black/10 flex items-center justify-center transition-colors"
+            >
+              <ChevronRight className="w-6 h-6 text-[#1d1d1f]" />
+            </button>
+          </div>
+        </div>
+
+        {/* Horizontal Scroll Container */}
+        <div 
+          ref={scrollRef}
+          className="flex gap-6 overflow-x-auto pb-12 scrollbar-hide snap-x snap-mandatory touch-pan-x"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
           {data.map((feature, index) => {
-            const isReverse = index % 2 !== 0;
             const title = language === "vi" ? feature.title_vi : feature.title_en;
             const description = language === "vi" ? feature.description_vi : feature.description_en;
             
             return (
-              <div 
+              <motion.div
                 key={feature.id}
-                className={`flex flex-col ${isReverse ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-12 md:gap-24`}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="flex-none w-[320px] md:w-[400px] aspect-[4/5] relative rounded-[32px] overflow-hidden bg-white snap-start group cursor-pointer shadow-sm hover:shadow-xl transition-shadow duration-500"
               >
-                {/* Text Content */}
-                <motion.div 
-                  initial={{ opacity: 0, x: isReverse ? 30 : -30, filter: "blur(10px)" }}
-                  whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ 
-                    type: "spring",
-                    stiffness: 40,
-                    damping: 20,
-                    mass: 1,
-                    delay: 0.1
-                  }}
-                  className="flex-1 text-left"
-                >
-                  <h3 className="text-[40px] md:text-[56px] font-bold tracking-tighter leading-tight text-apple-text mb-6">
+                {/* Background Image */}
+                <div className="absolute inset-0">
+                  <img 
+                    src={feature.image_url} 
+                    alt={title}
+                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
+                  />
+                  {/* Subtle dark overlay if needed */}
+                  <div className="absolute inset-0 bg-black/10 group-hover:bg-black/5 transition-colors" />
+                </div>
+
+                {/* Text Content (Top Aligned) */}
+                <div className="relative z-10 p-8 flex flex-col h-full text-white">
+                  <span className="text-sm font-semibold uppercase tracking-wider mb-2 opacity-80">
+                    Feature {index + 1}
+                  </span>
+                  <h3 className="text-2xl md:text-3xl font-bold leading-tight mb-3">
                     {title}
                   </h3>
-                  <p className="text-xl md:text-2xl text-apple-text-secondary font-light leading-relaxed mb-8 max-w-xl">
+                  <p className="text-lg opacity-90 font-light leading-snug max-w-[280px]">
                     {description}
                   </p>
-                  <a 
-                    href="#"
-                    className="group inline-flex items-center text-apple-accent text-lg font-medium hover:underline underline-offset-4"
-                  >
-                    {language === "vi" ? "Tìm hiểu thêm" : "Learn more"}
-                    <ChevronRight className="ml-1 w-5 h-5 transition-transform group-hover:translate-x-1" />
-                  </a>
-                </motion.div>
 
-                {/* Image Content */}
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
-                  whileInView={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ 
-                    type: "spring",
-                    stiffness: 30,
-                    damping: 15,
-                    mass: 1.2,
-                    delay: 0.2
-                  }}
-                  className="flex-1 w-full"
-                >
-                  <div className="relative aspect-[16/10] overflow-hidden rounded-[40px] shadow-2xl bg-gray-100">
-                    {feature.image_url && (
-                      <img 
-                        src={feature.image_url} 
-                        alt={title}
-                        className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"
-                      />
-                    )}
+                  {/* Plus Icon (Bottom Right) */}
+                  <div className="mt-auto ml-auto">
+                    <div className="w-10 h-10 rounded-full bg-black/20 backdrop-blur-md flex items-center justify-center group-hover:bg-white/30 transition-colors">
+                      <Plus className="w-6 h-6 text-white" />
+                    </div>
                   </div>
-                </motion.div>
-              </div>
+                </div>
+              </motion.div>
             );
           })}
+          
+          {/* Spacer for end of scroll */}
+          <div className="flex-none w-px md:w-24 h-full" />
         </div>
       </div>
+
+      <style jsx global>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </section>
   );
 }
