@@ -72,13 +72,40 @@ export default function Services({ data = [] }: { data?: any[] }) {
         </div>
 
         {/* Bento Grid with Images */}
-        <div ref={containerRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[300px]">
+        <motion.div 
+          ref={containerRef} 
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.15,
+                delayChildren: 0.2,
+              }
+            }
+          }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[300px]"
+        >
           {finalServices.map((service, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: index * 0.1 }}
+              variants={{
+                hidden: { opacity: 0, y: 40, scale: 0.95 },
+                visible: { 
+                  opacity: 1, 
+                  y: 0, 
+                  scale: 1,
+                  transition: {
+                    type: "spring",
+                    stiffness: 100,
+                    damping: 20,
+                    mass: 1
+                  }
+                }
+              }}
               className={`group relative overflow-hidden rounded-[40px] border border-apple-border bg-[#fbfbfd] transition-all duration-700 ${service.bentoClass}`}
             >
               {/* Background Demo Image */}
@@ -109,7 +136,7 @@ export default function Services({ data = [] }: { data?: any[] }) {
               </div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -7,34 +7,50 @@ import Link from "next/link";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { FuturisticGlobe } from "@/components/FuturisticGlobe";
 
+import { useMotionValue, useTransform, animate } from "framer-motion";
+
 const TypewriterHeadline = ({ text }: { text: string }) => {
-  const [displayText, setDisplayText] = useState("");
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    setDisplayText("");
-    setIndex(0);
-  }, [text]);
-
-  useEffect(() => {
-    if (index < text.length) {
-      const timeout = setTimeout(() => {
-        setDisplayText((prev) => prev + text[index]);
-        setIndex((prev) => prev + 1);
-      }, 40);
-      return () => clearTimeout(timeout);
-    }
-  }, [index, text]);
+  // Split text into characters including spaces
+  const characters = text.split("");
 
   return (
-    <h1 className="text-[42px] md:text-[72px] lg:text-[84px] font-bold tracking-tight leading-[1.1] text-[#1d1d1f] max-w-[1000px] mx-auto">
-      {displayText}
+    <motion.h1 
+      className="text-[42px] md:text-[72px] lg:text-[84px] font-bold tracking-tight leading-[1.1] text-[#1d1d1f] max-w-[1000px] mx-auto text-center"
+      initial="hidden"
+      animate="visible"
+      key={text}
+    >
+      {characters.map((char, index) => (
+        <motion.span
+          key={`${text}-${index}`}
+          variants={{
+            hidden: { opacity: 0, y: 10, filter: "blur(4px)" },
+            visible: { 
+              opacity: 1, 
+              y: 0, 
+              filter: "blur(0px)",
+              transition: {
+                duration: 0.4,
+                ease: [0.215, 0.61, 0.355, 1], // Cubic-bezier for smooth finish
+                delay: index * 0.02, // Stagger effect
+              }
+            }
+          }}
+          className="inline-block whitespace-pre"
+        >
+          {char}
+        </motion.span>
+      ))}
       <motion.span
-        animate={{ opacity: [1, 0] }}
-        transition={{ duration: 0.8, repeat: Infinity }}
-        className="inline-block w-[3px] h-[45px] md:h-[65px] bg-apple-accent ml-1 align-middle"
+        animate={{ opacity: [1, 1, 0, 0] }}
+        transition={{ 
+          duration: 0.8, 
+          repeat: Infinity,
+          times: [0, 0.5, 0.5, 1]
+        }}
+        className="inline-block w-[4px] h-[45px] md:h-[70px] bg-apple-accent ml-2 align-middle"
       />
-    </h1>
+    </motion.h1>
   );
 };
 

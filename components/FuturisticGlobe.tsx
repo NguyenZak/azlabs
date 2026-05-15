@@ -6,17 +6,27 @@ import * as THREE from "three";
 export const FuturisticGlobe = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const mouse = useRef({ x: 0, y: 0 });
+  const isVisible = useRef(true);
 
   useEffect(() => {
     if (!containerRef.current) return;
+
+    // --- Visibility Check ---
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible.current = entry.isIntersecting;
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(containerRef.current);
 
     // --- Scene Setup ---
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 4000);
     camera.position.z = 1200;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true }); // Antialias off for performance
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // Capped pixel ratio
     renderer.setSize(window.innerWidth, window.innerHeight);
     containerRef.current.appendChild(renderer.domElement);
 
@@ -24,12 +34,12 @@ export const FuturisticGlobe = () => {
     const mainGroup = new THREE.Group();
     scene.add(mainGroup);
 
-    // --- 1. The Central Globe (Simplified) ---
+    // --- 1. The Central Globe ---
     const globeGroup = new THREE.Group();
     mainGroup.add(globeGroup);
 
     const radius = 420;
-    const particleCount = 2000; // Reduced density
+    const particleCount = 1500; // Further reduced
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     for (let i = 0; i < particleCount; i++) {
@@ -44,29 +54,28 @@ export const FuturisticGlobe = () => {
       color: "#4285F4",
       size: 1.5,
       transparent: true,
-      opacity: 0.4,
+      opacity: 0.3,
       blending: THREE.AdditiveBlending
     });
     globeGroup.add(new THREE.Points(geometry, material));
 
-    // Simplified Wireframe Shell
-    const wireframeGeom = new THREE.IcosahedronGeometry(radius, 5); // Reduced detail from 12 to 5
+    const wireframeGeom = new THREE.IcosahedronGeometry(radius, 4);
     const wireframeMat = new THREE.MeshBasicMaterial({
       color: "#4285F4",
       wireframe: true,
       transparent: true,
-      opacity: 0.12, 
+      opacity: 0.08, 
       blending: THREE.AdditiveBlending
     });
     globeGroup.add(new THREE.Mesh(wireframeGeom, wireframeMat));
 
-    // --- 2. Full-Screen Plexus Network (Stronger) ---
+    // --- 2. Plexus Network ---
     const plexusGroup = new THREE.Group();
     mainGroup.add(plexusGroup);
 
-    const plexusParticleCount = 180; 
-    const plexusRangeX = 2800; 
-    const plexusRangeY = 1600;
+    const plexusParticleCount = 120; // Reduced from 180
+    const plexusRangeX = 3000; 
+    const plexusRangeY = 1800;
     const plexusRangeZ = 1200;
 
     const plexusParticles: any[] = [];
@@ -85,9 +94,9 @@ export const FuturisticGlobe = () => {
       plexusParticles.push({
         pos: new THREE.Vector3(x, y, z),
         velocity: new THREE.Vector3(
-          (Math.random() - 0.5) * 0.6,
-          (Math.random() - 0.5) * 0.6,
-          (Math.random() - 0.5) * 0.6
+          (Math.random() - 0.5) * 0.4,
+          (Math.random() - 0.5) * 0.4,
+          (Math.random() - 0.5) * 0.4
         )
       });
     }
@@ -97,7 +106,7 @@ export const FuturisticGlobe = () => {
       color: "#4285F4",
       size: 3,
       transparent: true,
-      opacity: 0.5,
+      opacity: 0.4,
       blending: THREE.AdditiveBlending
     }));
     plexusGroup.add(plexusPoints);
@@ -105,7 +114,7 @@ export const FuturisticGlobe = () => {
     const lineMaterial = new THREE.LineBasicMaterial({
       color: "#4285F4",
       transparent: true,
-      opacity: 0.18, // Keep lines visible
+      opacity: 0.12,
       blending: THREE.AdditiveBlending
     });
     const lineGeometry = new THREE.BufferGeometry();
@@ -120,11 +129,23 @@ export const FuturisticGlobe = () => {
     window.addEventListener("mousemove", handleMouseMove);
 
     let frameId: number;
-    const animate = () => {
+    let lastTime = 0;
+
+    const animate = (time: number) => {
       frameId = requestAnimationFrame(animate);
-      globeGroup.rotation.y += 0.001;
+      
+      // PAUSE if not visible
+      if (!isVisible.current) return;
+
+      // Throttle update slightly if needed, but keeping it 60fps
+      const delta = time - lastTime;
+      lastTime = time;
+
+      globeGroup.rotation.y += 0.0008;
 
       const linePositions = [];
+      const maxDistance = 450;
+
       for (let i = 0; i < plexusParticleCount; i++) {
         const p = plexusParticles[i];
         p.pos.add(p.velocity);
@@ -137,10 +158,11 @@ export const FuturisticGlobe = () => {
         plexusPositions[i * 3 + 1] = p.pos.y;
         plexusPositions[i * 3 + 2] = p.pos.z;
 
+        // Optimization: Only check lines for every 2nd particle or reduce frequency
         for (let j = i + 1; j < plexusParticleCount; j++) {
           const p2 = plexusParticles[j];
-          const dist = p.pos.distanceTo(p2.pos);
-          if (dist < 450) {
+          const distSq = p.pos.distanceToSquared(p2.pos);
+          if (distSq < maxDistance * maxDistance) {
             linePositions.push(p.pos.x, p.pos.y, p.pos.z);
             linePositions.push(p2.pos.x, p2.pos.y, p2.pos.z);
           }
@@ -150,13 +172,13 @@ export const FuturisticGlobe = () => {
       plexusGeometry.attributes.position.needsUpdate = true;
       lineGeometry.setAttribute("position", new THREE.Float32BufferAttribute(linePositions, 3));
 
-      mainGroup.rotation.y += (mouse.current.x * 0.15 - mainGroup.rotation.y) * 0.05;
-      mainGroup.rotation.x += (-mouse.current.y * 0.15 - mainGroup.rotation.x) * 0.05;
+      mainGroup.rotation.y += (mouse.current.x * 0.12 - mainGroup.rotation.y) * 0.03;
+      mainGroup.rotation.x += (-mouse.current.y * 0.12 - mainGroup.rotation.x) * 0.03;
 
       renderer.render(scene, camera);
     };
 
-    animate();
+    requestAnimationFrame(animate);
 
     const handleResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
@@ -168,19 +190,23 @@ export const FuturisticGlobe = () => {
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("resize", handleResize);
+      observer.disconnect();
       cancelAnimationFrame(frameId);
       if (containerRef.current) {
         containerRef.current.removeChild(renderer.domElement);
       }
       scene.clear();
       renderer.dispose();
+      geometry.dispose();
+      plexusGeometry.dispose();
+      lineGeometry.dispose();
     };
   }, []);
 
   return (
     <div 
       ref={containerRef} 
-      className="absolute inset-0 z-0 pointer-events-none flex items-center justify-center overflow-hidden opacity-80 mix-blend-screen" 
+      className="absolute inset-0 z-0 pointer-events-none flex items-center justify-center overflow-hidden opacity-60 mix-blend-screen" 
     />
   );
 };

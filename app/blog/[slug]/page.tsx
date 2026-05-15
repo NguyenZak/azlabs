@@ -80,70 +80,42 @@ export default async function BlogPostDetail({ params }: { params: Promise<{ slu
   });
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-white font-apple">
       {/* ── Breadcrumb ── */}
-      <div className="max-w-4xl mx-auto px-6 pt-28 pb-4">
-        <nav className="flex items-center gap-2 text-sm text-apple-text-secondary font-medium">
-          <Link href="/" className="hover:text-apple-accent transition-colors">{dict.magazine.breadcrumbHome}</Link>
-          <ChevronRight className="w-3 h-3" />
-          <Link href="/blog" className="hover:text-apple-accent transition-colors">{dict.magazine.breadcrumbMagazine}</Link>
-          <ChevronRight className="w-3 h-3" />
-          <span className="text-apple-text truncate max-w-[200px]">{title}</span>
+      <div className="max-w-[720px] mx-auto px-6 pt-32 pb-4">
+        <nav className="flex items-center gap-2 text-[12px] text-apple-text-secondary font-medium tracking-wide">
+          <Link href="/" className="hover:underline transition-colors uppercase tracking-widest">{dict.magazine.breadcrumbHome}</Link>
+          <ChevronRight className="w-2.5 h-2.5 opacity-30" />
+          <Link href="/blog" className="hover:underline transition-colors uppercase tracking-widest">{dict.magazine.breadcrumbMagazine}</Link>
+          <ChevronRight className="w-2.5 h-2.5 opacity-30" />
+          <span className="text-apple-text truncate uppercase tracking-widest opacity-50">{title}</span>
         </nav>
       </div>
 
       {/* ── Article Header ── */}
-      <header className="max-w-4xl mx-auto px-6 pt-8 pb-16">
-        <div className="space-y-8">
-          {/* Meta */}
-          <div className="flex flex-wrap items-center gap-4 text-sm text-apple-text-secondary">
-            <span className="px-4 py-1.5 bg-apple-accent/10 text-apple-accent rounded-full font-bold text-xs uppercase tracking-wider">
-              {dict.magazine.title}
-            </span>
-            <span className="flex items-center gap-1.5 font-medium">
-              <Calendar className="w-3.5 h-3.5" /> {date}
-            </span>
-            <span className="flex items-center gap-1.5 font-medium">
-              <Clock className="w-3.5 h-3.5" /> {readTime} {dict.magazine.readTime}
-            </span>
-          </div>
-
-          {/* Title */}
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.08] text-apple-text">
+      <header className="max-w-[720px] mx-auto px-6 pt-8 pb-16">
+        <div className="space-y-6">
+          <h1 className="text-[40px] md:text-[48px] lg:text-[56px] font-bold tracking-tight leading-[1.1] text-apple-text font-apple-display">
             {title}
           </h1>
 
-          {/* Excerpt */}
           {excerpt && (
-            <p className="text-xl md:text-2xl text-apple-text-secondary leading-relaxed max-w-3xl">
+            <p className="text-[19px] md:text-[21px] text-apple-text leading-[1.47] font-normal tracking-[-0.011em]">
               {excerpt}
             </p>
           )}
 
-          {/* Author + Share */}
-          <div className="flex items-center justify-between pt-8 border-t border-apple-border">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-apple-accent to-purple-500 flex items-center justify-center text-white font-black text-sm shadow-lg">
-                AZ
-              </div>
-              <div>
-                <p className="font-bold text-apple-text">AZLABS Editorial</p>
-                <p className="text-xs text-apple-text-secondary font-medium">{lang === "en" ? "Technology & Design" : "Công nghệ & Thiết kế"}</p>
-              </div>
-            </div>
-
-            <button
-              className="flex items-center gap-2 px-5 py-2.5 bg-[#f5f5f7] rounded-full text-sm font-bold text-apple-text hover:bg-black hover:text-white transition-all"
-            >
-              <Share2 className="w-4 h-4" /> {dict.magazine.share}
-            </button>
+          <div className="flex items-center gap-4 pt-6 text-[14px] text-apple-text-secondary font-medium">
+             <Calendar className="w-4 h-4" /> {date}
+             <span className="opacity-30">|</span>
+             <Clock className="w-4 h-4" /> {readTime} {dict.magazine.readTime}
           </div>
         </div>
       </header>
 
       {/* ── Featured Image ── */}
       {post.image_url && (
-        <div className="max-w-6xl mx-auto px-6 mb-20">
+        <div className="max-w-[720px] mx-auto px-6 mb-20">
           <div className="aspect-[2/1] md:aspect-[21/9] rounded-[40px] overflow-hidden shadow-2xl border border-apple-border">
             <img
               src={post.image_url}
@@ -155,24 +127,25 @@ export default async function BlogPostDetail({ params }: { params: Promise<{ slu
       )}
 
       {/* ── Article Content ── */}
-      <article className="max-w-3xl mx-auto px-6 pb-20">
+      <article className="max-w-[720px] mx-auto px-6 pb-20">
         <div
           className="
-            prose prose-lg md:prose-xl max-w-none
-            prose-p:leading-[1.8] prose-p:text-[#1d1d1f]/80
+            font-apple
+            prose prose-lg max-w-none
+            prose-p:text-[19px] prose-p:md:text-[21px] prose-p:leading-[1.47] prose-p:text-apple-text prose-p:tracking-[-0.011em] prose-p:mb-[25px] prose-p:font-normal
             prose-headings:tracking-tight prose-headings:font-bold prose-headings:text-apple-text
-            prose-h2:text-3xl prose-h2:mt-16 prose-h2:mb-6
-            prose-h3:text-2xl prose-h3:mt-12 prose-h3:mb-4
-            prose-blockquote:border-l-4 prose-blockquote:border-apple-accent
-            prose-blockquote:bg-[#f5f5f7] prose-blockquote:p-8 prose-blockquote:rounded-3xl
-            prose-blockquote:not-italic prose-blockquote:my-12
-            prose-strong:text-apple-text prose-strong:font-extrabold
-            prose-a:text-apple-accent prose-a:no-underline prose-a:font-bold
+            prose-h2:text-[32px] prose-h2:md:text-[36px] prose-h2:mt-12 prose-h2:mb-6 prose-h2:leading-[1.1] prose-h2:tracking-tight
+            prose-h3:text-[24px] prose-h3:md:text-[28px] prose-h3:mt-10 prose-h3:mb-4 prose-h3:leading-[1.2] prose-h3:tracking-tight
+            prose-blockquote:border-l-[3px] prose-blockquote:border-apple-accent
+            prose-blockquote:bg-[#f5f5f7] prose-blockquote:p-8 prose-blockquote:md:p-12 prose-blockquote:rounded-[32px]
+            prose-blockquote:not-italic prose-blockquote:my-12 prose-blockquote:text-apple-text
+            prose-strong:text-apple-text prose-strong:font-bold
+            prose-a:text-apple-accent prose-a:no-underline prose-a:font-medium
             hover:prose-a:underline
-            prose-img:rounded-[32px] prose-img:shadow-xl prose-img:my-12
-            prose-ul:my-6 prose-li:my-1
-            prose-code:bg-[#f5f5f7] prose-code:px-2 prose-code:py-0.5 prose-code:rounded-lg prose-code:font-medium prose-code:text-sm
-            prose-pre:bg-[#1d1d1f] prose-pre:rounded-3xl prose-pre:shadow-xl
+            prose-img:rounded-[24px] prose-img:my-12 prose-img:w-full
+            prose-ul:my-8 prose-li:my-3 prose-li:leading-relaxed prose-li:text-[19px] prose-li:md:text-[21px] prose-li:tracking-[-0.011em]
+            prose-code:bg-[#f5f5f7] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:font-medium prose-code:text-[0.9em] prose-code:before:content-none prose-code:after:content-none
+            prose-pre:bg-[#1d1d1f] prose-pre:rounded-2xl prose-pre:shadow-sm prose-pre:p-6
           "
           dangerouslySetInnerHTML={{ __html: content }}
         />

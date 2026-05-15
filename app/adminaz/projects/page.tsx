@@ -16,6 +16,7 @@ import {
   Loader2
 } from "lucide-react";
 import MediaPicker from "@/components/admin/MediaPicker";
+import RichTextEditor from "@/components/admin/RichTextEditor";
 import { upsertProject, deleteProject } from "@/lib/actions/cms";
 import { createClient } from "@/utils/supabase/client";
 import { PROJECT_SAMPLES } from "@/lib/services/data";
@@ -48,6 +49,7 @@ export default function ProjectsAdmin() {
     title_en: "", title_vi: "",
     category_en: "", category_vi: "",
     description_en: "", description_vi: "",
+    details_en: "", details_vi: "",
     image_url: "",
     tags: [] as string[]
   });
@@ -60,6 +62,7 @@ export default function ProjectsAdmin() {
         title_en: project.title_en, title_vi: project.title_vi,
         category_en: project.category_en, category_vi: project.category_vi,
         description_en: project.description_en || "", description_vi: project.description_vi || "",
+        details_en: project.details_en || "", details_vi: project.details_vi || "",
         image_url: project.image_url || "",
         tags: project.tags || []
       });
@@ -67,7 +70,9 @@ export default function ProjectsAdmin() {
       setCurrentProject(null);
       setFormData({
         id: "", title_en: "", title_vi: "", category_en: "", category_vi: "",
-        description_en: "", description_vi: "", image_url: "", tags: []
+        description_en: "", description_vi: "", 
+        details_en: "", details_vi: "",
+        image_url: "", tags: []
       });
     }
     setIsModalOpen(true);
@@ -411,6 +416,26 @@ export default function ProjectsAdmin() {
                       setFormData({ ...formData, image_url: url });
                     }}
                   />
+                </div>
+
+                {/* Details Section (Rich Text) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-4">
+                    <label className="text-xs font-bold uppercase tracking-widest text-apple-text-secondary">Full Project Case Study (English)</label>
+                    <RichTextEditor 
+                      content={formData.details_en}
+                      onChange={(html) => setFormData({ ...formData, details_en: html })}
+                      onImageClick={() => setIsUploadModalOpen(true)}
+                    />
+                  </div>
+                  <div className="space-y-4">
+                    <label className="text-xs font-bold uppercase tracking-widest text-apple-text-secondary">Nội dung chi tiết (Tiếng Việt)</label>
+                    <RichTextEditor 
+                      content={formData.details_vi}
+                      onChange={(html) => setFormData({ ...formData, details_vi: html })}
+                      onImageClick={() => setIsUploadModalOpen(true)}
+                    />
+                  </div>
                 </div>
               </div>
 

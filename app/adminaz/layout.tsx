@@ -16,6 +16,7 @@ import {
   Sparkles,
   Mail,
   BarChart3,
+  Info,
   X
 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
@@ -27,13 +28,17 @@ import { cn } from "@/lib/utils";
 
 const sidebarItems = [
   { icon: LayoutDashboard, label: "Overview", href: "/adminaz/dashboard" },
+  { icon: Settings, label: "Settings", href: "/adminaz/settings" },
   { icon: Sparkles, label: "Hero", href: "/adminaz/hero" },
   { icon: FileText, label: "Posts", href: "/adminaz/posts" },
   { icon: Briefcase, label: "Projects", href: "/adminaz/projects" },
   { icon: Layers, label: "Services", href: "/adminaz/services" },
+  { icon: Sparkles, label: "Solutions", href: "/adminaz/solutions" },
   { icon: Sparkles, label: "Features", href: "/adminaz/features" },
   { icon: Cpu, label: "Tech Stack", href: "/adminaz/tech-stack" },
+  { icon: Info, label: "About", href: "/adminaz/about" },
   { icon: Mail, label: "Contacts", href: "/adminaz/contacts" },
+  { icon: Sparkles, label: "Testimonials", href: "/adminaz/testimonials" },
   { icon: BarChart3, label: "Analytics", href: "/adminaz/analytics" },
   { icon: ImageIcon, label: "Media", href: "/adminaz/media" },
 ];

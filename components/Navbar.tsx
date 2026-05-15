@@ -7,7 +7,7 @@ import { Menu, X, Languages } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 
-export default function Navbar() {
+export default function Navbar({ settings }: { settings?: any }) {
   const { dict, language, setLanguage } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -39,8 +39,14 @@ export default function Navbar() {
     >
       <div className="max-w-[1440px] mx-auto w-full px-6 md:px-12 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="text-xl font-bold tracking-tighter text-apple-text">
-          AZLABS
+        <Link href="/" className="flex items-center gap-2">
+          {settings?.logo_url ? (
+            <img src={settings.logo_url} alt={settings.site_name} className="h-6 w-auto" />
+          ) : (
+            <span className="text-xl font-bold tracking-tighter text-apple-text">
+              {settings?.site_name || "AZLABS"}
+            </span>
+          )}
         </Link>
 
         {/* Desktop Menu */}

@@ -1,0 +1,272 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  Plus, 
+  Trash2, 
+  Edit3, 
+  Save, 
+  X, 
+  Loader2, 
+  Sparkles, 
+  Image as ImageIcon,
+  ArrowLeft,
+  ChevronRight,
+  Globe,
+  Box,
+  Layout
+} from "lucide-react";
+import { getSolutions, upsertSolution, deleteSolution } from "@/lib/actions/cms";
+import toast from "react-hot-toast";
+
+export default function SolutionsAdmin() {
+  const [solutions, setSolutions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const [formData, setFormData] = useState({
+    id: undefined,
+    title_en: "",
+    title_vi: "",
+    description_en: "",
+    description_vi: "",
+    icon: "",
+    features_en: [] as string[],
+    features_vi: [] as string[],
+    order_index: 0
+  });
+
+  useEffect(() => {
+    loadSolutions();
+  }, []);
+
+  const loadSolutions = async () => {
+    setLoading(true);
+    try {
+      const data = await getSolutions();
+      setSolutions(data);
+    } catch (error) {
+      toast.error("Failed to load solutions");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleStartEdit = (solution?: any) => {
+    if (solution) {
+      setFormData({
+        ...solution,
+        features_en: solution.features_en || [],
+        features_vi: solution.features_vi || [],
+      });
+    } else {
+      setFormData({
+        id: undefined,
+        title_en: "",
+        title_vi: "",
+        description_en: "",
+        description_vi: "",
+        icon: "",
+        features_en: [],
+        features_vi: [],
+        order_index: 0
+      });
+    }
+    setIsEditing(true);
+  };
+
+  const handleSubmit = async () => {
+    if (!formData.title_en || !formData.title_vi) return toast.error("Titles are required");
+    setIsSubmitting(true);
+    try {
+      await upsertSolution(formData);
+      toast.success("Solution saved successfully");
+      setIsEditing(false);
+      loadSolutions();
+    } catch (error) {
+      toast.error("Failed to save solution");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure?")) return;
+    try {
+      await deleteSolution(id);
+      toast.success("Solution deleted");
+      loadSolutions();
+    } catch (error) {
+      toast.error("Failed to delete");
+    }
+  };
+
+  const handleSeed = async () => {
+    setIsSubmitting(true);
+    const samples = [
+      {
+        title_en: "Enterprise Cloud Core",
+        title_vi: "Lõi Đám mây Doanh nghiệp",
+        description_en: "A robust cloud foundation designed for infinite scale and zero-downtime operations.",
+        description_vi: "Nền tảng đám mây mạnh mẽ được thiết kế để mở rộng vô hạn và vận hành không gián đoạn.",
+        icon: "Cloud",
+        features_en: ["Auto-scaling", "Multi-region", "Security"],
+        features_vi: ["Tự động mở rộng", "Đa vùng", "Bảo mật"],
+        order_index: 0
+      },
+      {
+        title_en: "AI-Driven Insights",
+        title_vi: "Thông tin chi tiết từ AI",
+        description_en: "Transform raw data into actionable business intelligence using custom-trained LLMs.",
+        description_vi: "Biến dữ liệu thô thành trí tuệ doanh nghiệp có thể hành động bằng cách sử dụng các LLM được đào tạo tùy chỉnh.",
+        icon: "Brain",
+        features_en: ["Predictive Analysis", "Custom LLMs", "Real-time"],
+        features_vi: ["Phân tích dự đoán", "LLM tùy chỉnh", "Thời gian thực"],
+        order_index: 1
+      }
+    ];
+
+    try {
+      for (const sample of samples) {
+        await upsertSolution(sample);
+      }
+      toast.success("Successfully seeded 2 premium solutions!");
+      loadSolutions();
+    } catch (error) {
+      toast.error("Failed to seed data");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (isEditing) {
+    return (
+      <div className="min-h-screen -m-4 md:-m-12 bg-white">
+        <header className="px-4 md:px-12 py-4 md:py-6 border-b border-apple-border flex justify-between items-center sticky top-0 bg-white/80 backdrop-blur-md z-10 gap-2">
+          <div className="flex items-center gap-3 md:gap-6">
+            <button onClick={() => setIsEditing(false)} className="p-2 hover:bg-[#f5f5f7] rounded-full transition-all">
+              <ArrowLeft className="w-5 h-5 md:w-6 md:h-6" />
+            </button>
+            <h1 className="text-lg md:text-2xl font-bold tracking-tight truncate">
+              {formData.id ? "Edit Solution" : "New Solution"}
+            </h1>
+          </div>
+          <div className="flex items-center gap-2 md:gap-4 shrink-0">
+            <button 
+              onClick={() => setIsEditing(false)} 
+              className="hidden sm:block px-4 py-2 text-apple-text-secondary font-bold hover:bg-[#f5f5f7] rounded-full transition-all text-sm"
+            >
+              Cancel
+            </button>
+            <button 
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+              className="px-4 md:px-8 py-2 md:py-2.5 bg-black text-white rounded-full font-bold shadow-xl hover:opacity-90 transition-all flex items-center gap-2 disabled:opacity-50 text-xs md:text-sm"
+            >
+              {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              Save
+            </button>
+          </div>
+        </header>
+
+        <div className="max-w-5xl mx-auto p-6 md:p-20 space-y-12">
+            <section className="space-y-8">
+              <h2 className="text-sm font-black uppercase tracking-widest text-apple-text-secondary">Core Information</h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-3">
+                  <label className="text-xs font-bold text-apple-text px-1">Solution Title (EN)</label>
+                  <input type="text" value={formData.title_en} onChange={(e) => setFormData({ ...formData, title_en: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent text-lg font-bold" placeholder="e.g. AI Automation" />
+                </div>
+                <div className="space-y-3">
+                  <label className="text-xs font-bold text-apple-text px-1">Tiêu đề (VI)</label>
+                  <input type="text" value={formData.title_vi} onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent text-lg font-bold" placeholder="VD: Tự động hóa AI" />
+                </div>
+              </div>
+
+              <div className="space-y-8 pt-4">
+                <div className="space-y-3">
+                  <label className="text-xs font-bold text-apple-text px-1">Description (EN)</label>
+                  <textarea rows={4} value={formData.description_en} onChange={(e) => setFormData({ ...formData, description_en: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent resize-none leading-relaxed" placeholder="Detailed description..." />
+                </div>
+                <div className="space-y-3">
+                  <label className="text-xs font-bold text-apple-text px-1">Mô tả (VI)</label>
+                  <textarea rows={4} value={formData.description_vi} onChange={(e) => setFormData({ ...formData, description_vi: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent resize-none leading-relaxed" placeholder="Mô tả chi tiết..." />
+                </div>
+              </div>
+            </section>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-8 md:space-y-12">
+      <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+        <div>
+          <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-apple-text">Solutions</h1>
+          <p className="text-apple-text-secondary mt-2 text-base md:text-lg">Premium technology solutions for global scale.</p>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+          <button 
+            onClick={handleSeed}
+            disabled={isSubmitting}
+            className="flex items-center justify-center gap-3 px-6 py-3 bg-white text-apple-accent border-2 border-apple-accent rounded-full font-bold hover:bg-apple-accent hover:text-white transition-all shadow-xl text-sm"
+          >
+            {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+            Seed Samples
+          </button>
+          <button 
+            onClick={() => handleStartEdit()}
+            className="flex items-center justify-center gap-3 px-6 py-3 bg-black text-white rounded-full font-bold hover:scale-[1.02] transition-all shadow-2xl text-sm"
+          >
+            <Plus className="w-4 h-4" /> Add Solution
+          </button>
+        </div>
+      </header>
+
+      {loading ? (
+        <div className="py-40 flex flex-col items-center gap-4">
+          <Loader2 className="w-10 h-10 animate-spin text-apple-accent" />
+          <p className="text-apple-text-secondary font-medium animate-pulse">Cataloging solutions...</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-6">
+          {solutions.map((solution) => (
+            <div 
+              key={solution.id}
+              onClick={() => handleStartEdit(solution)}
+              className="group bg-white p-4 md:p-8 rounded-3xl md:rounded-[40px] border border-apple-border flex flex-col sm:flex-row items-start sm:items-center gap-6 md:gap-10 hover:shadow-2xl transition-all cursor-pointer hover:border-black/5"
+            >
+              <div className="w-full sm:w-32 aspect-video sm:aspect-square bg-[#f5f5f7] rounded-2xl md:rounded-[32px] overflow-hidden flex-shrink-0 border border-apple-border flex items-center justify-center">
+                 <Layout className="w-8 h-8 text-apple-accent" />
+              </div>
+              
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-xl md:text-2xl font-bold text-apple-text truncate">{solution.title_en}</h3>
+                  <ChevronRight className="w-5 h-5 text-apple-text-secondary group-hover:translate-x-2 transition-transform shrink-0" />
+                </div>
+                <p className="text-apple-text-secondary text-sm md:text-base line-clamp-1 max-w-3xl font-medium mb-3 md:mb-4">{solution.title_vi}</p>
+              </div>
+
+              <div className="flex sm:flex-col gap-2 w-full sm:w-auto pt-4 sm:pt-0 border-t sm:border-none border-apple-border">
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(solution.id);
+                  }} 
+                  className="flex-1 sm:flex-none p-3 hover:bg-red-50 text-red-400 rounded-xl transition-all flex items-center justify-center"
+                >
+                  <Trash2 className="w-5 h-5 md:w-6 md:h-6" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}

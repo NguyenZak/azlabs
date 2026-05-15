@@ -96,6 +96,8 @@ export async function upsertProject(formData: any) {
       category_vi: formData.category_vi,
       description_en: formData.description_en,
       description_vi: formData.description_vi,
+      details_en: formData.details_en,
+      details_vi: formData.details_vi,
       image_url: formData.image_url,
       tags: formData.tags,
       updated_at: new Date().toISOString(),
@@ -177,9 +179,74 @@ export async function deletePost(id: string) {
   revalidatePath("/blog");
 }
 
+export async function getProjects() {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+  const { data, error } = await supabase
+    .from("projects")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) throw new Error(error.message);
+  return data || [];
+}
+
 /**
- * SERVICES ACTIONS
+ * SOLUTIONS ACTIONS
  */
+export async function getSolutions() {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+  const { data, error } = await supabase
+    .from("solutions")
+    .select("*")
+    .order("order_index", { ascending: true });
+
+  if (error) throw new Error(error.message);
+  return data || [];
+}
+
+export async function upsertSolution(formData: any) {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+
+  const { data, error } = await supabase
+    .from("solutions")
+    .upsert({
+      id: formData.id || undefined,
+      title_en: formData.title_en,
+      title_vi: formData.title_vi,
+      description_en: formData.description_en,
+      description_vi: formData.description_vi,
+      icon: formData.icon,
+      features_en: formData.features_en,
+      features_vi: formData.features_vi,
+      order_index: formData.order_index || 0,
+    })
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/adminaz/solutions");
+  revalidatePath("/solutions");
+  return data;
+}
+
+export async function deleteSolution(id: string) {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+
+  const { error } = await supabase
+    .from("solutions")
+    .delete()
+    .match({ id });
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/adminaz/solutions");
+  revalidatePath("/solutions");
+}
 export async function getServices() {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
@@ -277,6 +344,103 @@ export async function deleteTech(id: string) {
 
   revalidatePath("/adminaz/tech-stack");
   revalidatePath("/");
+}
+
+export async function getTech() {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+  const { data, error } = await supabase
+    .from("tech_stack")
+    .select("*")
+    .order("order_index", { ascending: true });
+
+  if (error) throw new Error(error.message);
+  return data || [];
+}
+
+export async function getTestimonials() {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+  const { data, error } = await supabase
+    .from("testimonials")
+    .select("*")
+    .order("order_index", { ascending: true });
+
+  if (error) {
+    console.error("Error fetching testimonials:", error.message);
+    return [];
+  }
+  return data || [];
+}
+
+export async function upsertTestimonial(formData: any) {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+
+  const { data, error } = await supabase
+    .from("testimonials")
+    .upsert({
+      id: formData.id || undefined,
+      name: formData.name,
+      role_en: formData.role_en,
+      role_vi: formData.role_vi,
+      content_en: formData.content_en,
+      content_vi: formData.content_vi,
+      avatar_url: formData.avatar_url,
+      company_logo_url: formData.company_logo_url,
+      rating: formData.rating || 5,
+      order_index: formData.order_index || 0,
+    })
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/adminaz/testimonials");
+  revalidatePath("/");
+  return data;
+}
+
+export async function deleteTestimonial(id: string) {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+
+  const { error } = await supabase
+    .from("testimonials")
+    .delete()
+    .match({ id });
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/adminaz/testimonials");
+  revalidatePath("/");
+}
+
+export async function getAnalytics() {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+
+  const [
+    { count: postsCount },
+    { count: projectsCount },
+    { count: servicesCount },
+    { count: contactsCount },
+    { count: mediaCount }
+  ] = await Promise.all([
+    supabase.from("posts").select("*", { count: "exact", head: true }),
+    supabase.from("projects").select("*", { count: "exact", head: true }),
+    supabase.from("services").select("*", { count: "exact", head: true }),
+    supabase.from("contacts").select("*", { count: "exact", head: true }),
+    supabase.from("media").select("*", { count: "exact", head: true }),
+  ]);
+
+  return {
+    posts: postsCount || 0,
+    projects: projectsCount || 0,
+    services: servicesCount || 0,
+    contacts: contactsCount || 0,
+    media: mediaCount || 0
+  };
 }
 
 /**
@@ -509,4 +673,116 @@ export async function getCloudinarySignature() {
     apiKey: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
     cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
   };
+}
+
+/**
+ * ABOUT CONTENT ACTIONS
+ */
+export async function getAboutContent() {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+  const { data, error } = await supabase
+    .from("about_content")
+    .select("*")
+    .maybeSingle();
+  
+  if (error) {
+    console.error("Error fetching about content:", error);
+    return null;
+  }
+  return data;
+}
+
+export async function upsertAboutContent(formData: any) {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+
+  const payload = {
+    title_en: formData.title_en,
+    title_vi: formData.title_vi,
+    subtitle_en: formData.subtitle_en,
+    subtitle_vi: formData.subtitle_vi,
+    description_en: formData.description_en,
+    description_vi: formData.description_vi,
+    quote_en: formData.quote_en,
+    quote_vi: formData.quote_vi,
+    image_url: formData.image_url,
+    stats: formData.stats,
+    updated_at: new Date().toISOString(),
+  };
+
+  const { data: existing } = await supabase.from("about_content").select("id").maybeSingle();
+
+  if (existing) {
+    const { error } = await supabase
+      .from("about_content")
+      .update(payload)
+      .eq("id", existing.id);
+    if (error) throw error;
+  } else {
+    const { error } = await supabase.from("about_content").insert([payload]);
+    if (error) throw error;
+  }
+
+  revalidatePath("/");
+  revalidatePath("/adminaz/about");
+}
+
+/**
+ * SITE SETTINGS ACTIONS
+ */
+export async function getSiteSettings() {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+  const { data, error } = await supabase
+    .from("site_settings")
+    .select("*")
+    .maybeSingle();
+  
+  if (error) {
+    console.error("Error fetching site settings:", error);
+    return null;
+  }
+  return data;
+}
+
+export async function upsertSiteSettings(formData: any) {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+
+  const payload = {
+    site_name: formData.site_name,
+    logo_url: formData.logo_url,
+    favicon_url: formData.favicon_url,
+    phone: formData.phone,
+    email: formData.email,
+    address_en: formData.address_en,
+    address_vi: formData.address_vi,
+    working_hours_en: formData.working_hours_en,
+    working_hours_vi: formData.working_hours_vi,
+    facebook_url: formData.facebook_url,
+    instagram_url: formData.instagram_url,
+    linkedin_url: formData.linkedin_url,
+    twitter_url: formData.twitter_url,
+    github_url: formData.github_url,
+    copyright_en: formData.copyright_en,
+    copyright_vi: formData.copyright_vi,
+    updated_at: new Date().toISOString(),
+  };
+
+  const { data: existing } = await supabase.from("site_settings").select("id").maybeSingle();
+
+  if (existing) {
+    const { error } = await supabase
+      .from("site_settings")
+      .update(payload)
+      .eq("id", existing.id);
+    if (error) throw error;
+  } else {
+    const { error } = await supabase.from("site_settings").insert([payload]);
+    if (error) throw error;
+  }
+
+  revalidatePath("/", "layout"); // Revalidate all pages
+  revalidatePath("/adminaz/settings");
 }

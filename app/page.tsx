@@ -27,16 +27,23 @@ export default async function Home() {
     console.error("Hero slides table not found or error fetching:", error);
   }
 
-  // Fetch Projects & Services
+  // Fetch Projects, Services, Tech
   let projects = [];
   let services = [];
+  let techStack = [];
+  let testimonials = [];
   try {
     const { data: projectsData } = await supabase.from("projects").select("*").order("created_at", { ascending: false });
     const { data: servicesData } = await supabase.from("services").select("*").order("created_at", { ascending: true });
+    const { data: techData } = await supabase.from("tech_stack").select("*").order("order_index", { ascending: true });
+    const { data: testimonialsData } = await supabase.from("testimonials").select("*").order("order_index", { ascending: true });
+    
     projects = projectsData || [];
     services = servicesData || [];
+    techStack = techData || [];
+    testimonials = testimonialsData || [];
   } catch (error) {
-    console.error("Error fetching projects or services:", error);
+    console.error("Error fetching data:", error);
   }
 
   // Fetch Published Posts for Magazine
@@ -53,16 +60,25 @@ export default async function Home() {
     console.error("Error fetching posts:", error);
   }
 
+  // Fetch About Content
+  let aboutContent = null;
+  try {
+    const { data } = await supabase.from("about_content").select("*").maybeSingle();
+    aboutContent = data;
+  } catch (error) {
+    console.error("Error fetching about content:", error);
+  }
+
   return (
     <>
       <Hero slides={heroSlides} />
       <Services data={services} />
       <Features />
       <Portfolio data={projects} />
-      <TechStack />
-      <About />
+      <TechStack data={techStack} />
+      <About data={aboutContent} />
       <Magazine posts={posts} />
-      <Testimonials />
+      <Testimonials data={testimonials} />
       <Contact />
     </>
   );

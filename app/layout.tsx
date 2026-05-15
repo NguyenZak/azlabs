@@ -11,42 +11,44 @@ const inter = Inter({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "AZLABS — Building The Future Of Digital Experience",
-  description: "AZLABS is a premium digital studio crafting world-class websites, mobile apps, and AI solutions.",
-  openGraph: {
-    title: "AZLABS — Building The Future Of Digital Experience",
-    description: "AZLABS is a premium digital studio crafting world-class websites, mobile apps, and AI solutions.",
-    url: "https://azlabs.com",
-    siteName: "AZLABS",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-      },
-    ],
-    locale: "en_US",
-    type: "website",
-  },
-};
 
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 import LayoutWrapper from "@/components/LayoutWrapper";
 import { Toaster } from "react-hot-toast";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
+import { createClient } from "@/utils/supabase/server";
+import { cookies } from "next/headers";
 
-export default function RootLayout({
+export async function generateMetadata(): Promise<Metadata> {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+  const { data: settings } = await supabase.from("site_settings").select("*").maybeSingle();
+
+  return {
+    title: settings?.site_name || "AZLABS — Building The Future Of Digital Experience",
+    description: "AZLABS is a premium digital studio crafting world-class websites, mobile apps, and AI solutions.",
+    icons: settings?.favicon_url ? [{ rel: "icon", url: settings.favicon_url }] : [],
+    openGraph: {
+      title: settings?.site_name || "AZLABS",
+      images: settings?.logo_url ? [{ url: settings.logo_url }] : [],
+    },
+  };
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+  const { data: settings } = await supabase.from("site_settings").select("*").maybeSingle();
   return (
     <html lang="en" className={`${inter.variable}`}>
       <body className="antialiased">
         <LanguageProvider>
           <AnalyticsTracker />
-          <LayoutWrapper>
+          <LayoutWrapper settings={settings}>
             {children}
           </LayoutWrapper>
           <Toaster position="bottom-right" />

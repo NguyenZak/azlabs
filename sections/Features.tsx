@@ -41,10 +41,16 @@ export default function Features() {
             >
               {/* Text Content */}
               <motion.div 
-                initial={{ opacity: 0, x: feature.reverse ? 50 : -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
+                initial={{ opacity: 0, x: feature.reverse ? 30 : -30, filter: "blur(10px)" }}
+                whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ 
+                  type: "spring",
+                  stiffness: 40,
+                  damping: 20,
+                  mass: 1,
+                  delay: 0.1
+                }}
                 className="flex-1 text-left"
               >
                 <h3 className="text-[40px] md:text-[56px] font-bold tracking-tighter leading-tight text-apple-text mb-6">
@@ -64,10 +70,16 @@ export default function Features() {
 
               {/* Image Content */}
               <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1, ease: "easeOut" }}
+                initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
+                whileInView={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ 
+                  type: "spring",
+                  stiffness: 30,
+                  damping: 15,
+                  mass: 1.2,
+                  delay: 0.2
+                }}
                 className="flex-1 w-full"
               >
                 <div className="relative aspect-[16/10] overflow-hidden rounded-[40px] shadow-2xl">

@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SmoothScrollProvider from "@/components/SmoothScroll";
 
-export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
+export default function LayoutWrapper({ children, settings }: { children: React.ReactNode, settings: any }) {
   const pathname = usePathname();
   
   // Hide main Website UI elements when in the admin area
@@ -17,9 +17,9 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
 
   return (
     <SmoothScrollProvider>
-      <Navbar />
+      <Navbar settings={settings} />
       <main>{children}</main>
-      <Footer />
+      <Footer settings={settings} />
     </SmoothScrollProvider>
   );
 }
