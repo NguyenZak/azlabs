@@ -1,130 +1,74 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+import { Carousel, Card } from "@/components/ui/apple-cards-carousel";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
-import Link from "next/link";
+import AnimatedText from "@/components/AnimatedText";
+
+const ProjectContent = ({ project, language }: { project: any, language: string }) => {
+  const details = language === "vi" ? project.details_vi : project.details_en;
+  return (
+    <div className="bg-[#F5F5F7] dark:bg-neutral-800 p-8 md:p-14 rounded-3xl mb-4">
+      <p className="text-neutral-600 dark:text-neutral-400 text-base md:text-2xl max-w-3xl mx-auto">
+        <span className="font-bold text-neutral-700 dark:text-neutral-200">
+          {language === "vi" ? project.title_vi : project.title_en}
+        </span>{" "}
+        {details || (language === "vi" ? "Đang cập nhật nội dung chi tiết cho dự án này..." : "Detailed content for this project is being updated...")}
+      </p>
+      {project.image_url && (
+        <img
+          src={project.image_url}
+          alt={language === "vi" ? project.title_vi : project.title_en}
+          className="md:w-3/4 h-full w-full mx-auto object-cover mt-10 rounded-3xl shadow-2xl"
+        />
+      )}
+    </div>
+  );
+};
 
 export default function Portfolio({ data = [] }: { data?: any[] }) {
   const { dict, language } = useLanguage();
+  const [mounted, setMounted] = React.useState(false);
 
-  const finalProjects = data.length > 0
-    ? data.map((item) => ({
-        id: item.id,
-        title: language === "vi" ? item.title_vi : item.title_en,
-        category: language === "vi" ? item.category_vi : item.category_en,
-        image: item.image_url,
-      }))
-    : dict.projects.items;
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  const finalProjects = data.length > 0 ? data : [];
+
+  const cards = finalProjects.map((project, index) => ({
+    category: language === "vi" ? project.category_vi : project.category_en,
+    title: language === "vi" ? project.title_vi : project.title_en,
+    src: project.image_url,
+    content: <ProjectContent project={project} language={language} />,
+  }));
+
+  const carouselItems = cards.map((card, index) => (
+    <Card key={card.src + index} card={card} index={index} layout={true} />
+  ));
 
   return (
-    <section id="projects" className="section-spacing bg-white">
-      <div className="max-w-[1440px] mx-auto px-6 md:px-12">
-        <div className="mb-20">
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-[40px] md:text-[56px] leading-tight mb-6 font-bold tracking-tight"
-          >
-            {dict.projects.title}
-          </motion.h2>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-apple-text-secondary text-lg max-w-2xl leading-relaxed"
-          >
+    <section id="projects" className="py-32 bg-[#f5f5f7] overflow-hidden">
+      <div className="max-w-[1440px] mx-auto">
+        <div className="px-6 md:px-12 mb-10">
+          <h2 className="text-[40px] md:text-[56px] font-bold text-apple-text tracking-tight mb-4">
+            <AnimatedText text={dict.projects.title} effect="random" />
+          </h2>
+          <p className="text-apple-text-secondary text-lg md:text-xl max-w-2xl leading-relaxed">
             {dict.projects.subtitle}
-          </motion.p>
-        </div>
-
-        <motion.div 
-          variants={{
-            hidden: { opacity: 0 },
-            visible: {
-              opacity: 1,
-              transition: {
-                staggerChildren: 0.1,
-                delayChildren: 0.1,
-              }
-            }
-          }}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          className="grid grid-cols-1 md:grid-cols-12 gap-8"
-        >
-          {finalProjects.map((project: any, index: number) => (
-            <Link
-              key={index}
-              href={project.id ? `/projects/${project.id}` : "/projects"}
-              className={`md:col-span-${index === 0 || index === 3 ? "7" : "5"}`}
-            >
-              <motion.div
-                variants={{
-                  hidden: { opacity: 0, y: 30 },
-                  visible: { 
-                    opacity: 1, 
-                    y: 0,
-                    transition: {
-                      type: "spring",
-                      stiffness: 80,
-                      damping: 15
-                    }
-                  }
-                }}
-                className="group relative overflow-hidden rounded-[40px] bg-apple-bg-secondary cursor-pointer aspect-[4/3] md:aspect-auto md:h-[600px] w-full"
-              >
-                <motion.img
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  src={project.image}
-                  alt={project.title}
-                  className="w-full h-full object-cover"
-                />
-                
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
-                
-                {/* Content */}
-                <div className="absolute inset-0 p-10 flex flex-col justify-end transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                  <div className="overflow-hidden">
-                    <p className="text-white/70 text-sm font-bold uppercase tracking-[0.2em] mb-3 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 delay-100">
-                      {project.category}
-                    </p>
-                  </div>
-                  <div className="overflow-hidden">
-                    <h3 className="text-3xl md:text-4xl font-bold text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 delay-200">
-                      {project.title}
-                    </h3>
-                  </div>
-                  
-                  <div className="mt-8 overflow-hidden">
-                    <div className="flex items-center gap-2 text-white font-medium transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 delay-300">
-                      <span className="w-10 h-[1px] bg-white/50" />
-                      View Case Study
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </Link>
-          ))}
-        </motion.div>
-        
-        <div className="mt-24 text-center">
-          <Link href="/projects">
-            <motion.button 
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-apple-text text-white px-12 py-5 rounded-full text-lg font-bold hover:bg-apple-accent transition-all shadow-xl hover:shadow-apple-accent/20"
-            >
-              {dict.projects.viewAll}
-            </motion.button>
-          </Link>
+          </p>
         </div>
       </div>
+      
+      {carouselItems.length > 0 ? (
+        <Carousel items={carouselItems} />
+      ) : (
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-20 text-center text-apple-text-secondary">
+          No projects found.
+        </div>
+      )}
     </section>
   );
 }

@@ -4,10 +4,13 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
+import AnimatedText from "@/components/AnimatedText";
+
 export default function About({ data }: { data: any }) {
   const { dict, language } = useLanguage();
 
   const title = data?.[`title_${language}`] || "Beyond code.<br />We build legacy.";
+  const plainTitle = title.replace(/<br\s*\/?>/gi, " ");
   const subtitle = data?.[`subtitle_${language}`] || "Our Philosophy";
   const description = data?.[`description_${language}`] || "AZLABS is a technology-driven digital studio focused on creating world-class digital products and premium user experiences. We believe that technology should be as beautiful as it is functional.";
   const quote = data?.[`quote_${language}`] || "Precision is not an act, it's a habit.";
@@ -31,13 +34,9 @@ export default function About({ data }: { data: any }) {
             >
                 {subtitle}
             </motion.span>
-            <motion.h2 
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1 }}
-                className="text-[40px] md:text-[64px] leading-[1.1] text-apple-text"
-                dangerouslySetInnerHTML={{ __html: title }}
-            />
+            <h2 className="text-[40px] md:text-[64px] leading-[1.1] text-apple-text">
+                <AnimatedText text={plainTitle} effect="random" />
+            </h2>
             <motion.p 
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}

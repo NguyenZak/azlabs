@@ -46,8 +46,10 @@ export default function TechStackAdmin() {
   const [formData, setFormData] = useState({
     id: "",
     name: "",
+    slug: "",
     logo_url: "",
-    category: "Frontend"
+    category: "Frontend",
+    order_index: 0
   });
 
   const handleOpenModal = (tech: any = null) => {
@@ -56,12 +58,14 @@ export default function TechStackAdmin() {
       setFormData({
         id: tech.id,
         name: tech.name,
+        slug: tech.slug || "",
         logo_url: tech.logo_url || "",
-        category: tech.category || "Frontend"
+        category: tech.category || "Frontend",
+        order_index: tech.order_index || 0
       });
     } else {
       setCurrentTech(null);
-      setFormData({ id: "", name: "", logo_url: "", category: "Frontend" });
+      setFormData({ id: "", name: "", slug: "", logo_url: "", category: "Frontend", order_index: 0 });
     }
     setIsModalOpen(true);
   };
@@ -127,7 +131,13 @@ export default function TechStackAdmin() {
               >
                 <div className="w-12 h-12 flex items-center justify-center mb-1">
                   {tech.logo_url ? (
-                    <img src={tech.logo_url} alt={tech.name} className="max-w-full max-h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-500" />
+                    <img 
+                      src={tech.logo_url.startsWith('<svg') 
+                        ? `data:image/svg+xml;base64,${typeof window === 'undefined' ? Buffer.from(tech.logo_url).toString('base64') : window.btoa(unescape(encodeURIComponent(tech.logo_url)))}` 
+                        : tech.logo_url} 
+                      alt={tech.name} 
+                      className="max-w-full max-h-full object-contain transition-all duration-500" 
+                    />
                   ) : (
                     <Cpu className="w-8 h-8 text-gray-300" />
                   )}
@@ -178,15 +188,41 @@ export default function TechStackAdmin() {
 
                 <div className="space-y-6">
                   {/* Name */}
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-apple-text-secondary ml-1">Technology Name</label>
-                    <input
-                      type="text"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-6 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all font-bold"
-                      placeholder="e.g. Next.js, OpenAI, Kubernetes"
-                    />
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-apple-text-secondary ml-1">Name</label>
+                      <input
+                        type="text"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        className="w-full px-6 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all font-bold"
+                        placeholder="e.g. Next.js"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-apple-text-secondary ml-1">Icon Slug / Link</label>
+                      <input
+                        type="text"
+                        value={formData.slug}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setFormData({ ...formData, slug: val });
+                          if (val) {
+                            if (val.includes(".") && (val.includes("/") || val.length > 5)) {
+                              // Domain logic
+                              const domain = val.replace("https://", "").replace("http://", "").split("/")[0];
+                              setFormData(prev => ({ ...prev, logo_url: `https://logo.clearbit.com/${domain}` }));
+                            } else {
+                              // Simple Icons logic
+                              const slug = val.toLowerCase().replace(/ /g, "").replace(/\./g, "dot");
+                              setFormData(prev => ({ ...prev, logo_url: `https://cdn.simpleicons.org/${slug}` }));
+                            }
+                          }
+                        }}
+                        className="w-full px-6 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all font-bold"
+                        placeholder="nextdotjs or google.com"
+                      />
+                    </div>
                   </div>
 
                   {/* Category */}
@@ -201,23 +237,55 @@ export default function TechStackAdmin() {
                     </select>
                   </div>
 
-                  {/* Logo Upload */}
+                  {/* Logo URL / Manual */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-apple-text-secondary ml-1">Logo URL / Raw SVG</label>
+                      <textarea
+                        value={formData.logo_url}
+                        onChange={(e) => setFormData({ ...formData, logo_url: e.target.value })}
+                        className="w-full px-4 py-3 bg-[#f5f5f7] border-none rounded-xl text-xs font-mono h-20 resize-none"
+                        placeholder="Paste URL or raw <svg> code here..."
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-apple-text-secondary ml-1">Order</label>
+                      <input
+                        type="number"
+                        value={formData.order_index}
+                        onChange={(e) => setFormData({ ...formData, order_index: parseInt(e.target.value) || 0 })}
+                        className="w-full px-6 py-3 bg-[#f5f5f7] border-none rounded-xl font-bold"
+                        placeholder="0"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Logo Preview & Upload */}
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-apple-text-secondary ml-1">Logo (Cloudinary)</label>
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-apple-text-secondary ml-1">Visual Preview</label>
                     <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 bg-[#f5f5f7] rounded-2xl flex items-center justify-center border border-apple-border overflow-hidden">
+                      <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center border border-apple-border shadow-inner overflow-hidden p-4 group-hover:shadow-lg transition-all">
                         {formData.logo_url ? (
-                          <img src={formData.logo_url} className="w-full h-full object-contain p-2" />
+                          <img 
+                            src={formData.logo_url.startsWith('<svg') 
+                              ? `data:image/svg+xml;base64,${typeof window === 'undefined' ? Buffer.from(formData.logo_url).toString('base64') : window.btoa(unescape(encodeURIComponent(formData.logo_url)))}` 
+                              : formData.logo_url} 
+                            className="w-full h-full object-contain" 
+                            onError={(e) => (e.currentTarget.src = "https://placehold.co/100x100?text=Error")}
+                          />
                         ) : (
-                          <ImageIcon className="w-6 h-6 text-gray-300" />
+                          <ImageIcon className="w-8 h-8 text-gray-200" />
                         )}
                       </div>
-                      <button
-                        onClick={() => setIsUploadModalOpen(true)}
-                        className="flex-1 px-6 py-4 bg-white border border-apple-border rounded-2xl font-bold text-sm hover:bg-gray-50 transition-all text-center"
-                      >
-                        Upload Logo
-                      </button>
+                      <div className="flex-1 space-y-2">
+                        <p className="text-[11px] text-apple-text-secondary">Paste a link to a website or a SimpleIcon slug above. We'll try to find the logo automatically.</p>
+                        <button
+                          onClick={() => setIsUploadModalOpen(true)}
+                          className="w-full px-4 py-3 bg-[#f5f5f7] border border-apple-border rounded-xl font-bold text-xs hover:bg-gray-100 transition-all flex items-center justify-center gap-2"
+                        >
+                          <ImageIcon className="w-4 h-4" /> Custom Upload (Cloudinary)
+                        </button>
+                      </div>
 
                       <MediaPicker 
                         isOpen={isUploadModalOpen}

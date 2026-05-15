@@ -5,37 +5,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import Link from "next/link";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
-import { FuturisticGlobe } from "@/components/FuturisticGlobe";
+import { Antigravity } from "@/components/Antigravity";
 
 import { useMotionValue, useTransform, animate } from "framer-motion";
 
-const SoftBlurHeadline = ({ text }: { text: string }) => {
-  const characters = text.split("");
-
-  return (
-    <motion.h1
-      className="text-[42px] md:text-[72px] lg:text-[84px] font-bold tracking-tight leading-[1.1] text-[#1d1d1f] max-w-[1000px] mx-auto text-center"
-      key={text}
-    >
-      {characters.map((char, index) => (
-        <motion.span
-          key={`${text}-${index}`}
-          initial={{ opacity: 0, y: 16, filter: "blur(12px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          exit={{ opacity: 0, y: -16, filter: "blur(12px)" }}
-          transition={{
-            duration: 0.9,
-            ease: [0.22, 1, 0.36, 1],
-            delay: index * 0.025,
-          }}
-          className="inline-block whitespace-pre"
-        >
-          {char}
-        </motion.span>
-      ))}
-    </motion.h1>
-  );
-};
+import AnimatedText from "@/components/AnimatedText";
 
 export default function Hero({ slides = [] }: { slides?: any[] }) {
   const { dict, language } = useLanguage();
@@ -75,9 +49,17 @@ export default function Hero({ slides = [] }: { slides?: any[] }) {
 
   return (
     <section className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-white px-6">
-      {/* Premium 3D Tech Globe */}
+      {/* Premium Interactive Particles */}
       <div className="absolute inset-0 z-0">
-        <FuturisticGlobe />
+        <Antigravity
+          color={["#3186FF", "#FC413D", "#FBBC04", "#00B95C"]}
+          count={500}
+          particleSize={0.75}
+          magnetRadius={15}
+          lerpSpeed={0.03}
+          fieldStrength={20}
+          autoAnimate={true}
+        />
       </div>
 
       <div className="relative z-10 text-center max-w-[1200px] mx-auto">
@@ -108,7 +90,9 @@ export default function Hero({ slides = [] }: { slides?: any[] }) {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className="mb-8 min-h-[160px] md:min-h-[200px]">
-              <SoftBlurHeadline text={title} />
+              <h1 className="text-[42px] md:text-[72px] lg:text-[84px] font-bold tracking-tight leading-[1.1] text-[#1d1d1f] max-w-[1000px] mx-auto text-center">
+                <AnimatedText text={title} effect="random" key={title} />
+              </h1>
             </div>
 
             <p className="text-lg md:text-xl text-apple-text-secondary max-w-2xl mx-auto mb-12 font-medium leading-relaxed opacity-80">

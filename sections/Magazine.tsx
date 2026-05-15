@@ -6,6 +6,8 @@ import Link from "next/link";
 import { ArrowRight, Calendar, Clock } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
+import AnimatedText from "@/components/AnimatedText";
+
 export default function Magazine({ posts = [] }: { posts?: any[] }) {
   const { language } = useLanguage();
 
@@ -25,22 +27,18 @@ export default function Magazine({ posts = [] }: { posts?: any[] }) {
     });
 
   return (
-    <section id="magazine" className="section-spacing bg-[#fbfbfd]">
+    <section id="magazine" className="py-32 bg-white">
       <div className="max-w-[1440px] mx-auto px-6 md:px-12">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-20">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
+          <div>
             <span className="text-apple-accent font-bold tracking-[0.2em] uppercase text-sm mb-4 block">
               Magazine
             </span>
             <h2 className="text-[48px] md:text-[64px] font-bold tracking-tight leading-[1.1] text-apple-text">
-              {language === "en" ? "Insights & Ideas" : "Bài viết & Kiến thức"}
+              <AnimatedText text={language === "en" ? "Insights & Ideas" : "Bài viết & Kiến thức"} effect="random" />
             </h2>
-          </motion.div>
+          </div>
 
           <motion.div
             initial={{ opacity: 0 }}

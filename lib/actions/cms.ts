@@ -325,8 +325,10 @@ export async function upsertTech(formData: any) {
     .upsert({
       id: formData.id || undefined,
       name: formData.name,
+      slug: formData.slug || "",
       logo_url: formData.logo_url,
       category: formData.category,
+      order_index: formData.order_index || 0,
       updated_at: new Date().toISOString(),
     })
     .select()

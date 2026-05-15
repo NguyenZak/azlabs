@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Geist } from "next/font/google";
 import "@/styles/globals.css";
 import SmoothScrollProvider from "@/components/SmoothScroll";
 import Navbar from "@/components/Navbar";
@@ -18,6 +18,10 @@ import { Toaster } from "react-hot-toast";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+
 
 export async function generateMetadata(): Promise<Metadata> {
   const cookieStore = await cookies();
@@ -44,7 +48,7 @@ export default async function RootLayout({
   const supabase = createClient(cookieStore);
   const { data: settings } = await supabase.from("site_settings").select("*").maybeSingle();
   return (
-    <html lang="en" className={`${inter.variable}`}>
+    <html lang="en" className={cn(inter.variable, "font-sans", geist.variable)}>
       <body className="antialiased">
         <LanguageProvider>
           <AnalyticsTracker />

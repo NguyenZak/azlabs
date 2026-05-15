@@ -24,6 +24,8 @@ const bentoClasses = [
   "lg:col-span-1 lg:row-span-1", // Cloud
 ];
 
+import AnimatedText from "@/components/AnimatedText";
+
 export default function Services({ data = [] }: { data?: any[] }) {
   const { dict, language } = useLanguage();
   const containerRef = useRef(null);
@@ -44,30 +46,22 @@ export default function Services({ data = [] }: { data?: any[] }) {
       }));
 
   return (
-    <section id="services" className="py-32 bg-white overflow-hidden">
-      <div className="max-w-[1440px] mx-auto px-6">
+    <section id="services" className="py-32 bg-white overflow-hidden border-t border-apple-border">
+      <div className="max-w-[1440px] mx-auto px-6 md:px-12">
         {/* Header Section */}
-        <div className="flex flex-col lg:flex-row justify-between items-end gap-8 mb-24">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-3xl"
-          >
-            <h2 className="text-[56px] md:text-[80px] font-bold tracking-tighter leading-[0.9] text-apple-text mb-8">
-              {dict.services.title.split(" ").slice(0, 1).join(" ")}<br />
-              {dict.services.title.split(" ").slice(1).join(" ")}
+        <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-20">
+          <div className="max-w-4xl">
+            <h2 className="text-[48px] md:text-[64px] font-bold tracking-tight leading-[1.1] text-apple-text mb-6">
+              <AnimatedText text={dict.services.title} effect="random" />
             </h2>
-            <p className="text-xl md:text-2xl text-apple-text-secondary leading-relaxed font-light">
+            <p className="text-xl md:text-2xl text-apple-text-secondary leading-snug font-medium max-w-2xl opacity-90">
               {dict.services.subtitle}
             </p>
-          </motion.div>
+          </div>
           
-          <Link href="/services" className="group flex items-center gap-4 text-lg font-bold text-apple-text">
-            Explore All Services
-            <div className="w-12 h-12 rounded-full border border-apple-border flex items-center justify-center group-hover:bg-apple-text group-hover:text-white transition-all">
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </div>
+          <Link href="/services" className="group flex items-center gap-2 text-apple-accent font-bold hover:underline underline-offset-4 transition-all">
+            {language === "vi" ? "Khám phá tất cả dịch vụ" : "Explore All Services"}
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 

@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS tech_stack (
     name TEXT NOT NULL,
     slug TEXT NOT NULL, -- For simpleicons or local icons
     logo_url TEXT, -- Optional Cloudinary override
+    category TEXT, -- Frontend, Backend, etc.
     order_index INTEGER DEFAULT 0
 );
 

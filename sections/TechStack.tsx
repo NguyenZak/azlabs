@@ -110,31 +110,47 @@ const NeuralBackground = () => {
   return <canvas ref={canvasRef} className="absolute inset-0 z-0 opacity-40 pointer-events-none" />;
 };
 
+import AnimatedText from "@/components/AnimatedText";
+
 export default function TechStack({ data = [] }: { data?: any[] }) {
+  const [mounted, setMounted] = React.useState(false);
+  
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const displayLogos = data.length > 0 ? data : techLogos;
+
+  if (!mounted) return null;
+
   return (
     <section id="solutions" className="py-32 bg-white overflow-hidden relative">
       <NeuralBackground />
       
       <div className="max-w-[1440px] mx-auto px-6 relative z-10 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="mb-24"
-        >
+        <div className="mb-24">
           <h2 className="text-[48px] md:text-[72px] font-bold tracking-tighter leading-none text-apple-text mb-6">
-            Powered by world-class tech.
+            <AnimatedText text="Powered by world-class tech." effect="random" />
           </h2>
           <p className="text-lg md:text-xl text-apple-text-secondary max-w-2xl mx-auto font-light">
             Building the future with industry-leading infrastructure.
           </p>
-        </motion.div>
+        </div>
 
         {/* Extreme Organic Logo Universe */}
         <div className="relative h-[600px] md:h-[800px] w-full max-w-7xl mx-auto">
           {displayLogos.map((tech, index) => {
-            const logoUrl = tech.logo_url || `https://cdn.simpleicons.org/${tech.slug}/000000`;
+            const logoUrlRaw = tech.logo_url || `https://cdn.simpleicons.org/${tech.slug}/000000`;
+            // Safe base64 encoding for both Node.js (SSR) and Browser (Client)
+            const toBase64 = (str: string) => {
+              if (typeof window === 'undefined') return Buffer.from(str).toString('base64');
+              return window.btoa(unescape(encodeURIComponent(str)));
+            };
+
+            const logoUrl = logoUrlRaw.startsWith('<svg') 
+              ? `data:image/svg+xml;base64,${toBase64(logoUrlRaw)}`
+              : logoUrlRaw;
+              
             const techName = tech.name;
             // Highly differentiated sizes
             const sizes = [
@@ -215,7 +231,7 @@ export default function TechStack({ data = [] }: { data?: any[] }) {
                 <img 
                   src={logoUrl} 
                   alt={techName}
-                  className="h-1/3 md:h-1/2 w-auto opacity-40 group-hover:opacity-100 transition-all duration-500 grayscale group-hover:grayscale-0"
+                  className="h-1/3 md:h-1/2 w-auto opacity-50 group-hover:opacity-100 transition-all duration-500"
                 />
                 
                 {/* Float Tooltip */}
