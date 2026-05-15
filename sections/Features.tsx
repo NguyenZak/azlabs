@@ -16,7 +16,7 @@ interface Feature {
 }
 
 export default function Features({ data }: { data: Feature[] }) {
-  const { language, t } = useLanguage();
+  const { language } = useLanguage();
   
   if (!data || data.length === 0) return null;
 
