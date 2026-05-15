@@ -1,0 +1,208 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'SF Pro Display';
+  src: url('/fonts/SF-Pro-Display/v3/sf-pro-display_regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SF Pro Display';
+  src: url('/fonts/SF-Pro-Display/v3/sf-pro-display_semibold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SF Pro Display';
+  src: url('/fonts/SF-Pro-Display/v3/sf-pro-display_bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SF Pro Text';
+  src: url('/fonts/SF-Pro-Text/v3/sf-pro-text_light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SF Pro Text';
+  src: url('/fonts/SF-Pro-Text/v3/sf-pro-text_regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SF Pro Text';
+  src: url('/fonts/SF-Pro-Text/v3/sf-pro-text_semibold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SF Pro Text';
+  src: url('/fonts/SF-Pro-Text/v3/sf-pro-text_bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SF Pro Icons';
+  src: url('/fonts/SF-Pro-Icons/v3/sf-pro-icons_regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SF Pro Icons';
+  src: url('/fonts/SF-Pro-Icons/v3/sf-pro-icons_light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --color-apple-bg: #FFFFFF;
+  --color-apple-bg-secondary: #F5F5F7;
+  --color-apple-bg-dark: #000000;
+  --color-apple-text: #1D1D1F;
+  --color-apple-text-secondary: #6E6E73;
+  --color-apple-accent: #0071E3;
+  --color-apple-accent-hover: #0077ED;
+  --color-apple-border: rgba(0,0,0,0.08);
+
+  --font-apple: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  
+  --radius-apple: 32px;
+  --radius-apple-card: 36px;
+  --radius-apple-sm: 28px;
+  
+  --animate-fade-in: fade-in 0.8s ease-out forwards;
+  --animate-slide-up: slide-up 0.8s ease-out forwards;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #1D1D1F;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-apple);
+  font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Glassmorphism utility */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-dark {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Smooth scrolling - Lenis */
+html.lenis {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+/* Apple-style typography */
+h1 {
+  letter-spacing: -0.03em;
+  font-weight: 600;
+}
+
+h2, h3, h4, h5, h6 {
+  letter-spacing: -0.02em;
+  font-weight: 600;
+}
+
+.hero-title {
+  font-size: clamp(36px, 8vw, 72px);
+  line-height: 1.05;
+  font-weight: 600;
+}
+
+.section-spacing {
+  padding-top: 120px;
+  padding-bottom: 120px;
+}
+
+@media (max-width: 1024px) {
+  .section-spacing {
+    padding-top: 80px;
+    padding-bottom: 80px;
+  }
+}
+
+@media (max-width: 768px) {
+  .section-spacing {
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+}

@@ -1,0 +1,323 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  Plus, 
+  Trash2, 
+  Edit3, 
+  Save, 
+  X, 
+  Loader2, 
+  Sparkles, 
+  Image as ImageIcon,
+  ArrowLeft,
+  ChevronRight,
+  Globe,
+  Box
+} from "lucide-react";
+import { getServices, upsertService, deleteService } from "@/lib/actions/cms";
+import MediaPicker from "@/components/admin/MediaPicker";
+import toast from "react-hot-toast";
+
+export default function ServicesAdmin() {
+  const [services, setServices] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
+  
+  const [formData, setFormData] = useState({
+    id: undefined,
+    title_en: "",
+    title_vi: "",
+    description_en: "",
+    description_vi: "",
+    image_url: "",
+    features_en: [] as string[],
+    features_vi: [] as string[],
+  });
+
+  useEffect(() => {
+    loadServices();
+  }, []);
+
+  const loadServices = async () => {
+    setLoading(true);
+    try {
+      const data = await getServices();
+      setServices(data);
+    } catch (error) {
+      toast.error("Failed to load services");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleStartEdit = (service?: any) => {
+    if (service) {
+      setFormData({
+        ...service,
+        features_en: service.features_en || [],
+        features_vi: service.features_vi || [],
+      });
+    } else {
+      setFormData({
+        id: undefined,
+        title_en: "",
+        title_vi: "",
+        description_en: "",
+        description_vi: "",
+        image_url: "",
+        features_en: [],
+        features_vi: [],
+      });
+    }
+    setIsEditing(true);
+  };
+
+  const handleSubmit = async () => {
+    if (!formData.title_en || !formData.title_vi) return toast.error("Titles are required");
+    setIsSubmitting(true);
+    try {
+      await upsertService(formData);
+      toast.success("Service saved successfully");
+      setIsEditing(false);
+      loadServices();
+    } catch (error) {
+      toast.error("Failed to save service");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure?")) return;
+    try {
+      await deleteService(id);
+      toast.success("Service deleted");
+      loadServices();
+    } catch (error) {
+      toast.error("Failed to delete");
+    }
+  };
+
+  const handleSeed = async () => {
+    setIsSubmitting(true);
+    const samples = [
+      {
+        title_en: "Next-Gen Web Platforms",
+        title_vi: "Nền tảng Web Thế hệ mới",
+        description_en: "Ultra-fast, cinematic web experiences built with Next.js 15 and edge computing.",
+        description_vi: "Trải nghiệm web điện ảnh, siêu nhanh được xây dựng với Next.js 15 và edge computing.",
+        image_url: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1000&auto=format&fit=crop", // Cyber security / Tech
+        features_en: ["Edge Runtime", "Real-time Sync", "Ultra UX"],
+        features_vi: ["Edge Runtime", "Đồng bộ Real-time", "Trải nghiệm Ultra"]
+      },
+      {
+        title_en: "Advanced AI Core",
+        title_vi: "Lõi AI Nâng cao",
+        description_en: "Proprietary AI pipelines for autonomous content generation and intelligent data analysis.",
+        description_vi: "Quy trình AI độc quyền để tạo nội dung tự động và phân tích dữ liệu thông minh.",
+        image_url: "https://images.unsplash.com/photo-1676299081847-824916de030a?q=80&w=1000&auto=format&fit=crop", // Abstract AI / Neural
+        features_en: ["Custom LLMs", "Neural Networks", "Cognitive API"],
+        features_vi: ["LLM Tùy chỉnh", "Mạng lưới Thần kinh", "API Nhận thức"]
+      },
+      {
+        title_en: "Digital Ecosystems",
+        title_vi: "Hệ sinh thái Kỹ thuật số",
+        description_en: "Fully integrated cloud infrastructures that scale infinitely with your business.",
+        description_vi: "Cơ sở hạ tầng đám mây tích hợp đầy đủ, có khả năng mở rộng vô hạn cùng doanh nghiệp.",
+        image_url: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1000&auto=format&fit=crop", // Global data flow
+        features_en: ["Global CDN", "Microservices", "Zero-Trust"],
+        features_vi: ["CDN Toàn cầu", "Microservices", "Bảo mật Zero-Trust"]
+      }
+    ];
+
+    try {
+      for (const sample of samples) {
+        await upsertService(sample);
+      }
+      toast.success("Successfully seeded 3 premium services!");
+      loadServices();
+    } catch (error) {
+      toast.error("Failed to seed data");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (isEditing) {
+    return (
+      <div className="min-h-screen -m-12 bg-white">
+        <header className="px-12 py-6 border-b border-apple-border flex justify-between items-center sticky top-0 bg-white/80 backdrop-blur-md z-10">
+          <div className="flex items-center gap-6">
+            <button onClick={() => setIsEditing(false)} className="p-2 hover:bg-[#f5f5f7] rounded-full transition-all">
+              <ArrowLeft className="w-6 h-6" />
+            </button>
+            <h1 className="text-2xl font-bold tracking-tight">
+              {formData.id ? "Edit Service" : "New Service"}
+            </h1>
+          </div>
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => setIsEditing(false)} 
+              className="px-6 py-2.5 text-apple-text-secondary font-bold hover:bg-[#f5f5f7] rounded-full transition-all"
+            >
+              Cancel
+            </button>
+            <button 
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+              className="px-8 py-2.5 bg-black text-white rounded-full font-bold shadow-xl hover:opacity-90 transition-all flex items-center gap-2 disabled:opacity-50"
+            >
+              {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              Save Service
+            </button>
+          </div>
+        </header>
+
+        <div className="max-w-5xl mx-auto p-20 grid grid-cols-1 lg:grid-cols-3 gap-20">
+          <aside className="space-y-8">
+            <div>
+              <label className="text-[10px] font-black uppercase tracking-widest text-apple-text-secondary mb-4 block">Service Banner</label>
+              <div 
+                onClick={() => setIsMediaPickerOpen(true)}
+                className="aspect-[4/3] bg-[#f5f5f7] rounded-[40px] border-2 border-dashed border-apple-border flex flex-col items-center justify-center gap-4 cursor-pointer hover:bg-gray-50 overflow-hidden relative group"
+              >
+                {formData.image_url ? (
+                  <>
+                    <img src={formData.image_url} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <span className="bg-white/90 backdrop-blur px-4 py-2 rounded-full text-xs font-bold shadow-xl">Change Media</span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm">
+                      <ImageIcon className="w-8 h-8 text-apple-accent" />
+                    </div>
+                    <span className="text-[10px] font-bold text-gray-400 uppercase mt-2">Pick from Media</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </aside>
+
+          <div className="lg:col-span-2 space-y-12">
+            <section className="space-y-8">
+              <h2 className="text-sm font-black uppercase tracking-widest text-apple-text-secondary">Core Information</h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-3">
+                  <label className="text-xs font-bold text-apple-text px-1">Service Title (EN)</label>
+                  <input type="text" value={formData.title_en} onChange={(e) => setFormData({ ...formData, title_en: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent text-lg font-bold" placeholder="e.g. Mobile Development" />
+                </div>
+                <div className="space-y-3">
+                  <label className="text-xs font-bold text-apple-text px-1">Tiêu đề (VI)</label>
+                  <input type="text" value={formData.title_vi} onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent text-lg font-bold" placeholder="VD: Phát triển di động" />
+                </div>
+              </div>
+
+              <div className="space-y-8 pt-4">
+                <div className="space-y-3">
+                  <label className="text-xs font-bold text-apple-text px-1">Description (EN)</label>
+                  <textarea rows={4} value={formData.description_en} onChange={(e) => setFormData({ ...formData, description_en: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent resize-none leading-relaxed" placeholder="Brief overview of what you offer..." />
+                </div>
+                <div className="space-y-3">
+                  <label className="text-xs font-bold text-apple-text px-1">Mô tả (VI)</label>
+                  <textarea rows={4} value={formData.description_vi} onChange={(e) => setFormData({ ...formData, description_vi: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent resize-none leading-relaxed" placeholder="Mô tả ngắn gọn về dịch vụ..." />
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <MediaPicker 
+          isOpen={isMediaPickerOpen}
+          onClose={() => setIsMediaPickerOpen(false)}
+          onSelect={(url) => setFormData({ ...formData, image_url: url })}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-12">
+      <header className="flex justify-between items-end">
+        <div>
+          <h1 className="text-5xl font-bold tracking-tight text-apple-text">AZLABS Services</h1>
+          <p className="text-apple-text-secondary mt-4 text-lg">Define your professional expertise and value propositions.</p>
+        </div>
+        <div className="flex gap-4">
+          <button 
+            onClick={handleSeed}
+            disabled={isSubmitting}
+            className="flex items-center gap-3 px-8 py-4 bg-white text-apple-accent border-2 border-apple-accent rounded-full font-bold hover:bg-apple-accent hover:text-white transition-all shadow-xl"
+          >
+            {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
+            Seed Samples
+          </button>
+          <button 
+            onClick={() => handleStartEdit()}
+            className="flex items-center gap-3 px-8 py-4 bg-black text-white rounded-full font-bold hover:scale-105 transition-all shadow-2xl"
+          >
+            <Plus className="w-5 h-5" /> Add Service
+          </button>
+        </div>
+      </header>
+
+      {loading ? (
+        <div className="py-40 flex flex-col items-center gap-4">
+          <Loader2 className="w-10 h-10 animate-spin text-apple-accent" />
+          <p className="text-apple-text-secondary font-medium animate-pulse">Scanning service catalog...</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-6">
+          {services.map((service) => (
+            <div 
+              key={service.id}
+              onClick={() => handleStartEdit(service)}
+              className="group bg-white p-8 rounded-[40px] border border-apple-border flex items-center gap-10 hover:shadow-2xl transition-all cursor-pointer hover:border-black/5"
+            >
+              <div className="w-32 h-32 bg-[#f5f5f7] rounded-[32px] overflow-hidden flex-shrink-0 border border-apple-border group-hover:scale-105 transition-transform duration-500">
+                {service.image_url ? (
+                  <img src={service.image_url} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Box className="w-10 h-10 text-gray-300" />
+                  </div>
+                )}
+              </div>
+              
+              <div className="flex-1">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-2xl font-bold text-apple-text">{service.title_en}</h3>
+                  <ChevronRight className="w-6 h-6 text-apple-text-secondary group-hover:translate-x-2 transition-transform" />
+                </div>
+                <p className="text-apple-text-secondary text-base line-clamp-1 max-w-3xl font-medium mb-4">{service.title_vi}</p>
+                <div className="flex gap-2">
+                  {(service.features_en || []).slice(0, 3).map((f: string, i: number) => (
+                    <span key={i} className="px-3 py-1 bg-[#f5f5f7] rounded-full text-[10px] font-bold text-apple-text-secondary uppercase tracking-wider">{f}</span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity pr-6">
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(service.id);
+                  }} 
+                  className="p-4 hover:bg-red-50 text-red-400 rounded-2xl transition-all"
+                >
+                  <Trash2 className="w-6 h-6" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
