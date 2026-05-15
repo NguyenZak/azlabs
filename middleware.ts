@@ -6,16 +6,41 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Protect /adminaz routes
+  // 🛡️ Security Headers
+  response.headers.set('X-Frame-Options', 'DENY')
+  response.headers.set('X-Content-Type-Options', 'nosniff')
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
+
+  // 🔐 Admin Routes Protection
   if (request.nextUrl.pathname.startsWith('/adminaz')) {
-    // Allow access to login page even if not logged in
-    if (!user && request.nextUrl.pathname !== '/adminaz/login') {
-      return NextResponse.redirect(new URL('/adminaz/login', request.url))
-    }
+    const isLoginPage = request.nextUrl.pathname === '/adminaz/login'
     
-    // Redirect logged in users away from login page to dashboard
-    if (user && request.nextUrl.pathname === '/adminaz/login') {
-      return NextResponse.redirect(new URL('/adminaz/dashboard', request.url))
+    if (!user) {
+      if (!isLoginPage) {
+        return NextResponse.redirect(new URL('/adminaz/login', request.url))
+      }
+    } else {
+      // Check for Admin Role (metadata-based fallback, but DB check is better)
+      const role = user.user_metadata?.role
+      const isAdmin = role === 'admin' || role === 'super_admin'
+      
+      if (!isAdmin && !isLoginPage) {
+        // Log unauthorized access attempt
+        console.warn(`🚨 Unauthorized access attempt to /adminaz by ${user.email}`)
+        return NextResponse.redirect(new URL('/', request.url))
+      }
+
+      if (isAdmin && isLoginPage) {
+        return NextResponse.redirect(new URL('/adminaz/dashboard', request.url))
+      }
+    }
+  }
+
+  // 🔐 Private API Protection
+  if (request.nextUrl.pathname.startsWith('/api/private')) {
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
   }
 

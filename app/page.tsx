@@ -8,9 +8,17 @@ import About from "@/sections/About";
 import Magazine from "@/sections/Magazine";
 import Testimonials from "@/sections/Testimonials";
 import Contact from "@/sections/Contact";
-
+import { constructMetadata } from "@/lib/seo";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
+
+export async function generateMetadata() {
+  return constructMetadata({
+    title: "Trang chủ",
+    description: "AZLABS — Digital Excellence. Chúng tôi xây dựng tương lai trải nghiệm số thông qua thiết kế đột phá và công nghệ dẫn đầu.",
+    url: "/",
+  });
+}
 
 export default async function Home() {
   const cookieStore = await cookies();

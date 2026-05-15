@@ -3,10 +3,13 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Calendar, Share2, Clock, ChevronRight } from "lucide-react";
 import Link from "next/link";
-import type { Metadata } from "next";
 import { en } from "@/lib/i18n/dictionaries/en";
 import { vi } from "@/lib/i18n/dictionaries/vi";
 import { BlogContentWrapper } from "@/components/BlogContentWrapper";
+import type { Metadata } from "next";
+import { constructMetadata } from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
+import { generateArticleSchema, generateBreadcrumbSchema } from "@/lib/schema";
 
 /* ── SEO Metadata ── */
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -15,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const supabase = createClient(cookieStore);
   const { data: post } = await supabase
     .from("posts")
-    .select("meta_title_en, meta_title_vi, meta_description_en, meta_description_vi, title_en, title_vi, excerpt_en, excerpt_vi, image_url")
+    .select("meta_title_en, meta_title_vi, meta_description_en, meta_description_vi, title_en, title_vi, excerpt_en, excerpt_vi, image_url, updated_at, published_at")
     .eq("slug", slug)
     .single();
 
@@ -25,15 +28,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const title = (lang === "en" ? post.meta_title_en || post.title_en : post.meta_title_vi || post.title_vi);
   const description = (lang === "en" ? post.meta_description_en || post.excerpt_en : post.meta_description_vi || post.excerpt_vi);
 
-  return {
+  return constructMetadata({
     title,
     description,
-    openGraph: {
-      title,
-      description,
-      images: post.image_url ? [{ url: post.image_url }] : [],
-    },
-  };
+    image: post.image_url,
+    url: `/blog/${slug}`,
+    type: "article",
+    publishedAt: post.published_at,
+    updatedAt: post.updated_at,
+  });
 }
 
 /* ── Reading time estimator ── */
@@ -80,8 +83,25 @@ export default async function BlogPostDetail({ params }: { params: Promise<{ slu
     year: "numeric",
   });
 
+  const articleSchema = generateArticleSchema({
+    title,
+    description: excerpt || "",
+    image: post.image_url || "",
+    url: `/blog/${slug}`,
+    datePublished: post.published_at || post.created_at,
+    dateModified: post.updated_at,
+  });
+
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Trang chủ", item: "/" },
+    { name: "Tạp chí", item: "/blog" },
+    { name: title, item: `/blog/${slug}` },
+  ]);
+
   return (
     <main className="min-h-screen bg-white font-apple">
+      <JsonLd data={articleSchema} />
+      <JsonLd data={breadcrumbSchema} />
       <div className="pt-32">
         <BlogContentWrapper
           title={title}

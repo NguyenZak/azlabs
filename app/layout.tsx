@@ -23,20 +23,21 @@ import { cn } from "@/lib/utils";
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 
+import { constructMetadata } from "@/lib/seo";
+import JsonLd from "@/components/JsonLd";
+import { generateOrganizationSchema, generateWebSiteSchema } from "@/lib/schema";
+
 export async function generateMetadata(): Promise<Metadata> {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
   const { data: settings } = await supabase.from("site_settings").select("*").maybeSingle();
 
-  return {
-    title: settings?.site_name || "AZLABS — Building The Future Of Digital Experience",
-    description: "AZLABS is a premium digital studio crafting world-class websites, mobile apps, and AI solutions.",
-    icons: settings?.favicon_url ? [{ rel: "icon", url: settings.favicon_url }] : [],
-    openGraph: {
-      title: settings?.site_name || "AZLABS",
-      images: settings?.logo_url ? [{ url: settings.logo_url }] : [],
-    },
-  };
+  return constructMetadata({
+    title: settings?.site_name,
+    description: settings?.default_meta_description_vi || settings?.default_meta_description_en,
+    image: settings?.default_og_image || settings?.logo_url,
+    keywords: settings?.keywords,
+  });
 }
 
 export default async function RootLayout({
@@ -47,8 +48,17 @@ export default async function RootLayout({
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
   const { data: settings } = await supabase.from("site_settings").select("*").maybeSingle();
+  
+  const orgSchema = generateOrganizationSchema();
+  const siteSchema = generateWebSiteSchema();
+
   return (
-    <html lang="en" className={cn(inter.variable, "font-sans", geist.variable)}>
+    <html lang="vi" className={cn(inter.variable, "font-sans", geist.variable)}>
+      <head>
+        <JsonLd data={orgSchema} />
+        <JsonLd data={siteSchema} />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+      </head>
       <body className="antialiased">
         <LanguageProvider>
           <AnalyticsTracker />
