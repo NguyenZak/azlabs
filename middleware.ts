@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { createClient } from './utils/supabase/middleware'
 
 export async function middleware(request: NextRequest) {
-  const { supabase, response } = await createClient(request)
+  const { supabase, response } = createClient(request)
 
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -21,12 +21,11 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL('/adminaz/login', request.url))
       }
     } else {
-      // Check for Admin Role (metadata-based fallback, but DB check is better)
       const role = user.user_metadata?.role
-      const isAdmin = role === 'admin' || role === 'super_admin'
-      
+      const adminEmails = (process.env.ADMIN_EMAILS ?? '').split(',').map(e => e.trim()).filter(Boolean)
+      const isAdmin = role === 'admin' || role === 'super_admin' || adminEmails.includes(user.email ?? '')
+
       if (!isAdmin && !isLoginPage) {
-        // Log unauthorized access attempt
         console.warn(`🚨 Unauthorized access attempt to /adminaz by ${user.email}`)
         return NextResponse.redirect(new URL('/', request.url))
       }
