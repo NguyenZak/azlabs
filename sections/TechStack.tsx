@@ -137,11 +137,11 @@ export default function TechStack({ data = [] }: { data?: any[] }) {
           </p>
         </div>
 
-        {/* Extreme Organic Logo Universe */}
+        {/* Organic Logo Universe - Stable & Visible */}
         <div className="relative h-[600px] md:h-[800px] w-full max-w-7xl mx-auto">
           {displayLogos.map((tech, index) => {
             const logoUrlRaw = tech.logo_url || `https://cdn.simpleicons.org/${tech.slug}/000000`;
-            // Safe base64 encoding for both Node.js (SSR) and Browser (Client)
+            
             const toBase64 = (str: string) => {
               if (typeof window === 'undefined') return Buffer.from(str).toString('base64');
               return window.btoa(unescape(encodeURIComponent(str)));
@@ -150,19 +150,17 @@ export default function TechStack({ data = [] }: { data?: any[] }) {
             const logoUrl = logoUrlRaw.startsWith('<svg') 
               ? `data:image/svg+xml;base64,${toBase64(logoUrlRaw)}`
               : logoUrlRaw;
-              
+               
             const techName = tech.name;
-            // Highly differentiated sizes
+
+            // Differentiated sizes for organic feel
             const sizes = [
-              "w-32 h-32 md:w-48 md:h-48 z-10", // Extra Large
-              "w-24 h-24 md:w-36 md:h-36 z-20", // Large
-              "w-20 h-20 md:w-28 md:h-28 z-30", // Medium
-              "w-12 h-12 md:w-20 md:h-20 z-0 opacity-40", // Small (background feel)
-              "w-16 h-16 md:w-24 md:h-24 z-10", // Small-Medium
+              "w-28 h-28 md:w-40 md:h-40 z-10",
+              "w-24 h-24 md:w-32 md:h-32 z-20",
+              "w-20 h-20 md:w-28 md:h-28 z-10",
+              "w-16 h-16 md:w-24 md:h-24 z-0",
             ];
             
-            // Fixed-but-random positions to ensure they don't overlap too badly on small screens
-            // while feeling "messy"
             const positions = [
               { top: "5%", left: "10%" },
               { top: "15%", left: "45%" },
@@ -188,24 +186,17 @@ export default function TechStack({ data = [] }: { data?: any[] }) {
 
             const sizeClass = sizes[index % sizes.length];
             const pos = positions[index % positions.length];
-            const rotation = (index % 3 === 0 ? 12 : index % 2 === 0 ? -8 : 5);
+            const rotation = (index % 3 === 0 ? 8 : index % 2 === 0 ? -5 : 3);
 
             return (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, scale: 0 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                animate={{
-                  y: [0, (index % 2 === 0 ? 15 : -15), 0],
-                }}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
                 transition={{
-                  opacity: { duration: 1, delay: index * 0.05 },
-                  scale: { type: "spring", stiffness: 100, delay: index * 0.05 },
-                  y: {
-                    duration: 4 + (index % 3),
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }
+                  duration: 1,
+                  delay: index * 0.05,
                 }}
                 style={{ 
                   position: 'absolute',
@@ -213,29 +204,20 @@ export default function TechStack({ data = [] }: { data?: any[] }) {
                   left: pos.left,
                   rotate: `${rotation}deg`
                 }}
-                whileHover={{ 
-                  scale: 1.2,
-                  rotate: 0,
-                  zIndex: 50,
-                  backgroundColor: "rgba(255, 255, 255, 1)",
-                  boxShadow: "0 40px 80px rgba(0,0,0,0.15)",
-                }}
                 className={`
                   group flex items-center justify-center 
-                  bg-white/40 backdrop-blur-xl border border-apple-border 
-                  rounded-[24px] md:rounded-[48px] transition-all duration-700
+                  bg-white/80 backdrop-blur-sm border border-apple-border 
+                  rounded-[24px] md:rounded-[40px] transition-all duration-500
+                  hover:shadow-2xl hover:bg-white hover:rotate-0 hover:z-50
                   ${sizeClass}
                 `}
               >
-                {/* Logo Image */}
                 <img 
                   src={logoUrl} 
                   alt={techName}
-                  className="h-1/3 md:h-1/2 w-auto opacity-50 group-hover:opacity-100 transition-all duration-500"
+                  className="h-1/3 md:h-1/2 w-auto opacity-70 group-hover:opacity-100 transition-all duration-300"
                 />
-                
-                {/* Float Tooltip */}
-                <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] font-bold px-4 py-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none uppercase tracking-widest shadow-2xl">
+                <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-black text-white text-[9px] font-bold px-3 py-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 uppercase tracking-widest pointer-events-none">
                   {techName}
                 </div>
               </motion.div>
