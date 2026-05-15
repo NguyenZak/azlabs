@@ -18,8 +18,18 @@ interface Feature {
 export default function Features({ data }: { data: Feature[] }) {
   const { language } = useLanguage();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = React.useState(false);
+  const [canScrollRight, setCanScrollRight] = React.useState(true);
 
   if (!data || data.length === 0) return null;
+
+  const checkScroll = () => {
+    if (scrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  };
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
@@ -45,28 +55,13 @@ export default function Features({ data }: { data: Feature[] }) {
           >
             {language === "vi" ? "Tìm hiểu AZLABS." : "Get to know AZLABS."}
           </motion.h2>
-
-          {/* Navigation Controls (Desktop) */}
-          <div className="hidden md:flex gap-3">
-            <button 
-              onClick={() => scroll("left")}
-              className="w-10 h-10 rounded-full bg-black/5 hover:bg-black/10 flex items-center justify-center transition-colors"
-            >
-              <ChevronLeft className="w-6 h-6 text-[#1d1d1f]" />
-            </button>
-            <button 
-              onClick={() => scroll("right")}
-              className="w-10 h-10 rounded-full bg-black/5 hover:bg-black/10 flex items-center justify-center transition-colors"
-            >
-              <ChevronRight className="w-6 h-6 text-[#1d1d1f]" />
-            </button>
-          </div>
         </div>
 
         {/* Horizontal Scroll Container */}
         <div 
           ref={scrollRef}
-          className="flex gap-6 overflow-x-auto pb-12 scrollbar-hide snap-x snap-mandatory touch-pan-x"
+          onScroll={checkScroll}
+          className="flex gap-6 overflow-x-auto pb-8 scrollbar-hide snap-x snap-mandatory touch-pan-x"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {data.map((feature, index) => {
@@ -118,6 +113,32 @@ export default function Features({ data }: { data: Feature[] }) {
           
           {/* Spacer for end of scroll */}
           <div className="flex-none w-px md:w-24 h-full" />
+        </div>
+
+        {/* Bottom Navigation Controls */}
+        <div className="mt-8 flex justify-end gap-3 px-2">
+          <button 
+            onClick={() => scroll("left")}
+            disabled={!canScrollLeft}
+            className={`w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300 ${
+              canScrollLeft 
+                ? "bg-[#e8e8ed] hover:bg-[#d2d2d7] cursor-pointer" 
+                : "bg-[#f5f5f7] opacity-30 cursor-default"
+            }`}
+          >
+            <ChevronLeft className={`w-6 h-6 ${canScrollLeft ? "text-[#1d1d1f]" : "text-[#86868b]"}`} />
+          </button>
+          <button 
+            onClick={() => scroll("right")}
+            disabled={!canScrollRight}
+            className={`w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300 ${
+              canScrollRight 
+                ? "bg-[#e8e8ed] hover:bg-[#d2d2d7] cursor-pointer" 
+                : "bg-[#f5f5f7] opacity-30 cursor-default"
+            }`}
+          >
+            <ChevronRight className={`w-6 h-6 ${canScrollRight ? "text-[#1d1d1f]" : "text-[#86868b]"}`} />
+          </button>
         </div>
       </div>
 
