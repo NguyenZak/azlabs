@@ -9,47 +9,30 @@ import { FuturisticGlobe } from "@/components/FuturisticGlobe";
 
 import { useMotionValue, useTransform, animate } from "framer-motion";
 
-const TypewriterHeadline = ({ text }: { text: string }) => {
-  // Split text into characters including spaces
+const SoftBlurHeadline = ({ text }: { text: string }) => {
   const characters = text.split("");
 
   return (
     <motion.h1
       className="text-[42px] md:text-[72px] lg:text-[84px] font-bold tracking-tight leading-[1.1] text-[#1d1d1f] max-w-[1000px] mx-auto text-center"
-      initial="hidden"
-      animate="visible"
       key={text}
     >
       {characters.map((char, index) => (
         <motion.span
           key={`${text}-${index}`}
-          variants={{
-            hidden: { opacity: 0, y: 10, filter: "blur(4px)" },
-            visible: {
-              opacity: 1,
-              y: 0,
-              filter: "blur(0px)",
-              transition: {
-                duration: 0.4,
-                ease: [0.215, 0.61, 0.355, 1], // Cubic-bezier for smooth finish
-                delay: index * 0.02, // Stagger effect
-              }
-            }
+          initial={{ opacity: 0, y: 16, filter: "blur(12px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          exit={{ opacity: 0, y: -16, filter: "blur(12px)" }}
+          transition={{
+            duration: 0.9,
+            ease: [0.22, 1, 0.36, 1],
+            delay: index * 0.025,
           }}
           className="inline-block whitespace-pre"
         >
           {char}
         </motion.span>
       ))}
-      <motion.span
-        animate={{ opacity: [1, 1, 0, 0] }}
-        transition={{
-          duration: 0.8,
-          repeat: Infinity,
-          times: [0, 0.5, 0.5, 1]
-        }}
-        className="inline-block w-[4px] h-[45px] md:h-[70px] bg-apple-accent ml-2 align-middle"
-      />
     </motion.h1>
   );
 };
@@ -125,7 +108,7 @@ export default function Hero({ slides = [] }: { slides?: any[] }) {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className="mb-8 min-h-[160px] md:min-h-[200px]">
-              <TypewriterHeadline text={title} />
+              <SoftBlurHeadline text={title} />
             </div>
 
             <p className="text-lg md:text-xl text-apple-text-secondary max-w-2xl mx-auto mb-12 font-medium leading-relaxed opacity-80">
