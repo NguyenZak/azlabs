@@ -33,6 +33,8 @@ export const metadata: Metadata = {
 
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 import LayoutWrapper from "@/components/LayoutWrapper";
+import { Toaster } from "react-hot-toast";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 
 export default function RootLayout({
   children,
@@ -43,9 +45,11 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable}`}>
       <body className="antialiased">
         <LanguageProvider>
+          <AnalyticsTracker />
           <LayoutWrapper>
             {children}
           </LayoutWrapper>
+          <Toaster position="bottom-right" />
         </LanguageProvider>
       </body>
     </html>

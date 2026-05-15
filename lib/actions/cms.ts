@@ -3,6 +3,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
+import crypto from "crypto";
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
@@ -43,7 +44,7 @@ export async function generateAIContent(topic: string) {
   try {
     const response = await fetch(GROQ_API_URL, {
       method: "POST",
-      headers: { 
+      headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${GROQ_API_KEY}`
       },
@@ -66,10 +67,10 @@ export async function generateAIContent(topic: string) {
 
     const result = await response.json();
     let contentString = result.choices[0].message.content;
-    
+
     // Clean content in case of markdown formatting
     contentString = contentString.replace(/```json/g, "").replace(/```/g, "").trim();
-    
+
     const content = JSON.parse(contentString);
     return content;
   } catch (error: any) {
@@ -103,7 +104,7 @@ export async function upsertProject(formData: any) {
     .single();
 
   if (error) throw new Error(error.message);
-  
+
   revalidatePath("/adminaz/projects");
   revalidatePath("/");
   return data;
@@ -119,7 +120,7 @@ export async function deleteProject(id: string) {
     .match({ id });
 
   if (error) throw new Error(error.message);
-  
+
   revalidatePath("/adminaz/projects");
   revalidatePath("/");
 }
@@ -155,7 +156,7 @@ export async function upsertPost(formData: any) {
     .single();
 
   if (error) throw new Error(error.message);
-  
+
   revalidatePath("/adminaz/posts");
   revalidatePath("/blog");
   return data;
@@ -171,7 +172,7 @@ export async function deletePost(id: string) {
     .match({ id });
 
   if (error) throw new Error(error.message);
-  
+
   revalidatePath("/adminaz/posts");
   revalidatePath("/blog");
 }
@@ -186,7 +187,7 @@ export async function getServices() {
     .from("services")
     .select("*")
     .order("order_index", { ascending: true });
-  
+
   if (error) throw new Error(error.message);
   return data || [];
 }
@@ -216,7 +217,7 @@ export async function upsertService(formData: any) {
     .single();
 
   if (error) throw new Error(error.message);
-  
+
   revalidatePath("/adminaz/services");
   revalidatePath("/");
   return data;
@@ -232,7 +233,7 @@ export async function deleteService(id: string) {
     .match({ id });
 
   if (error) throw new Error(error.message);
-  
+
   revalidatePath("/adminaz/services");
   revalidatePath("/");
 }
@@ -257,7 +258,7 @@ export async function upsertTech(formData: any) {
     .single();
 
   if (error) throw new Error(error.message);
-  
+
   revalidatePath("/adminaz/tech-stack");
   revalidatePath("/");
   return data;
@@ -273,7 +274,7 @@ export async function deleteTech(id: string) {
     .match({ id });
 
   if (error) throw new Error(error.message);
-  
+
   revalidatePath("/adminaz/tech-stack");
   revalidatePath("/");
 }
@@ -308,7 +309,7 @@ export async function upsertHeroSlide(formData: any) {
     .single();
 
   if (error) throw new Error(error.message);
-  
+
   revalidatePath("/adminaz/hero");
   revalidatePath("/");
   return data;
@@ -324,7 +325,7 @@ export async function deleteHeroSlide(id: string) {
     .match({ id });
 
   if (error) throw new Error(error.message);
-  
+
   revalidatePath("/adminaz/hero");
   revalidatePath("/");
 }
@@ -339,7 +340,7 @@ export async function getMedia() {
     .from("media")
     .select("*")
     .order("created_at", { ascending: false });
-  
+
   if (error) throw new Error(error.message);
   return data || [];
 }
@@ -352,7 +353,7 @@ export async function saveMedia(mediaData: any) {
     .insert([mediaData])
     .select()
     .single();
-  
+
   if (error) throw new Error(error.message);
   revalidatePath("/adminaz/media");
   return data;
@@ -365,7 +366,7 @@ export async function deleteMedia(id: string) {
     .from("media")
     .delete()
     .eq("id", id);
-  
+
   if (error) throw new Error(error.message);
   revalidatePath("/adminaz/media");
 }
@@ -380,7 +381,7 @@ export async function getFeatures() {
     .from("features")
     .select("*")
     .order("order_index", { ascending: true });
-  
+
   if (error) throw new Error(error.message);
   return data || [];
 }
@@ -388,12 +389,12 @@ export async function getFeatures() {
 export async function upsertFeature(feature: any) {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
-  
+
   const { data, error } = await supabase
     .from("features")
     .upsert([feature])
     .select();
-    
+
   if (error) throw new Error(error.message);
   revalidatePath("/adminaz/features");
   revalidatePath("/");
@@ -407,8 +408,105 @@ export async function deleteFeature(id: string) {
     .from("features")
     .delete()
     .eq("id", id);
-    
+
   if (error) throw new Error(error.message);
   revalidatePath("/adminaz/features");
   revalidatePath("/");
+}
+
+/**
+ * CONTACTS ACTIONS
+ */
+export async function getContacts() {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+  const { data, error } = await supabase
+    .from("contacts")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) throw new Error(error.message);
+  return data || [];
+}
+
+export async function submitContact(formData: any) {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+
+  const { data, error } = await supabase
+    .from("contacts")
+    .insert([{
+      name: formData.name,
+      email: formData.email,
+      company: formData.company,
+      message: formData.message,
+      status: "new"
+    }])
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/adminaz/contacts");
+  return data;
+}
+
+export async function updateContactStatus(id: string, status: string) {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+
+  const { error } = await supabase
+    .from("contacts")
+    .update({ status })
+    .eq("id", id);
+
+  if (error) throw new Error(error.message);
+  revalidatePath("/adminaz/contacts");
+}
+
+export async function deleteContact(id: string) {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+
+  const { error } = await supabase
+    .from("contacts")
+    .delete()
+    .eq("id", id);
+
+  if (error) throw new Error(error.message);
+  revalidatePath("/adminaz/contacts");
+}
+
+/**
+ * CLOUDINARY SIGNATURE (For Signed Uploads)
+ */
+export async function getCloudinarySignature() {
+  const timestamp = Math.round(new Date().getTime() / 1000);
+  const apiSecret = process.env.CLOUDINARY_API_SECRET;
+  const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "azlabs";
+  
+  if (!apiSecret) {
+    throw new Error("Cloudinary API Secret is missing");
+  }
+
+  // Parameters to sign (must be alphabetical)
+  let paramsToSign = "";
+  if (uploadPreset) {
+    paramsToSign = `timestamp=${timestamp}&upload_preset=${uploadPreset}${apiSecret}`;
+  } else {
+    paramsToSign = `timestamp=${timestamp}${apiSecret}`;
+  }
+  
+  const signature = crypto
+    .createHash("sha1")
+    .update(paramsToSign)
+    .digest("hex");
+
+  return {
+    signature,
+    timestamp,
+    uploadPreset,
+    apiKey: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
+    cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+  };
 }

@@ -13,7 +13,7 @@ import {
   ExternalLink,
   Filter
 } from "lucide-react";
-import { CldUploadWidget } from "next-cloudinary";
+import MediaUploadModal from "@/components/admin/MediaUploadModal";
 import { getMedia, saveMedia, deleteMedia } from "@/lib/actions/cms";
 import toast from "react-hot-toast";
 
@@ -22,6 +22,7 @@ export default function MediaPage() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   useEffect(() => {
     loadMedia();
@@ -87,19 +88,18 @@ export default function MediaPage() {
           <h1 className="text-4xl font-bold tracking-tight text-apple-text">Media Library</h1>
           <p className="text-apple-text-secondary mt-2">Manage your visual assets for AZLABS.</p>
         </div>
-        <CldUploadWidget 
-          uploadPreset="azlabs_cms"
-          onUpload={handleUploadSuccess}
+        <button 
+          onClick={() => setIsUploadModalOpen(true)}
+          className="flex items-center gap-2 px-6 py-3 bg-black text-white rounded-xl font-bold hover:opacity-90 transition-all shadow-xl active:scale-95"
         >
-          {({ open }) => (
-            <button 
-              onClick={() => open()}
-              className="flex items-center gap-2 px-6 py-3 bg-black text-white rounded-xl font-bold hover:opacity-90 transition-all shadow-xl"
-            >
-              <Plus className="w-5 h-5" /> Upload Media
-            </button>
-          )}
-        </CldUploadWidget>
+          <Plus className="w-5 h-5" /> Upload Media
+        </button>
+
+        <MediaUploadModal 
+          isOpen={isUploadModalOpen}
+          onClose={() => setIsUploadModalOpen(false)}
+          onUploadSuccess={handleUploadSuccess}
+        />
       </header>
 
       {/* Toolbar */}

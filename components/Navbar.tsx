@@ -25,6 +25,7 @@ export default function Navbar() {
     { name: dict.nav.services, href: "/services" },
     { name: dict.nav.work, href: "/projects" },
     { name: dict.nav.solutions, href: "/solutions" },
+    { name: "Magazine", href: "/blog" },
     { name: dict.nav.about, href: "/about" },
     { name: dict.nav.contact, href: "/contact" },
   ];

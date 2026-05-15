@@ -4,6 +4,7 @@ import Features from "@/sections/Features";
 import Portfolio from "@/sections/Portfolio";
 import TechStack from "@/sections/TechStack";
 import About from "@/sections/About";
+import Magazine from "@/sections/Magazine";
 import Testimonials from "@/sections/Testimonials";
 import Contact from "@/sections/Contact";
 
@@ -38,6 +39,20 @@ export default async function Home() {
     console.error("Error fetching projects or services:", error);
   }
 
+  // Fetch Published Posts for Magazine
+  let posts = [];
+  try {
+    const { data: postsData } = await supabase
+      .from("posts")
+      .select("*")
+      .eq("is_published", true)
+      .order("published_at", { ascending: false })
+      .limit(4);
+    posts = postsData || [];
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+  }
+
   return (
     <>
       <Hero slides={heroSlides} />
@@ -46,6 +61,7 @@ export default async function Home() {
       <Portfolio data={projects} />
       <TechStack />
       <About />
+      <Magazine posts={posts} />
       <Testimonials />
       <Contact />
     </>

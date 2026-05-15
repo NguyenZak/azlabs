@@ -1,0 +1,301 @@
+"use client";
+
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { X, Upload, ImageIcon, Loader2, CheckCircle2, AlertCircle, FileText, Trash2 } from "lucide-react";
+import toast from "react-hot-toast";
+
+interface MediaUploadModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onUploadSuccess: (result: any) => void;
+}
+
+interface FileStatus {
+  id: string;
+  file: File;
+  preview: string;
+  status: "idle" | "uploading" | "success" | "error";
+  progress: number;
+}
+
+export default function MediaUploadModal({ isOpen, onClose, onUploadSuccess }: MediaUploadModalProps) {
+  const [files, setFiles] = useState<FileStatus[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const addFiles = (selectedFiles: FileList) => {
+    const newFiles: FileStatus[] = Array.from(selectedFiles).map((file) => ({
+      id: Math.random().toString(36).substr(2, 9),
+      file,
+      preview: URL.createObjectURL(file),
+      status: "idle",
+      progress: 0,
+    }));
+    setFiles((prev) => [...prev, ...newFiles]);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      addFiles(e.target.files);
+    }
+  };
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files) {
+      addFiles(e.dataTransfer.files);
+    }
+  };
+
+  const removeFile = (id: string) => {
+    setFiles((prev) => {
+      const filtered = prev.filter((f) => f.id !== id);
+      const removed = prev.find((f) => f.id === id);
+      if (removed) URL.revokeObjectURL(removed.preview);
+      return filtered;
+    });
+  };
+
+  const handleUpload = async () => {
+    if (files.length === 0) return;
+
+    setIsUploading(true);
+    let successCount = 0;
+    
+    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+    const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "azlabs";
+
+    if (!cloudName) {
+      toast.error("Cloudinary Cloud Name is missing");
+      setIsUploading(false);
+      return;
+    }
+
+    for (const fileStatus of files) {
+      if (fileStatus.status === "success") continue;
+
+      setFiles(prev => prev.map(f => f.id === fileStatus.id ? { ...f, status: "uploading" } : f));
+
+      try {
+        const formData = new FormData();
+        formData.append("file", fileStatus.file);
+        formData.append("upload_preset", uploadPreset);
+        // Force auto-conversion to WebP
+        formData.append("format", "webp");
+
+        const response = await fetch(
+          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+          { method: "POST", body: formData }
+        );
+
+        if (!response.ok) throw new Error("Upload failed");
+
+        const data = await response.json();
+        
+        const result = {
+          info: {
+            secure_url: data.secure_url,
+            public_id: data.public_id,
+            original_filename: data.original_filename || fileStatus.file.name.split('.')[0],
+            format: data.format,
+            bytes: data.bytes,
+          }
+        };
+
+        setFiles(prev => prev.map(f => f.id === fileStatus.id ? { ...f, status: "success" } : f));
+        onUploadSuccess(result);
+        successCount++;
+      } catch (error) {
+        console.error("Upload error for file:", fileStatus.file.name, error);
+        setFiles(prev => prev.map(f => f.id === fileStatus.id ? { ...f, status: "error" } : f));
+      }
+    }
+
+    setIsUploading(false);
+    if (successCount > 0) {
+      toast.success(`Successfully uploaded ${successCount} files!`);
+      if (successCount === files.length) {
+        setTimeout(handleClose, 1500);
+      }
+    } else {
+      toast.error("All uploads failed. Check your Cloudinary settings.");
+    }
+  };
+
+  const handleClose = () => {
+    if (isUploading) return;
+    files.forEach(f => URL.revokeObjectURL(f.preview));
+    setFiles([]);
+    onClose();
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 md:p-6">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-black/60 backdrop-blur-xl"
+            onClick={handleClose}
+          />
+          
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            className="relative w-full max-w-2xl bg-white rounded-[40px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+          >
+            <div className="p-8 flex-1 overflow-y-auto">
+              <div className="flex justify-between items-center mb-8">
+                <div>
+                  <h2 className="text-3xl font-black tracking-tight text-apple-text">Upload Assets</h2>
+                  <p className="text-apple-text-secondary text-sm font-medium">Multiple files & automatic WebP conversion enabled</p>
+                </div>
+                <button
+                  onClick={handleClose}
+                  className="p-3 hover:bg-gray-100 rounded-full transition-all"
+                >
+                  <X className="w-6 h-6 text-apple-text-secondary" />
+                </button>
+              </div>
+
+              {files.length === 0 ? (
+                <div
+                  onDragEnter={handleDrag}
+                  onDragLeave={handleDrag}
+                  onDragOver={handleDrag}
+                  onDrop={handleDrop}
+                  onClick={() => fileInputRef.current?.click()}
+                  className={`
+                    relative group cursor-pointer
+                    border-2 border-dashed rounded-[32px] p-20
+                    flex flex-col items-center justify-center gap-6
+                    transition-all duration-500
+                    ${dragActive 
+                      ? "border-apple-accent bg-apple-accent/5 scale-[0.98]" 
+                      : "border-gray-200 hover:border-apple-accent hover:bg-gray-50"
+                    }
+                  `}
+                >
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    multiple
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                  />
+                  <div className="w-20 h-20 bg-gray-100 rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform group-hover:rotate-12 duration-500">
+                    <Upload className="w-10 h-10 text-apple-text-secondary" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xl font-bold text-apple-text">Drop your files here</p>
+                    <p className="text-sm text-apple-text-secondary mt-2 font-medium">Any image format will be converted to WebP automatically</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 gap-3">
+                    {files.map((f) => (
+                      <motion.div 
+                        layout
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        key={f.id} 
+                        className={`
+                          flex items-center gap-4 p-4 rounded-3xl border transition-all
+                          ${f.status === "success" ? "bg-green-50 border-green-100" : "bg-[#f5f5f7] border-transparent"}
+                        `}
+                      >
+                        <div className="w-16 h-16 rounded-2xl overflow-hidden bg-white border border-apple-border flex-shrink-0">
+                          <img src={f.preview} className="w-full h-full object-cover" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-bold text-apple-text truncate">{f.file.name}</p>
+                          <p className="text-[10px] font-bold text-apple-text-secondary uppercase tracking-widest mt-1">
+                            {f.status === "uploading" ? "Uploading..." : f.status === "success" ? "Converted & Uploaded" : f.status === "error" ? "Failed" : "Ready"}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {f.status === "uploading" ? (
+                            <Loader2 className="w-5 h-5 animate-spin text-apple-accent" />
+                          ) : f.status === "success" ? (
+                            <CheckCircle2 className="w-6 h-6 text-green-500" />
+                          ) : f.status === "error" ? (
+                            <AlertCircle className="w-6 h-6 text-red-500" />
+                          ) : (
+                            <button 
+                              onClick={() => removeFile(f.id)}
+                              className="p-2 hover:bg-white rounded-full text-red-400 transition-all"
+                            >
+                              <Trash2 className="w-5 h-5" />
+                            </button>
+                          )}
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  <div className="pt-6 border-t border-apple-border flex gap-4">
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={isUploading}
+                      className="flex-1 py-4 px-6 bg-[#f5f5f7] text-apple-text rounded-2xl font-bold hover:bg-gray-200 transition-all disabled:opacity-50"
+                    >
+                      Add More
+                    </button>
+                    <button
+                      onClick={handleUpload}
+                      disabled={isUploading || files.every(f => f.status === "success")}
+                      className="flex-[2] py-4 px-6 bg-black text-white rounded-2xl font-bold hover:opacity-90 transition-all shadow-xl disabled:opacity-50 flex items-center justify-center gap-3"
+                    >
+                      {isUploading ? (
+                        <>
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                          Processing Library...
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="w-5 h-5" />
+                          Upload {files.filter(f => f.status !== "success").length} Files
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              className="hidden"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+
+            {/* Design accents */}
+            <div className="h-2 bg-gradient-to-r from-apple-accent via-blue-500 to-purple-500" />
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+}

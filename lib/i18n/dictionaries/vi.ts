@@ -209,5 +209,20 @@ export const vi: Dictionary = {
       messagePlaceholder: "Chia sẻ tầm nhìn của bạn với chúng tôi...",
       submit: "Bắt đầu dự án"
     }
+  },
+  magazine: {
+    title: "Tạp chí",
+    breadcrumbHome: "Trang chủ",
+    breadcrumbMagazine: "Tạp chí",
+    readTime: "phút đọc",
+    share: "Chia sẻ",
+    back: "Quay lại Tạp chí",
+    relatedTitle: "Đọc tiếp",
+    relatedSubtitle: "Các bài viết khác",
+    viewAll: "Xem tất cả",
+    ctaTitle: "Bạn có ý tưởng cho dự án?",
+    ctaSubtitle: "Hãy cùng tạo nên điều phi thường. Đội ngũ của chúng tôi đã sẵn sàng hiện thực hóa tầm nhìn của bạn.",
+    ctaPrimary: "Bắt đầu dự án",
+    ctaSecondary: "Xem thêm bài viết"
   }
 };

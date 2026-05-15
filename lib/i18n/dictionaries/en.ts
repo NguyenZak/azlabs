@@ -207,6 +207,21 @@ export const en = {
       messagePlaceholder: "Tell us about your vision...",
       submit: "Start Your Project"
     }
+  },
+  magazine: {
+    title: "Magazine",
+    breadcrumbHome: "Home",
+    breadcrumbMagazine: "Magazine",
+    readTime: "min read",
+    share: "Share",
+    back: "Back to Magazine",
+    relatedTitle: "Continue Reading",
+    relatedSubtitle: "More from Magazine",
+    viewAll: "View All",
+    ctaTitle: "Have a project in mind?",
+    ctaSubtitle: "Let's build something exceptional together. Our team is ready to bring your vision to life.",
+    ctaPrimary: "Start a Project",
+    ctaSecondary: "Read More Articles"
   }
 };
 

@@ -149,35 +149,35 @@ export default function ServicesAdmin() {
 
   if (isEditing) {
     return (
-      <div className="min-h-screen -m-12 bg-white">
-        <header className="px-12 py-6 border-b border-apple-border flex justify-between items-center sticky top-0 bg-white/80 backdrop-blur-md z-10">
-          <div className="flex items-center gap-6">
+      <div className="min-h-screen -m-4 md:-m-12 bg-white">
+        <header className="px-4 md:px-12 py-4 md:py-6 border-b border-apple-border flex justify-between items-center sticky top-0 bg-white/80 backdrop-blur-md z-10 gap-2">
+          <div className="flex items-center gap-3 md:gap-6">
             <button onClick={() => setIsEditing(false)} className="p-2 hover:bg-[#f5f5f7] rounded-full transition-all">
-              <ArrowLeft className="w-6 h-6" />
+              <ArrowLeft className="w-5 h-5 md:w-6 md:h-6" />
             </button>
-            <h1 className="text-2xl font-bold tracking-tight">
+            <h1 className="text-lg md:text-2xl font-bold tracking-tight truncate">
               {formData.id ? "Edit Service" : "New Service"}
             </h1>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4 shrink-0">
             <button 
               onClick={() => setIsEditing(false)} 
-              className="px-6 py-2.5 text-apple-text-secondary font-bold hover:bg-[#f5f5f7] rounded-full transition-all"
+              className="hidden sm:block px-4 py-2 text-apple-text-secondary font-bold hover:bg-[#f5f5f7] rounded-full transition-all text-sm"
             >
               Cancel
             </button>
             <button 
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="px-8 py-2.5 bg-black text-white rounded-full font-bold shadow-xl hover:opacity-90 transition-all flex items-center gap-2 disabled:opacity-50"
+              className="px-4 md:px-8 py-2 md:py-2.5 bg-black text-white rounded-full font-bold shadow-xl hover:opacity-90 transition-all flex items-center gap-2 disabled:opacity-50 text-xs md:text-sm"
             >
               {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              Save Service
+              Save
             </button>
           </div>
         </header>
 
-        <div className="max-w-5xl mx-auto p-20 grid grid-cols-1 lg:grid-cols-3 gap-20">
+        <div className="max-w-5xl mx-auto p-6 md:p-20 grid grid-cols-1 lg:grid-cols-3 gap-12 md:gap-20">
           <aside className="space-y-8">
             <div>
               <label className="text-[10px] font-black uppercase tracking-widest text-apple-text-secondary mb-4 block">Service Banner</label>
@@ -243,26 +243,26 @@ export default function ServicesAdmin() {
   }
 
   return (
-    <div className="space-y-12">
-      <header className="flex justify-between items-end">
+    <div className="space-y-8 md:space-y-12">
+      <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div>
-          <h1 className="text-5xl font-bold tracking-tight text-apple-text">AZLABS Services</h1>
-          <p className="text-apple-text-secondary mt-4 text-lg">Define your professional expertise and value propositions.</p>
+          <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-apple-text">Services</h1>
+          <p className="text-apple-text-secondary mt-2 text-base md:text-lg">Define your professional expertise.</p>
         </div>
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           <button 
             onClick={handleSeed}
             disabled={isSubmitting}
-            className="flex items-center gap-3 px-8 py-4 bg-white text-apple-accent border-2 border-apple-accent rounded-full font-bold hover:bg-apple-accent hover:text-white transition-all shadow-xl"
+            className="flex items-center justify-center gap-3 px-6 py-3 bg-white text-apple-accent border-2 border-apple-accent rounded-full font-bold hover:bg-apple-accent hover:text-white transition-all shadow-xl text-sm"
           >
-            {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
+            {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
             Seed Samples
           </button>
           <button 
             onClick={() => handleStartEdit()}
-            className="flex items-center gap-3 px-8 py-4 bg-black text-white rounded-full font-bold hover:scale-105 transition-all shadow-2xl"
+            className="flex items-center justify-center gap-3 px-6 py-3 bg-black text-white rounded-full font-bold hover:scale-[1.02] transition-all shadow-2xl text-sm"
           >
-            <Plus className="w-5 h-5" /> Add Service
+            <Plus className="w-4 h-4" /> Add Service
           </button>
         </div>
       </header>
@@ -278,40 +278,40 @@ export default function ServicesAdmin() {
             <div 
               key={service.id}
               onClick={() => handleStartEdit(service)}
-              className="group bg-white p-8 rounded-[40px] border border-apple-border flex items-center gap-10 hover:shadow-2xl transition-all cursor-pointer hover:border-black/5"
+              className="group bg-white p-4 md:p-8 rounded-3xl md:rounded-[40px] border border-apple-border flex flex-col sm:flex-row items-start sm:items-center gap-6 md:gap-10 hover:shadow-2xl transition-all cursor-pointer hover:border-black/5"
             >
-              <div className="w-32 h-32 bg-[#f5f5f7] rounded-[32px] overflow-hidden flex-shrink-0 border border-apple-border group-hover:scale-105 transition-transform duration-500">
+              <div className="w-full sm:w-32 aspect-video sm:aspect-square bg-[#f5f5f7] rounded-2xl md:rounded-[32px] overflow-hidden flex-shrink-0 border border-apple-border group-hover:scale-[1.02] sm:group-hover:scale-105 transition-transform duration-500">
                 {service.image_url ? (
                   <img src={service.image_url} className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <Box className="w-10 h-10 text-gray-300" />
+                    <Box className="w-8 h-8 text-gray-300" />
                   </div>
                 )}
               </div>
               
-              <div className="flex-1">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-2xl font-bold text-apple-text">{service.title_en}</h3>
-                  <ChevronRight className="w-6 h-6 text-apple-text-secondary group-hover:translate-x-2 transition-transform" />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-xl md:text-2xl font-bold text-apple-text truncate">{service.title_en}</h3>
+                  <ChevronRight className="w-5 h-5 text-apple-text-secondary group-hover:translate-x-2 transition-transform shrink-0" />
                 </div>
-                <p className="text-apple-text-secondary text-base line-clamp-1 max-w-3xl font-medium mb-4">{service.title_vi}</p>
-                <div className="flex gap-2">
+                <p className="text-apple-text-secondary text-sm md:text-base line-clamp-1 max-w-3xl font-medium mb-3 md:mb-4">{service.title_vi}</p>
+                <div className="flex flex-wrap gap-2">
                   {(service.features_en || []).slice(0, 3).map((f: string, i: number) => (
-                    <span key={i} className="px-3 py-1 bg-[#f5f5f7] rounded-full text-[10px] font-bold text-apple-text-secondary uppercase tracking-wider">{f}</span>
+                    <span key={i} className="px-2.5 py-1 bg-[#f5f5f7] rounded-full text-[9px] font-bold text-apple-text-secondary uppercase tracking-wider">{f}</span>
                   ))}
                 </div>
               </div>
 
-              <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity pr-6">
+              <div className="flex sm:flex-col gap-2 w-full sm:w-auto pt-4 sm:pt-0 border-t sm:border-none border-apple-border">
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();
                     handleDelete(service.id);
                   }} 
-                  className="p-4 hover:bg-red-50 text-red-400 rounded-2xl transition-all"
+                  className="flex-1 sm:flex-none p-3 hover:bg-red-50 text-red-400 rounded-xl transition-all flex items-center justify-center"
                 >
-                  <Trash2 className="w-6 h-6" />
+                  <Trash2 className="w-5 h-5 md:w-6 md:h-6" />
                 </button>
               </div>
             </div>

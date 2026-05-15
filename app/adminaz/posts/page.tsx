@@ -6,7 +6,6 @@ import {
   Plus, Search, Edit3, Trash2, Globe, Image as ImageIcon, 
   X, FileText, BarChart, Settings, Save, Eye, Hash, Loader2
 } from "lucide-react";
-import { CldUploadWidget } from 'next-cloudinary';
 import toast from "react-hot-toast";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 import MediaPicker from "@/components/admin/MediaPicker";
@@ -22,6 +21,7 @@ export default function PostsAdmin() {
   const [activeTab, setActiveTab] = useState<"content" | "seo">("content");
   const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
   const [mediaTargetLang, setMediaTargetLang] = useState<"en" | "vi">("vi");
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   const handleImageSelect = (url: string) => {
     const imgHtml = `<img src="${url}" alt="image" />`;
@@ -147,27 +147,67 @@ export default function PostsAdmin() {
             exit={{ opacity: 0, y: -20 }}
             className="space-y-8"
           >
-            <header className="flex justify-between items-center">
+            <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
-                <h1 className="text-4xl font-bold tracking-tight text-apple-text">Blog Posts</h1>
-                <p className="text-apple-text-secondary mt-2">Manage and create stories for AZLABS.</p>
+                <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-apple-text">Blog Posts</h1>
+                <p className="text-sm text-apple-text-secondary mt-1">Manage and create stories for AZLABS.</p>
               </div>
               <button 
                 onClick={() => handleOpenModal()}
-                className="flex items-center gap-2 px-6 py-3 bg-black text-white rounded-xl font-bold hover:opacity-90 transition-all shadow-xl"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-black text-white rounded-xl font-bold hover:opacity-90 transition-all shadow-xl"
               >
                 <Plus className="w-5 h-5" /> New Article
               </button>
             </header>
 
-            <div className="bg-white rounded-[32px] border border-apple-border shadow-sm overflow-hidden">
-              <div className="p-6 border-b border-apple-border">
+            <div className="bg-white rounded-2xl md:rounded-[32px] border border-apple-border shadow-sm overflow-hidden">
+              <div className="p-4 md:p-6 border-b border-apple-border">
                 <div className="relative">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-apple-text-secondary" />
                   <input type="text" placeholder="Search articles..." className="w-full pl-12 pr-4 py-3 bg-[#f5f5f7] border-none rounded-xl focus:ring-2 focus:ring-apple-accent" />
                 </div>
               </div>
-              <table className="w-full text-left">
+
+              {/* Mobile View: Cards */}
+              <div className="block md:hidden divide-y divide-apple-border">
+                {loading ? (
+                  <div className="p-12 text-center"><Loader2 className="w-8 h-8 animate-spin mx-auto text-apple-accent" /></div>
+                ) : posts.length === 0 ? (
+                  <div className="p-12 text-center text-apple-text-secondary text-sm">No articles yet.</div>
+                ) : posts.map((post) => (
+                  <div key={post.id} className="p-4 space-y-4">
+                    <div className="flex gap-4">
+                      <div className="w-20 h-14 rounded-lg bg-gray-100 overflow-hidden border border-apple-border flex-shrink-0">
+                        {post.image_url ? <img src={post.image_url} className="w-full h-full object-cover" alt="" /> : <div className="w-full h-full flex items-center justify-center text-gray-300"><ImageIcon className="w-5 h-5" /></div>}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="font-bold text-base truncate">{post.title_en}</span>
+                          {post.is_published ? <span className="px-1.5 py-0.5 bg-green-50 text-green-600 rounded text-[8px] font-bold uppercase shrink-0">Live</span> : <span className="px-1.5 py-0.5 bg-gray-100 text-gray-400 rounded text-[8px] font-bold uppercase shrink-0">Draft</span>}
+                        </div>
+                        <p className="text-xs text-apple-text-secondary mt-1">/{post.slug}</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={() => handleOpenModal(post)}
+                        className="flex-1 py-2 bg-apple-bg-secondary text-apple-text rounded-lg text-sm font-bold flex items-center justify-center gap-2"
+                      >
+                        <Edit3 className="w-4 h-4" /> Edit
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(post.id)}
+                        className="px-4 py-2 bg-red-50 text-red-500 rounded-lg"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop View: Table */}
+              <table className="hidden md:table w-full text-left">
                 <tbody className="divide-y divide-apple-border">
                   {loading ? (
                     <tr><td className="px-8 py-20 text-center"><Loader2 className="w-8 h-8 animate-spin mx-auto text-apple-accent" /></td></tr>
@@ -211,24 +251,24 @@ export default function PostsAdmin() {
             className="flex flex-col gap-8"
           >
             {/* Sticky Header */}
-            <header className="sticky top-0 z-30 flex justify-between items-center py-4 bg-[#f5f5f7]/80 backdrop-blur-md">
+            <header className="sticky top-0 md:top-0 z-[41] flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 bg-[#f5f5f7]/80 backdrop-blur-md gap-4">
               <button 
                 onClick={() => setIsModalOpen(false)}
-                className="flex items-center gap-2 text-apple-text-secondary hover:text-apple-text transition-colors font-medium"
+                className="flex items-center gap-2 text-apple-text-secondary hover:text-apple-text transition-colors font-medium text-sm"
               >
-                <X className="w-5 h-5" /> Back to list
+                <X className="w-4 h-4" /> Back
               </button>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center justify-between w-full sm:w-auto gap-3">
                 <div className="flex bg-white p-1 rounded-xl border border-apple-border shadow-sm">
                   <button 
                     onClick={() => setActiveTab("content")}
-                    className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'content' ? 'bg-black text-white' : 'text-apple-text-secondary'}`}
+                    className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'content' ? 'bg-black text-white' : 'text-apple-text-secondary'}`}
                   >
                     Editor
                   </button>
                   <button 
                     onClick={() => setActiveTab("seo")}
-                    className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'seo' ? 'bg-black text-white' : 'text-apple-text-secondary'}`}
+                    className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'seo' ? 'bg-black text-white' : 'text-apple-text-secondary'}`}
                   >
                     SEO
                   </button>
@@ -236,42 +276,42 @@ export default function PostsAdmin() {
                 <button 
                   onClick={handleSubmit}
                   disabled={isSubmitting}
-                  className="px-8 py-2.5 bg-black text-white rounded-xl font-bold shadow-xl hover:opacity-90 flex items-center gap-2 disabled:opacity-50"
+                  className="px-4 py-2.5 bg-black text-white rounded-xl font-bold shadow-xl hover:opacity-90 flex items-center gap-2 disabled:opacity-50 text-xs"
                 >
-                  {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                  Save Changes
+                  {isSubmitting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />}
+                  Save
                 </button>
               </div>
             </header>
 
             {/* AI Assistant (Always visible in editor) */}
-            <div className="bg-gradient-to-br from-indigo-500 via-purple-600 to-indigo-700 p-8 rounded-[40px] text-white shadow-2xl relative overflow-hidden">
+            <div className="bg-gradient-to-br from-indigo-500 via-purple-600 to-indigo-700 p-6 md:p-8 rounded-3xl md:rounded-[40px] text-white shadow-2xl relative overflow-hidden">
               <div className="absolute top-0 right-0 p-8 opacity-10"><Sparkles className="w-32 h-32" /></div>
-              <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
+              <div className="relative z-10 flex flex-col md:flex-row items-stretch md:items-center gap-6 md:gap-8">
                 <div className="flex-1 space-y-2">
-                  <h3 className="text-2xl font-bold flex items-center gap-3">
-                    <Wand2 className="w-6 h-6" /> AI Groq Assistant
+                  <h3 className="text-xl md:text-2xl font-bold flex items-center gap-3">
+                    <Wand2 className="w-5 h-5 md:w-6 md:h-6" /> AI Assistant
                   </h3>
-                  <p className="text-white/70">What should we write about today?</p>
+                  <p className="text-white/70 text-sm md:text-base">What should we write about today?</p>
                   <input 
                     type="text" 
                     placeholder="e.g. Next.js 15 performance optimization tips..." 
                     value={aiPrompt}
                     onChange={(e) => setAiPrompt(e.target.value)}
-                    className="w-full mt-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-6 py-4 text-white placeholder:text-white/40 focus:ring-2 focus:ring-white/50 transition-all outline-none"
+                    className="w-full mt-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl md:rounded-2xl px-4 md:px-6 py-3 md:py-4 text-white placeholder:text-white/40 focus:ring-2 focus:ring-white/50 transition-all outline-none text-sm md:text-base"
                   />
                 </div>
                 <div className="flex flex-col gap-3">
                   <button 
                     onClick={handleAIGenerate}
                     disabled={isGeneratingAI}
-                    className="px-10 py-6 bg-white text-indigo-600 rounded-[28px] font-black shadow-2xl hover:scale-105 transition-all flex items-center justify-center gap-3 disabled:opacity-50 text-lg group"
+                    className="px-6 md:px-10 py-4 md:py-6 bg-white text-indigo-600 rounded-2xl md:rounded-[28px] font-black shadow-2xl hover:scale-[1.02] transition-all flex items-center justify-center gap-3 disabled:opacity-50 text-base md:text-lg group"
                   >
-                    {isGeneratingAI ? <Loader2 className="w-6 h-6 animate-spin" /> : <Sparkles className="w-6 h-6 group-hover:rotate-12 transition-transform" />}
-                    Magic Write (Dual Language)
+                    {isGeneratingAI ? <Loader2 className="w-5 h-5 md:w-6 md:h-6 animate-spin" /> : <Sparkles className="w-5 h-5 md:w-6 md:h-6 group-hover:rotate-12 transition-transform" />}
+                    Magic Write
                   </button>
-                  <p className="text-white/40 text-[10px] text-center font-bold uppercase tracking-widest">
-                    Generates full content in VI & EN simultaneously
+                  <p className="hidden md:block text-white/40 text-[10px] text-center font-bold uppercase tracking-widest">
+                    Generates full content in VI & EN
                   </p>
                 </div>
               </div>
@@ -288,14 +328,14 @@ export default function PostsAdmin() {
                           type="text" 
                           value={formData.title_en}
                           onChange={(e) => setFormData({ ...formData, title_en: e.target.value })}
-                          className="w-full text-5xl font-bold tracking-tight border-none p-0 focus:ring-0 bg-transparent placeholder:text-gray-200" 
+                          className="w-full text-3xl md:text-5xl font-bold tracking-tight border-none p-0 focus:ring-0 bg-transparent placeholder:text-gray-200" 
                           placeholder="English Title..." 
                         />
                         <input 
                           type="text" 
                           value={formData.title_vi}
                           onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })}
-                          className="w-full text-3xl font-bold tracking-tight border-none p-0 focus:ring-0 bg-transparent placeholder:text-gray-300 text-apple-text-secondary" 
+                          className="w-full text-xl md:text-3xl font-bold tracking-tight border-none p-0 focus:ring-0 bg-transparent placeholder:text-gray-300 text-apple-text-secondary" 
                           placeholder="Tiêu đề tiếng Việt..." 
                         />
                       </div>
@@ -382,20 +422,25 @@ export default function PostsAdmin() {
 
                   <div className="space-y-3">
                     <label className="text-xs font-bold uppercase text-apple-text-secondary">Featured Image</label>
-                    <CldUploadWidget uploadPreset="azlabs_cms" onUpload={(res: any) => setFormData({ ...formData, image_url: res.info.secure_url })}>
-                      {({ open }) => (
-                        <div onClick={() => open()} className="aspect-video bg-[#f5f5f7] rounded-3xl border-2 border-dashed border-apple-border flex items-center justify-center cursor-pointer hover:bg-gray-50 overflow-hidden relative">
-                          {formData.image_url ? (
-                            <img src={formData.image_url} className="w-full h-full object-cover" />
-                          ) : (
-                            <div className="flex flex-col items-center gap-2">
-                              <ImageIcon className="w-6 h-6 text-gray-300" />
-                              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Upload Cover</span>
-                            </div>
-                          )}
+                    <div 
+                      onClick={() => setIsUploadModalOpen(true)} 
+                      className="aspect-video bg-[#f5f5f7] rounded-3xl border-2 border-dashed border-apple-border flex items-center justify-center cursor-pointer hover:bg-gray-50 overflow-hidden relative"
+                    >
+                      {formData.image_url ? (
+                        <img src={formData.image_url} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="flex flex-col items-center gap-2">
+                          <ImageIcon className="w-6 h-6 text-gray-300" />
+                          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Upload Cover</span>
                         </div>
                       )}
-                    </CldUploadWidget>
+                    </div>
+                    
+                    <MediaPicker 
+                      isOpen={isUploadModalOpen}
+                      onClose={() => setIsUploadModalOpen(false)}
+                      onSelect={(url: string) => setFormData({ ...formData, image_url: url })}
+                    />
                   </div>
                 </div>
 

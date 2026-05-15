@@ -15,9 +15,11 @@ import {
   X,
   Loader2
 } from "lucide-react";
-import { CldUploadWidget } from 'next-cloudinary';
+import MediaPicker from "@/components/admin/MediaPicker";
 import { upsertProject, deleteProject } from "@/lib/actions/cms";
 import { createClient } from "@/utils/supabase/client";
+import { PROJECT_SAMPLES } from "@/lib/services/data";
+import toast from "react-hot-toast";
 
 export default function ProjectsAdmin() {
   const [projects, setProjects] = useState<any[]>([]);
@@ -25,6 +27,7 @@ export default function ProjectsAdmin() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentProject, setCurrentProject] = useState<any>(null);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   const supabase = createClient();
 
@@ -93,19 +96,44 @@ export default function ProjectsAdmin() {
     }
   };
 
+  const handleSeed = async () => {
+    if (!confirm("Seed sample projects?")) return;
+    setIsSubmitting(true);
+    try {
+      for (const sample of PROJECT_SAMPLES) {
+        await upsertProject(sample);
+      }
+      toast.success("Successfully seeded projects!");
+      fetchProjects();
+    } catch (error) {
+      toast.error("Error seeding projects");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="space-y-8">
-      <header className="flex justify-between items-center">
+      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
         <div>
-          <h1 className="text-4xl font-bold tracking-tight text-apple-text">Projects</h1>
-          <p className="text-apple-text-secondary mt-2">Manage your cinematic portfolio projects.</p>
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-apple-text">Projects</h1>
+          <p className="text-sm text-apple-text-secondary mt-1">Manage your cinematic portfolio projects.</p>
         </div>
-        <button 
-          onClick={() => { setCurrentProject(null); setIsModalOpen(true); }}
-          className="flex items-center gap-2 px-6 py-3 bg-black text-white rounded-xl font-bold hover:opacity-90 transition-all shadow-xl"
-        >
-          <Plus className="w-5 h-5" /> New Project
-        </button>
+        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+          <button 
+            onClick={handleSeed}
+            disabled={isSubmitting}
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-white text-apple-accent border border-apple-accent rounded-xl font-bold hover:bg-apple-accent hover:text-white transition-all shadow-sm text-sm"
+          >
+            <Plus className="w-4 h-4" /> Seed Samples
+          </button>
+          <button 
+            onClick={() => handleOpenModal()}
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-black text-white rounded-xl font-bold hover:opacity-90 transition-all shadow-xl text-sm"
+          >
+            <Plus className="w-4 h-4" /> New Project
+          </button>
+        </div>
       </header>
 
       {/* Toolbar */}
@@ -123,9 +151,48 @@ export default function ProjectsAdmin() {
         </button>
       </div>
 
-      {/* Project Table */}
-      <div className="bg-white rounded-[32px] border border-apple-border shadow-sm overflow-hidden">
-        <table className="w-full text-left">
+      {/* Project Display */}
+      <div className="bg-white rounded-2xl md:rounded-[32px] border border-apple-border shadow-sm overflow-hidden">
+        {/* Mobile Cards */}
+        <div className="block md:hidden divide-y divide-apple-border">
+          {loading ? (
+            <div className="p-12 text-center"><Loader2 className="w-8 h-8 animate-spin mx-auto text-apple-accent" /></div>
+          ) : projects.length === 0 ? (
+            <div className="p-12 text-center text-apple-text-secondary text-sm">No projects found.</div>
+          ) : projects.map((project) => (
+            <div key={project.id} className="p-4 space-y-4">
+              <div className="flex gap-4">
+                <div className="w-20 h-14 rounded-lg bg-gray-100 overflow-hidden border border-apple-border flex-shrink-0">
+                  {project.image_url ? <img src={project.image_url} className="w-full h-full object-cover" alt="" /> : <div className="w-full h-full flex items-center justify-center text-gray-300"><ImageIcon className="w-5 h-5" /></div>}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-bold text-base truncate">{project.title_en}</span>
+                    <span className="px-1.5 py-0.5 bg-green-50 text-green-600 rounded text-[8px] font-bold uppercase shrink-0">Active</span>
+                  </div>
+                  <p className="text-xs text-apple-text-secondary mt-1">{project.category_en}</p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => handleOpenModal(project)}
+                  className="flex-1 py-2 bg-apple-bg-secondary text-apple-text rounded-lg text-sm font-bold flex items-center justify-center gap-2"
+                >
+                  <Edit3 className="w-4 h-4" /> Edit
+                </button>
+                <button 
+                  onClick={() => handleDelete(project.id)}
+                  className="px-4 py-2 bg-red-50 text-red-500 rounded-lg"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop Table */}
+        <table className="hidden md:table w-full text-left">
           <thead>
             <tr className="bg-[#f5f5f7] text-apple-text-secondary text-sm uppercase tracking-widest font-bold">
               <th className="px-8 py-5">Project</th>
@@ -218,25 +285,25 @@ export default function ProjectsAdmin() {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-5xl bg-white rounded-[40px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+              className="relative w-full max-w-5xl bg-white rounded-3xl md:rounded-[40px] shadow-2xl overflow-hidden flex flex-col max-h-[95vh] md:max-h-[90vh]"
             >
               {/* Modal Header */}
-              <div className="p-8 border-b border-apple-border flex justify-between items-center bg-[#fbfbfd]">
+              <div className="p-6 md:p-8 border-b border-apple-border flex justify-between items-center bg-[#fbfbfd]">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center text-white">
-                    <Plus className="w-6 h-6" />
+                  <div className="w-8 h-8 md:w-10 md:h-10 bg-black rounded-xl flex items-center justify-center text-white">
+                    <Plus className="w-5 h-5 md:w-6 md:h-6" />
                   </div>
-                  <h2 className="text-2xl font-bold tracking-tight">
-                    {currentProject ? "Edit Project" : "Create New Project"}
+                  <h2 className="text-xl md:text-2xl font-bold tracking-tight">
+                    {currentProject ? "Edit Project" : "New Project"}
                   </h2>
                 </div>
                 <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-[#f5f5f7] rounded-full transition-all">
-                  <X className="w-6 h-6" />
+                  <X className="w-5 h-5 md:w-6 md:h-6" />
                 </button>
               </div>
 
               {/* Modal Body - Dual Input Grid */}
-              <div className="flex-1 overflow-y-auto p-10 space-y-12">
+              <div className="flex-1 overflow-y-auto p-6 md:p-10 space-y-8 md:space-y-12">
                 
                 {/* Title Section */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -247,6 +314,8 @@ export default function ProjectsAdmin() {
                     <input 
                       type="text" 
                       placeholder="e.g. Nova Bank"
+                      value={formData.title_en}
+                      onChange={(e) => setFormData({ ...formData, title_en: e.target.value })}
                       className="w-full px-6 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all font-bold text-lg"
                     />
                   </div>
@@ -257,6 +326,8 @@ export default function ProjectsAdmin() {
                     <input 
                       type="text" 
                       placeholder="vd: Ngân hàng Nova"
+                      value={formData.title_vi}
+                      onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })}
                       className="w-full px-6 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all font-bold text-lg"
                     />
                   </div>
@@ -269,6 +340,8 @@ export default function ProjectsAdmin() {
                     <input 
                       type="text" 
                       placeholder="e.g. FinTech Solution"
+                      value={formData.category_en}
+                      onChange={(e) => setFormData({ ...formData, category_en: e.target.value })}
                       className="w-full px-6 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all"
                     />
                   </div>
@@ -277,6 +350,8 @@ export default function ProjectsAdmin() {
                     <input 
                       type="text" 
                       placeholder="vd: Giải pháp Tài chính"
+                      value={formData.category_vi}
+                      onChange={(e) => setFormData({ ...formData, category_vi: e.target.value })}
                       className="w-full px-6 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all"
                     />
                   </div>
@@ -289,6 +364,8 @@ export default function ProjectsAdmin() {
                     <textarea 
                       rows={4}
                       placeholder="Describe the project impact..."
+                      value={formData.description_en}
+                      onChange={(e) => setFormData({ ...formData, description_en: e.target.value })}
                       className="w-full px-6 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all resize-none"
                     />
                   </div>
@@ -297,6 +374,8 @@ export default function ProjectsAdmin() {
                     <textarea 
                       rows={4}
                       placeholder="Mô tả tầm ảnh hưởng của dự án..."
+                      value={formData.description_vi}
+                      onChange={(e) => setFormData({ ...formData, description_vi: e.target.value })}
                       className="w-full px-6 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all resize-none"
                     />
                   </div>
@@ -304,35 +383,34 @@ export default function ProjectsAdmin() {
 
                 {/* Cloudinary Image Upload Section */}
                 <div className="space-y-4">
-                  <label className="text-xs font-bold uppercase tracking-widest text-apple-text-secondary">Project Cover Image (Cloudinary)</label>
-                  <CldUploadWidget 
-                    uploadPreset="azlabs_cms"
-                    onSuccess={(result: any) => {
-                      setFormData({ ...formData, image_url: result.info.secure_url });
-                    }}
+                  <label className="text-xs font-bold uppercase tracking-widest text-apple-text-secondary">Project Cover Image</label>
+                  <button 
+                    type="button"
+                    onClick={() => setIsUploadModalOpen(true)}
+                    className="w-full h-48 border-2 border-dashed border-apple-border rounded-[32px] flex flex-col items-center justify-center gap-4 hover:bg-[#fbfbfd] hover:border-apple-accent/30 transition-all group overflow-hidden"
                   >
-                    {({ open }) => (
-                      <button 
-                        type="button"
-                        onClick={() => open()}
-                        className="w-full h-48 border-2 border-dashed border-apple-border rounded-[32px] flex flex-col items-center justify-center gap-4 hover:bg-[#fbfbfd] hover:border-apple-accent/30 transition-all group"
-                      >
-                        {formData.image_url ? (
-                          <img src={formData.image_url} alt="Uploaded" className="w-full h-full object-cover rounded-[30px]" />
-                        ) : (
-                          <>
-                            <div className="w-12 h-12 bg-[#f5f5f7] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                              <ImageIcon className="w-6 h-6 text-apple-text-secondary" />
-                            </div>
-                            <div className="text-center">
-                              <div className="font-bold text-apple-text">Click to upload from Cloudinary</div>
-                              <div className="text-sm text-apple-text-secondary">High-quality cinematic images only (JPG, PNG, WEBP)</div>
-                            </div>
-                          </>
-                        )}
-                      </button>
+                    {formData.image_url ? (
+                      <img src={formData.image_url} alt="Uploaded" className="w-full h-full object-cover rounded-[30px]" />
+                    ) : (
+                      <>
+                        <div className="w-12 h-12 bg-[#f5f5f7] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <ImageIcon className="w-6 h-6 text-apple-text-secondary" />
+                        </div>
+                        <div className="text-center">
+                          <div className="font-bold text-apple-text">Click to upload image</div>
+                          <div className="text-sm text-apple-text-secondary">High-quality cinematic images only (JPG, PNG, WEBP)</div>
+                        </div>
+                      </>
                     )}
-                  </CldUploadWidget>
+                  </button>
+
+                  <MediaPicker 
+                    isOpen={isUploadModalOpen}
+                    onClose={() => setIsUploadModalOpen(false)}
+                    onSelect={(url: string) => {
+                      setFormData({ ...formData, image_url: url });
+                    }}
+                  />
                 </div>
               </div>
 

@@ -73,3 +73,48 @@ CREATE TABLE IF NOT EXISTS posts (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+-- 6. Contacts Table (For Form Submissions)
+CREATE TABLE IF NOT EXISTS contacts (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  company TEXT,
+  message TEXT NOT NULL,
+  status TEXT DEFAULT 'new', -- 'new', 'read', 'replied', 'archived'
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 7. Page Views (Analytics)
+CREATE TABLE IF NOT EXISTS page_views (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  path TEXT NOT NULL,
+  referrer TEXT,
+  user_agent TEXT,
+  ip_address TEXT,
+  viewed_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 8. Interaction Events (Analytics)
+CREATE TABLE IF NOT EXISTS interaction_events (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  event_name TEXT NOT NULL,
+  event_category TEXT,
+  event_label TEXT,
+  page_path TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+-- Enable RLS
+ALTER TABLE page_views ENABLE ROW LEVEL SECURITY;
+ALTER TABLE interaction_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE contacts ENABLE ROW LEVEL SECURITY;
+
+-- Allow anyone to insert (for tracking/forms)
+CREATE POLICY "Allow public insert for page_views" ON page_views FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow public insert for interaction_events" ON interaction_events FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow public insert for contacts" ON contacts FOR INSERT WITH CHECK (true);
+
+-- Allow authenticated users to read (for admin dashboard)
+CREATE POLICY "Allow admin read page_views" ON page_views FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "Allow admin read interaction_events" ON interaction_events FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "Allow admin read contacts" ON contacts FOR SELECT USING (auth.role() = 'authenticated');

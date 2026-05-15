@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Search, ImageIcon, Loader2, Check } from "lucide-react";
+import MediaUploadModal from "./MediaUploadModal";
 import { getMedia } from "@/lib/actions/cms";
 
 interface MediaPickerProps {
@@ -15,6 +16,7 @@ export default function MediaPicker({ isOpen, onClose, onSelect }: MediaPickerPr
   const [media, setMedia] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -32,6 +34,13 @@ export default function MediaPicker({ isOpen, onClose, onSelect }: MediaPickerPr
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleUploadSuccess = (result: any) => {
+    loadMedia();
+    // Optionally auto-select the newly uploaded image
+    // onSelect(result.info.secure_url);
+    // onClose();
   };
 
   const filteredMedia = media.filter(item => 
@@ -59,9 +68,23 @@ export default function MediaPicker({ isOpen, onClose, onSelect }: MediaPickerPr
                 <h3 className="text-2xl font-black tracking-tight">Media Library</h3>
                 <p className="text-sm text-apple-text-secondary mt-1 font-medium">Select an asset for your project</p>
               </div>
-              <button onClick={onClose} className="p-3 hover:bg-gray-100 rounded-full transition-all">
-                <X className="w-6 h-6" />
-              </button>
+              <div className="flex items-center gap-4">
+                <button 
+                  onClick={() => setIsUploadModalOpen(true)}
+                  className="px-6 py-2.5 bg-black text-white rounded-full font-bold text-sm hover:opacity-90 transition-all shadow-lg active:scale-95"
+                >
+                  Upload New
+                </button>
+                <button onClick={onClose} className="p-3 hover:bg-gray-100 rounded-full transition-all">
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <MediaUploadModal 
+                isOpen={isUploadModalOpen}
+                onClose={() => setIsUploadModalOpen(false)}
+                onUploadSuccess={handleUploadSuccess}
+              />
             </header>
 
             <div className="p-8 border-b border-apple-border">

@@ -16,7 +16,7 @@ import {
   Database,
   Smartphone
 } from "lucide-react";
-import { CldUploadWidget } from 'next-cloudinary';
+import MediaPicker from "@/components/admin/MediaPicker";
 import { upsertTech, deleteTech } from "@/lib/actions/cms";
 import { createClient } from "@/utils/supabase/client";
 
@@ -28,6 +28,7 @@ export default function TechStackAdmin() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentTech, setCurrentTech] = useState<any>(null);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   const supabase = createClient();
 
@@ -211,19 +212,18 @@ export default function TechStackAdmin() {
                           <ImageIcon className="w-6 h-6 text-gray-300" />
                         )}
                       </div>
-                      <CldUploadWidget
-                        uploadPreset="azlabs_cms"
-                        onSuccess={(result: any) => setFormData({ ...formData, logo_url: result.info.secure_url })}
+                      <button
+                        onClick={() => setIsUploadModalOpen(true)}
+                        className="flex-1 px-6 py-4 bg-white border border-apple-border rounded-2xl font-bold text-sm hover:bg-gray-50 transition-all text-center"
                       >
-                        {({ open }) => (
-                          <button
-                            onClick={() => open()}
-                            className="flex-1 px-6 py-4 bg-white border border-apple-border rounded-2xl font-bold text-sm hover:bg-gray-50 transition-all text-center"
-                          >
-                            Upload Logo
-                          </button>
-                        )}
-                      </CldUploadWidget>
+                        Upload Logo
+                      </button>
+
+                      <MediaPicker 
+                        isOpen={isUploadModalOpen}
+                        onClose={() => setIsUploadModalOpen(false)}
+                        onSelect={(url: string) => setFormData({ ...formData, logo_url: url })}
+                      />
                     </div>
                   </div>
                 </div>

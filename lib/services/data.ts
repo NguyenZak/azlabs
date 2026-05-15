@@ -46,7 +46,7 @@ export const MOCK_SERVICES = [
     title_vi: "Phát triển Web",
     description_en: "High-performance, scalable web applications built with Next.js and React.",
     description_vi: "Ứng dụng web hiệu suất cao, có khả năng mở rộng được xây dựng bằng Next.js và React.",
-    image_url: "/services/web.png",
+    image_url: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1000&auto=format&fit=crop",
     order_index: 0
   },
   {
@@ -55,7 +55,7 @@ export const MOCK_SERVICES = [
     title_vi: "Giải pháp Di động",
     description_en: "Native and cross-platform mobile apps for iOS and Android.",
     description_vi: "Ứng dụng di động bản địa và đa nền tảng cho iOS và Android.",
-    image_url: "/services/mobile.png",
+    image_url: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=1000&auto=format&fit=crop",
     order_index: 1
   },
   {
@@ -64,8 +64,31 @@ export const MOCK_SERVICES = [
     title_vi: "Tích hợp AI",
     description_en: "Custom AI solutions to automate and enhance your business processes.",
     description_vi: "Các giải pháp AI tùy chỉnh để tự động hóa và nâng cao quy trình kinh doanh của bạn.",
-    image_url: "/services/ai.png",
+    image_url: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1000&auto=format&fit=crop",
     order_index: 2
+  }
+];
+
+export const PROJECT_SAMPLES = [
+  {
+    title_en: "Nova Banking App",
+    title_vi: "Ứng dụng Ngân hàng Nova",
+    category_en: "FinTech Solution",
+    category_vi: "Giải pháp Tài chính",
+    description_en: "A cinematic banking experience with real-time analytics.",
+    description_vi: "Trải nghiệm ngân hàng điện ảnh với phân tích thời gian thực.",
+    image_url: "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=1000&auto=format&fit=crop",
+    tags: ["Next.js", "Supabase", "Tailwind"]
+  },
+  {
+    title_en: "Lumina Healthcare",
+    title_vi: "Y tế Lumina",
+    category_en: "HealthTech",
+    category_vi: "Công nghệ Y tế",
+    description_en: "AI-driven patient management platform.",
+    description_vi: "Nền tảng quản lý bệnh nhân hỗ trợ bởi AI.",
+    image_url: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=1000&auto=format&fit=crop",
+    tags: ["React Native", "AI", "PostgreSQL"]
   }
 ];
 
