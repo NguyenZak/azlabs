@@ -111,9 +111,11 @@ const NeuralBackground = () => {
 };
 
 import AnimatedText from "@/components/AnimatedText";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function TechStack({ data = [] }: { data?: any[] }) {
   const [mounted, setMounted] = React.useState(false);
+  const { dict } = useLanguage();
   
   React.useEffect(() => {
     setMounted(true);
@@ -124,16 +126,16 @@ export default function TechStack({ data = [] }: { data?: any[] }) {
   if (!mounted) return null;
 
   return (
-    <section id="solutions" className="py-32 bg-white overflow-hidden relative">
+    <section id="tech-stack" className="py-32 bg-white overflow-hidden relative">
       <NeuralBackground />
       
       <div className="max-w-[1440px] mx-auto px-6 relative z-10 text-center">
         <div className="mb-24">
           <h2 className="text-[48px] md:text-[72px] font-bold tracking-tighter leading-none text-apple-text mb-6">
-            <AnimatedText text="Powered by world-class tech." effect="random" />
+            <AnimatedText text={dict.techStack.title} effect="random" />
           </h2>
           <p className="text-lg md:text-xl text-apple-text-secondary max-w-2xl mx-auto font-light">
-            Building the future with industry-leading infrastructure.
+            {dict.techStack.subtitle}
           </p>
         </div>
 
@@ -155,10 +157,10 @@ export default function TechStack({ data = [] }: { data?: any[] }) {
 
             // Differentiated sizes for organic feel
             const sizes = [
-              "w-28 h-28 md:w-40 md:h-40 z-10",
-              "w-24 h-24 md:w-32 md:h-32 z-20",
-              "w-20 h-20 md:w-28 md:h-28 z-10",
-              "w-16 h-16 md:w-24 md:h-24 z-0",
+              "w-14 h-14 md:w-20 md:h-20 z-10",
+              "w-12 h-12 md:w-16 md:h-16 z-20",
+              "w-10 h-10 md:w-14 md:h-14 z-10",
+              "w-8 h-8 md:w-12 md:h-12 z-0",
             ];
             
             const positions = [
@@ -206,18 +208,17 @@ export default function TechStack({ data = [] }: { data?: any[] }) {
                 }}
                 className={`
                   group flex items-center justify-center 
-                  bg-white/80 backdrop-blur-sm border border-apple-border 
-                  rounded-[24px] md:rounded-[40px] transition-all duration-500
-                  hover:shadow-2xl hover:bg-white hover:rotate-0 hover:z-50
+                  transition-all duration-500
+                  hover:scale-125 hover:rotate-0 hover:z-50
                   ${sizeClass}
                 `}
               >
                 <img 
                   src={logoUrl} 
                   alt={techName}
-                  className="h-1/3 md:h-1/2 w-auto opacity-70 group-hover:opacity-100 transition-all duration-300"
+                  className="h-full w-full object-contain opacity-100 group-hover:drop-shadow-2xl transition-all duration-300"
                 />
-                <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-black text-white text-[9px] font-bold px-3 py-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 uppercase tracking-widest pointer-events-none">
+                <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-black text-white text-[9px] font-bold px-3 py-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 uppercase tracking-widest pointer-events-none whitespace-nowrap">
                   {techName}
                 </div>
               </motion.div>

@@ -12,10 +12,12 @@ import {
   Sparkles, 
   Image as ImageIcon,
   ArrowLeft,
-  ChevronRight
+  ChevronRight,
+  ExternalLink
 } from "lucide-react";
-import { getFeatures, upsertFeature, deleteFeature } from "@/lib/actions/cms";
+import { getFeatures, upsertFeature, deleteFeature, generateAISamples } from "@/lib/actions/cms";
 import MediaPicker from "@/components/admin/MediaPicker";
+import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 
 export default function FeaturesAdmin() {
@@ -52,7 +54,9 @@ export default function FeaturesAdmin() {
 
   const handleStartEdit = (feature?: any) => {
     if (feature) {
-      setFormData(feature);
+      setFormData({
+        ...feature
+      });
     } else {
       setFormData({
         id: undefined,
@@ -94,52 +98,16 @@ export default function FeaturesAdmin() {
 
   const handleSeed = async () => {
     setIsSubmitting(true);
-    const samples = [
-      {
-        title_en: "AI-First Engineering",
-        title_vi: "Kỹ thuật Ưu tiên AI",
-        description_en: "Harnessing the power of Groq Llama 3.3 to build high-performance, intelligent content ecosystems.",
-        description_vi: "Tận dụng sức mạnh của Groq Llama 3.3 để xây dựng hệ sinh thái nội dung thông minh, hiệu suất cao.",
-        image_url: "https://images.unsplash.com/photo-1620712943543-bcc4628c9757?q=80&w=1000&auto=format&fit=crop" // AI Head / Brain
-      },
-      {
-        title_en: "Apple-Grade Aesthetics",
-        title_vi: "Thẩm mỹ Đẳng cấp Apple",
-        description_en: "Minimalist, sleek, and premium UI/UX design standards that resonate with global audiences.",
-        description_vi: "Tiêu chuẩn thiết kế UI/UX tối giản, tinh tế và cao cấp, mang lại sức hút toàn cầu.",
-        image_url: "https://images.unsplash.com/photo-1550009158-9ebf69173e03?q=80&w=1000&auto=format&fit=crop" // Tech interior / clean
-      },
-      {
-        title_en: "Cloud-Native Performance",
-        title_vi: "Hiệu năng Đám mây Tối ưu",
-        description_en: "Scalable infrastructure built with Supabase and AWS, ensuring 99.9% uptime and lightning speed.",
-        description_vi: "Cơ sở hạ tầng có thể mở rộng được xây dựng với Supabase và AWS, đảm bảo tốc độ cực nhanh.",
-        image_url: "https://images.unsplash.com/photo-1558494949-ef010cbdcc51?q=80&w=1000&auto=format&fit=crop" // Server / Network
-      },
-      {
-        title_en: "Cinematic Motion",
-        title_vi: "Chuyển động Điện ảnh",
-        description_en: "High-end GSAP and Framer Motion animations that create a living, breathing digital experience.",
-        description_vi: "Các hiệu ứng chuyển động GSAP và Framer Motion cao cấp tạo nên trải nghiệm kỹ thuật số sống động.",
-        image_url: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=1000&auto=format&fit=crop" // Abstract React / Code flow
-      },
-      {
-        title_en: "Enterprise Security",
-        title_vi: "Bảo mật Doanh nghiệp",
-        description_en: "State-of-the-art RLS (Row Level Security) and encryption to protect your data with zero compromises.",
-        description_vi: "Hệ thống RLS và mã hóa hiện đại nhất để bảo vệ dữ liệu của bạn mà không có bất kỳ sự thỏa hiệp nào.",
-        image_url: "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=1000&auto=format&fit=crop" // Digital security dashboard
-      }
-    ];
-
+    const toastId = toast.loading("AI is architecting premium pillars...");
     try {
+      const samples = await generateAISamples("feature");
       for (const sample of samples) {
         await upsertFeature(sample);
       }
-      toast.success("Successfully seeded 5 premium features!");
+      toast.success("Successfully seeded AI-generated features!", { id: toastId });
       loadFeatures();
     } catch (error) {
-      toast.error("Failed to seed data");
+      toast.error("Failed to generate AI samples", { id: toastId });
     } finally {
       setIsSubmitting(false);
     }
@@ -203,7 +171,7 @@ export default function FeaturesAdmin() {
             
             <div className="p-6 bg-[#f5f5f7] rounded-[32px]">
               <p className="text-xs text-apple-text-secondary leading-relaxed italic">
-                "Features define the soul of the product. Choose a simple, high-contrast image to maintain the premium AZLABS aesthetic."
+                "Features define the soul of the product. Use high-quality, descriptive images to maintain the premium AZLABS aesthetic."
               </p>
             </div>
           </aside>
@@ -302,6 +270,16 @@ export default function FeaturesAdmin() {
               </div>
 
               <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity pr-4">
+                <a 
+                  href="/#features"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="p-4 hover:bg-blue-50 text-blue-500 rounded-2xl transition-all"
+                  title="View on site"
+                >
+                  <ExternalLink className="w-5 h-5" />
+                </a>
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();

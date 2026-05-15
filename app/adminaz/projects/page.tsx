@@ -13,13 +13,14 @@ import {
   Globe,
   Image as ImageIcon,
   X,
-  Loader2
+  Loader2,
+  Languages
 } from "lucide-react";
+import LanguageTabs from "@/components/admin/LanguageTabs";
 import MediaPicker from "@/components/admin/MediaPicker";
 import RichTextEditor from "@/components/admin/RichTextEditor";
-import { upsertProject, deleteProject } from "@/lib/actions/cms";
+import { upsertProject, deleteProject, generateAISamples } from "@/lib/actions/cms";
 import { createClient } from "@/utils/supabase/client";
-import { PROJECT_SAMPLES } from "@/lib/services/data";
 import toast from "react-hot-toast";
 
 export default function ProjectsAdmin() {
@@ -29,6 +30,7 @@ export default function ProjectsAdmin() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentProject, setCurrentProject] = useState<any>(null);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [activeLang, setActiveLang] = useState<"vi" | "en">("vi");
 
   const supabase = createClient();
 
@@ -51,6 +53,8 @@ export default function ProjectsAdmin() {
     description_en: "", description_vi: "",
     details_en: "", details_vi: "",
     image_url: "",
+    client: "",
+    live_url: "",
     tags: [] as string[]
   });
 
@@ -64,6 +68,8 @@ export default function ProjectsAdmin() {
         description_en: project.description_en || "", description_vi: project.description_vi || "",
         details_en: project.details_en || "", details_vi: project.details_vi || "",
         image_url: project.image_url || "",
+        client: project.client || "",
+        live_url: project.live_url || "",
         tags: project.tags || []
       });
     } else {
@@ -72,7 +78,7 @@ export default function ProjectsAdmin() {
         id: "", title_en: "", title_vi: "", category_en: "", category_vi: "",
         description_en: "", description_vi: "", 
         details_en: "", details_vi: "",
-        image_url: "", tags: []
+        image_url: "", client: "", live_url: "", tags: []
       });
     }
     setIsModalOpen(true);
@@ -102,16 +108,17 @@ export default function ProjectsAdmin() {
   };
 
   const handleSeed = async () => {
-    if (!confirm("Seed sample projects?")) return;
     setIsSubmitting(true);
+    const toastId = toast.loading("AI is curating world-class projects...");
     try {
-      for (const sample of PROJECT_SAMPLES) {
+      const samples = await generateAISamples("project");
+      for (const sample of samples) {
         await upsertProject(sample);
       }
-      toast.success("Successfully seeded projects!");
+      toast.success("Successfully seeded AI projects!", { id: toastId });
       fetchProjects();
     } catch (error) {
-      toast.error("Error seeding projects");
+      toast.error("Failed to generate AI samples", { id: toastId });
     } finally {
       setIsSubmitting(false);
     }
@@ -257,6 +264,15 @@ export default function ProjectsAdmin() {
                 </td>
                 <td className="px-8 py-6 text-right">
                   <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <a 
+                      href={`/projects/${project.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 hover:bg-blue-50 text-blue-500 rounded-lg transition-all"
+                      title="View on site"
+                    >
+                      <ExternalLink className="w-5 h-5" />
+                    </a>
                     <button 
                       onClick={() => handleOpenModal(project)}
                       className="p-2 hover:bg-[#f5f5f7] rounded-lg text-apple-text-secondary hover:text-apple-text transition-all"
@@ -302,86 +318,153 @@ export default function ProjectsAdmin() {
                     {currentProject ? "Edit Project" : "New Project"}
                   </h2>
                 </div>
-                <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-[#f5f5f7] rounded-full transition-all">
-                  <X className="w-5 h-5 md:w-6 md:h-6" />
-                </button>
+                <div className="flex items-center gap-2">
+                  <button 
+                    onClick={async () => {
+                      if (!formData.title_en) return toast.error("Please enter an English title first");
+                      const loadingToast = toast.loading("AI is crafting your project story...");
+                      try {
+                        const { generateAIContent } = await import("@/lib/actions/cms");
+                        const result = await generateAIContent(formData.title_en);
+                        setFormData({
+                          ...formData,
+                          description_en: result.en.excerpt,
+                          description_vi: result.vi.excerpt,
+                          details_en: result.en.content,
+                          details_vi: result.vi.content
+                        });
+                        toast.success("Project content generated!");
+                      } catch (err: any) {
+                        toast.error(err.message);
+                      } finally {
+                        toast.dismiss(loadingToast);
+                      }
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-apple-accent text-white rounded-xl text-xs font-bold hover:opacity-90 transition-all shadow-lg"
+                  >
+                    <span className="animate-pulse">✨</span> AI Write
+                  </button>
+                  <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-[#f5f5f7] rounded-full transition-all">
+                    <X className="w-5 h-5 md:w-6 md:h-6" />
+                  </button>
+                </div>
               </div>
 
               {/* Modal Body - Dual Input Grid */}
               <div className="flex-1 overflow-y-auto p-6 md:p-10 space-y-8 md:space-y-12">
                 
-                {/* Title Section */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-apple-text-secondary flex items-center gap-2">
-                      <Globe className="w-3 h-3" /> Title (English)
-                    </label>
-                    <input 
-                      type="text" 
-                      placeholder="e.g. Nova Bank"
-                      value={formData.title_en}
-                      onChange={(e) => setFormData({ ...formData, title_en: e.target.value })}
-                      className="w-full px-6 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all font-bold text-lg"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-apple-text-secondary flex items-center gap-2">
-                      <Globe className="w-3 h-3 text-red-400" /> Tiêu đề (Tiếng Việt)
-                    </label>
-                    <input 
-                      type="text" 
-                      placeholder="vd: Ngân hàng Nova"
-                      value={formData.title_vi}
-                      onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })}
-                      className="w-full px-6 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all font-bold text-lg"
-                    />
-                  </div>
+                <LanguageTabs activeLang={activeLang} onChange={setActiveLang} />
+
+                <div className="space-y-12">
+                  {activeLang === "vi" ? (
+                    <motion.div 
+                      key="vi-fields"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="space-y-8"
+                    >
+                      <div className="grid grid-cols-1 gap-8">
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold uppercase tracking-widest text-apple-text-secondary flex items-center gap-2">
+                            Tiêu đề (Tiếng Việt)
+                          </label>
+                          <input 
+                            type="text" 
+                            placeholder="vd: Ngân hàng Nova"
+                            value={formData.title_vi}
+                            onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })}
+                            className="w-full px-6 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all font-bold text-lg"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold uppercase tracking-widest text-apple-text-secondary">Lĩnh vực (Tiếng Việt)</label>
+                          <input 
+                            type="text" 
+                            placeholder="vd: Giải pháp Tài chính"
+                            value={formData.category_vi}
+                            onChange={(e) => setFormData({ ...formData, category_vi: e.target.value })}
+                            className="w-full px-6 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold uppercase tracking-widest text-apple-text-secondary">Mô tả (Tiếng Việt)</label>
+                          <textarea 
+                            rows={4}
+                            placeholder="Mô tả tầm ảnh hưởng của dự án..."
+                            value={formData.description_vi}
+                            onChange={(e) => setFormData({ ...formData, description_vi: e.target.value })}
+                            className="w-full px-6 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all resize-none"
+                          />
+                        </div>
+                      </div>
+                    </motion.div>
+                  ) : (
+                    <motion.div 
+                      key="en-fields"
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="space-y-8"
+                    >
+                      <div className="grid grid-cols-1 gap-8">
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold uppercase tracking-widest text-apple-text-secondary flex items-center gap-2">
+                            Title (English)
+                          </label>
+                          <input 
+                            type="text" 
+                            placeholder="e.g. Nova Bank"
+                            value={formData.title_en}
+                            onChange={(e) => setFormData({ ...formData, title_en: e.target.value })}
+                            className="w-full px-6 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all font-bold text-lg"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold uppercase tracking-widest text-apple-text-secondary">Category (English)</label>
+                          <input 
+                            type="text" 
+                            placeholder="e.g. FinTech Solution"
+                            value={formData.category_en}
+                            onChange={(e) => setFormData({ ...formData, category_en: e.target.value })}
+                            className="w-full px-6 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold uppercase tracking-widest text-apple-text-secondary">Description (English)</label>
+                          <textarea 
+                            rows={4}
+                            placeholder="Describe the project impact..."
+                            value={formData.description_en}
+                            onChange={(e) => setFormData({ ...formData, description_en: e.target.value })}
+                            className="w-full px-6 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all resize-none"
+                          />
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
                 </div>
 
-                {/* Category Section */}
+                <div className="bg-[#f5f5f7] h-[1px] w-full" />
+
+                {/* Metadata Section: Client & Link */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-apple-text-secondary">Category (English)</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-apple-text-secondary">Client / Partner Name</label>
                     <input 
                       type="text" 
-                      placeholder="e.g. FinTech Solution"
-                      value={formData.category_en}
-                      onChange={(e) => setFormData({ ...formData, category_en: e.target.value })}
+                      placeholder="e.g. Apple Inc. or Tech Global"
+                      value={formData.client}
+                      onChange={(e) => setFormData({ ...formData, client: e.target.value })}
                       className="w-full px-6 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-apple-text-secondary">Lĩnh vực (Tiếng Việt)</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-apple-text-secondary">Live Project URL</label>
                     <input 
-                      type="text" 
-                      placeholder="vd: Giải pháp Tài chính"
-                      value={formData.category_vi}
-                      onChange={(e) => setFormData({ ...formData, category_vi: e.target.value })}
+                      type="url" 
+                      placeholder="https://example.com"
+                      value={formData.live_url}
+                      onChange={(e) => setFormData({ ...formData, live_url: e.target.value })}
                       className="w-full px-6 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all"
-                    />
-                  </div>
-                </div>
-
-                {/* Description Section */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-apple-text-secondary">Description (English)</label>
-                    <textarea 
-                      rows={4}
-                      placeholder="Describe the project impact..."
-                      value={formData.description_en}
-                      onChange={(e) => setFormData({ ...formData, description_en: e.target.value })}
-                      className="w-full px-6 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all resize-none"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-apple-text-secondary">Mô tả (Tiếng Việt)</label>
-                    <textarea 
-                      rows={4}
-                      placeholder="Mô tả tầm ảnh hưởng của dự án..."
-                      value={formData.description_vi}
-                      onChange={(e) => setFormData({ ...formData, description_vi: e.target.value })}
-                      className="w-full px-6 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all resize-none"
                     />
                   </div>
                 </div>
@@ -419,23 +502,27 @@ export default function ProjectsAdmin() {
                 </div>
 
                 {/* Details Section (Rich Text) */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-4">
-                    <label className="text-xs font-bold uppercase tracking-widest text-apple-text-secondary">Full Project Case Study (English)</label>
-                    <RichTextEditor 
-                      content={formData.details_en}
-                      onChange={(html) => setFormData({ ...formData, details_en: html })}
-                      onImageClick={() => setIsUploadModalOpen(true)}
-                    />
-                  </div>
-                  <div className="space-y-4">
-                    <label className="text-xs font-bold uppercase tracking-widest text-apple-text-secondary">Nội dung chi tiết (Tiếng Việt)</label>
-                    <RichTextEditor 
-                      content={formData.details_vi}
-                      onChange={(html) => setFormData({ ...formData, details_vi: html })}
-                      onImageClick={() => setIsUploadModalOpen(true)}
-                    />
-                  </div>
+                <div className="space-y-8">
+                  <h3 className="text-sm font-black uppercase tracking-widest text-apple-text-secondary">Case Study Details</h3>
+                  {activeLang === "vi" ? (
+                    <div className="space-y-4">
+                      <label className="text-xs font-bold uppercase tracking-widest text-apple-text-secondary">Nội dung chi tiết (Tiếng Việt)</label>
+                      <RichTextEditor 
+                        content={formData.details_vi}
+                        onChange={(html) => setFormData({ ...formData, details_vi: html })}
+                        onImageClick={() => setIsUploadModalOpen(true)}
+                      />
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <label className="text-xs font-bold uppercase tracking-widest text-apple-text-secondary">Full Project Case Study (English)</label>
+                      <RichTextEditor 
+                        content={formData.details_en}
+                        onChange={(html) => setFormData({ ...formData, details_en: html })}
+                        onImageClick={() => setIsUploadModalOpen(true)}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
 

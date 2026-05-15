@@ -13,7 +13,8 @@ import {
   MessageSquare,
   User,
   Building,
-  ChevronRight
+  ChevronRight,
+  ExternalLink
 } from "lucide-react";
 import { getContacts, updateContactStatus, deleteContact } from "@/lib/actions/cms";
 import toast from "react-hot-toast";
@@ -78,15 +79,27 @@ export default function ContactsAdmin() {
           <h1 className="text-5xl font-bold tracking-tight text-apple-text">Inquiries</h1>
           <p className="text-apple-text-secondary mt-2 text-lg font-medium">Manage incoming requests and potential leads.</p>
         </div>
-        <div className="relative w-full md:w-80">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-apple-text-secondary" />
-          <input 
-            type="text" 
-            placeholder="Search messages..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-12 pr-6 py-4 bg-white border border-apple-border rounded-2xl focus:ring-2 focus:ring-apple-accent/20 transition-all shadow-sm font-medium"
-          />
+        <div className="flex items-center gap-4 w-full md:w-auto">
+          <a 
+            href="/#contact"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 bg-white border border-apple-border px-6 py-4 rounded-full font-bold hover:bg-apple-bg transition-all shadow-sm text-blue-500 whitespace-nowrap"
+            title="View on site"
+          >
+            <ExternalLink className="w-5 h-5" />
+            View Site
+          </a>
+          <div className="relative w-full md:w-80">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-apple-text-secondary" />
+            <input 
+              type="text" 
+              placeholder="Search messages..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-12 pr-6 py-4 bg-white border border-apple-border rounded-2xl focus:ring-2 focus:ring-apple-accent/20 transition-all shadow-sm font-medium"
+            />
+          </div>
         </div>
       </header>
 

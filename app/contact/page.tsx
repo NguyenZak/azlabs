@@ -20,7 +20,7 @@ export default function ContactPage() {
             {dict.nav.contact}
           </span>
           <h1 className="text-4xl md:text-6xl font-bold text-apple-text tracking-tight">
-            Get in Touch
+            {dict.contact.getInTouch}
           </h1>
         </motion.div>
       </section>
@@ -31,7 +31,7 @@ export default function ContactPage() {
       <section className="px-6 md:px-12 max-w-[1440px] mx-auto py-32 border-t border-apple-border">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
           <div>
-            <h3 className="text-xl font-bold mb-6 text-apple-text">Singapore</h3>
+            <h3 className="text-xl font-bold mb-6 text-apple-text">{dict.contact.offices.singapore}</h3>
             <p className="text-apple-text-secondary leading-relaxed">
               123 Marina Bay Sands<br />
               Singapore 018956<br />
@@ -39,7 +39,7 @@ export default function ContactPage() {
             </p>
           </div>
           <div>
-            <h3 className="text-xl font-bold mb-6 text-apple-text">Vietnam</h3>
+            <h3 className="text-xl font-bold mb-6 text-apple-text">{dict.contact.offices.vietnam}</h3>
             <p className="text-apple-text-secondary leading-relaxed">
               456 Le Loi, District 1<br />
               Ho Chi Minh City, 70000<br />
@@ -47,7 +47,7 @@ export default function ContactPage() {
             </p>
           </div>
           <div>
-            <h3 className="text-xl font-bold mb-6 text-apple-text">USA</h3>
+            <h3 className="text-xl font-bold mb-6 text-apple-text">{dict.contact.offices.usa}</h3>
             <p className="text-apple-text-secondary leading-relaxed">
               789 Sand Hill Road<br />
               Menlo Park, CA 94025<br />

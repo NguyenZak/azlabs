@@ -5,11 +5,26 @@ import { motion } from "framer-motion";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import Link from "next/link";
 import gsap from "gsap";
+import { getAboutContent, getSiteSettings, getTeamMembers } from "@/lib/actions/cms";
 import { ArrowRight, Star, Heart, Target } from "lucide-react";
 
 export default function AboutPage() {
-  const { dict } = useLanguage();
+  const { dict, language } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
+  const [data, setData] = React.useState<any>(null);
+  const [teamMembers, setTeamMembers] = React.useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const [about, team] = await Promise.all([
+        getAboutContent(),
+        getTeamMembers()
+      ]);
+      setData(about);
+      setTeamMembers(team);
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -41,16 +56,15 @@ export default function AboutPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             className="fade-up text-[56px] md:text-[80px] font-bold text-apple-text mb-8 leading-[1.1] tracking-tight"
-          >
-            {dict.about.title}
-          </motion.h1>
+            dangerouslySetInnerHTML={{ __html: data?.[`title_${language}`] || dict.about.title }}
+          />
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             className="fade-up text-apple-text-secondary text-xl md:text-2xl leading-relaxed max-w-2xl"
           >
-            {dict.about.subtitle}
+            {data?.[`subtitle_${language}`] || dict.about.subtitle}
           </motion.p>
         </div>
 
@@ -69,25 +83,30 @@ export default function AboutPage() {
           >
             <div className="aspect-[4/5] bg-apple-bg-secondary rounded-[48px] overflow-hidden">
               <img 
-                src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2669&auto=format&fit=crop" 
+                src={data?.image_url || "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2669&auto=format&fit=crop"} 
                 alt="Our Studio" 
                 className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000"
               />
             </div>
             {/* Floating stats */}
             <div className="absolute bottom-10 -right-10 bg-white p-8 rounded-[32px] shadow-2xl border border-apple-border hidden md:block">
-              <p className="text-4xl font-bold text-apple-text mb-1">50+</p>
-              <p className="text-apple-text-secondary text-sm font-medium">Global Clients</p>
+              <p className="text-4xl font-bold text-apple-text mb-1">
+                {data?.stats?.[0]?.value || "50+"}
+              </p>
+              <p className="text-apple-text-secondary text-sm font-medium">
+                {language === "vi" ? (data?.stats?.[0]?.label_vi || "Dự án") : (data?.stats?.[0]?.label_en || "Global Projects")}
+              </p>
             </div>
           </motion.div>
 
           <div>
             <h2 className="text-4xl md:text-5xl font-bold text-apple-text mb-8">
-              {dict.about.story.title}
+              {data?.[`story_title_${language}`] || dict.about.story.title}
             </h2>
-            <p className="text-apple-text-secondary text-lg md:text-xl leading-relaxed mb-8">
-              {dict.about.story.content}
-            </p>
+            <div 
+              className="text-apple-text-secondary text-lg md:text-xl leading-relaxed mb-8 prose prose-apple"
+              dangerouslySetInnerHTML={{ __html: data?.[`story_content_${language}`] || dict.about.story.content }}
+            />
             <div className="w-20 h-[2px] bg-apple-accent" />
           </div>
         </div>
@@ -97,9 +116,9 @@ export default function AboutPage() {
       <section className="bg-apple-bg-secondary py-40 px-6">
         <div className="max-w-[1440px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
-            {dict.about.values.map((value: any, index: number) => (
+            {(data?.values || dict.about.values).map((value: any, index: number) => (
               <motion.div
-                key={value.title}
+                key={index}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -109,9 +128,11 @@ export default function AboutPage() {
                 <div className="w-16 h-16 rounded-2xl bg-apple-bg-secondary flex items-center justify-center text-apple-accent mb-8">
                   {index === 0 ? <Star className="w-8 h-8" /> : index === 1 ? <Target className="w-8 h-8" /> : <Heart className="w-8 h-8" />}
                 </div>
-                <h3 className="text-2xl font-bold text-apple-text mb-4">{value.title}</h3>
+                <h3 className="text-2xl font-bold text-apple-text mb-4">
+                  {value?.[`title_${language}`] || value.title}
+                </h3>
                 <p className="text-apple-text-secondary leading-relaxed">
-                  {value.description}
+                  {value?.[`description_${language}`] || value.description}
                 </p>
               </motion.div>
             ))}
@@ -125,11 +146,12 @@ export default function AboutPage() {
           <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
           <div className="relative z-10">
             <h2 className="text-3xl md:text-5xl font-bold mb-8">
-              {dict.about.mission.title}
+              {data?.[`mission_title_${language}`] || dict.about.mission.title}
             </h2>
-            <p className="text-white/60 text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed">
-              {dict.about.mission.content}
-            </p>
+            <div 
+              className="text-white/60 text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: data?.[`mission_content_${language}`] || dict.about.mission.content }}
+            />
           </div>
         </div>
       </section>
@@ -157,9 +179,9 @@ export default function AboutPage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {dict.about.team.members.map((member: any, index: number) => (
+          {(teamMembers.length > 0 ? teamMembers : dict.about.team.members).map((member: any, index: number) => (
             <motion.div
-              key={member.name}
+              key={member.name || index}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -177,7 +199,7 @@ export default function AboutPage() {
                 {member.name}
               </h3>
               <p className="text-apple-text-secondary font-medium uppercase tracking-wider text-sm">
-                {member.role}
+                {language === "vi" ? (member.role_vi || member.role) : (member.role_en || member.role)}
               </p>
             </motion.div>
           ))}
@@ -187,7 +209,7 @@ export default function AboutPage() {
       {/* Final CTA */}
       <section className="px-6 md:px-12 max-w-[1440px] mx-auto text-center pb-20">
         <h2 className="text-3xl md:text-4xl font-bold text-apple-text mb-8">
-          Join us on our journey.
+          {dict.about.journey}
         </h2>
         <Link
           href="#contact"

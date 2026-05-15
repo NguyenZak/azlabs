@@ -192,14 +192,25 @@ export const FuturisticGlobe = () => {
       window.removeEventListener("resize", handleResize);
       observer.disconnect();
       cancelAnimationFrame(frameId);
-      if (containerRef.current) {
+      
+      if (containerRef.current && renderer.domElement) {
         containerRef.current.removeChild(renderer.domElement);
       }
+
+      // Dispose of everything
       scene.clear();
-      renderer.dispose();
       geometry.dispose();
+      wireframeGeom.dispose();
       plexusGeometry.dispose();
       lineGeometry.dispose();
+      
+      material.dispose();
+      wireframeMat.dispose();
+      lineMaterial.dispose();
+      (plexusPoints.material as THREE.Material).dispose();
+      
+      renderer.dispose();
+      renderer.forceContextLoss(); // Tell the browser to free this context immediately
     };
   }, []);
 

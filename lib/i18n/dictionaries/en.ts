@@ -6,7 +6,17 @@ export const en = {
     solutions: "Solutions",
     about: "About",
     contact: "Contact",
-    cta: "Start a Project"
+    cta: "Start a Project",
+    studio: "Studio",
+    digitalStudio: "Digital Studio",
+    company: "Company",
+    social: "Social",
+    careers: "Careers",
+    press: "Press",
+    privacy: "Privacy Policy",
+    terms: "Terms of Service",
+    cookies: "Cookie Policy",
+    copyrightNotice: "All rights reserved."
   },
   hero: {
     badge: "AZLABS",
@@ -105,7 +115,19 @@ export const en = {
         details: "Zenith is a high-end e-commerce platform that combines cinematic visuals with a frictionless checkout process.",
         tags: ["E-commerce", "Luxury", "React"]
       }
-    ]
+    ],
+    archive: "Digital Archive",
+    elevateTitle: "Elevating the Standard.",
+    scroll: "Scroll to navigate",
+    nextLevel: "Ready for the Next Level?",
+    getInTouch: "Get in Touch",
+    essenceTitle: "Focusing on the Essence.",
+    essenceSubtitle: "Our projects are more than just software. They are strategic assets designed to create long-term value and competitive advantages.",
+    satisfaction: "Satisfaction",
+    delivered: "Delivered",
+    awards: "Awards",
+    growth: "Growth",
+    noProjects: "No projects found."
   },
   solutions: {
     title: "Industry-Specific Solutions",
@@ -139,7 +161,23 @@ export const en = {
         icon: "Activity",
         features: ["Telehealth SDK", "Electronic Health Records", "Remote Monitoring"]
       }
+    ],
+    category: "Solution",
+    engineeringTitle: "Engineering Excellence",
+    engineeringSubtitle: "How we turn complex challenges into seamless digital experiences.",
+    methodology: [
+      { title: "Security First", desc: "Bank-grade security protocols for every solution." },
+      { title: "Scalability", desc: "Built to handle millions of users without friction." },
+      { title: "AI-Powered", desc: "Leveraging custom LLMs for business intelligence." }
     ]
+  },
+  techStack: {
+    title: "Powered by world-class tech.",
+    subtitle: "Building the future with industry-leading infrastructure."
+  },
+  features: {
+    title: "Innovation Pillars.",
+    items: []
   },
   about: {
     title: "The Art of Crafting Digital Excellence",
@@ -191,7 +229,12 @@ export const en = {
           image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=2574&auto=format&fit=crop"
         }
       ]
-    }
+    },
+    journey: "Join us on our journey."
+  },
+  testimonials: {
+    title: "What our partners say.",
+    subtitle: "Trusted by visionary teams worldwide."
   },
   contact: {
     title: "Let's build something exceptional.",
@@ -205,7 +248,19 @@ export const en = {
       companyPlaceholder: "Apple Inc.",
       message: "Project Details",
       messagePlaceholder: "Tell us about your vision...",
-      submit: "Start Your Project"
+      submit: "Start Your Project",
+      sending: "Sending...",
+      successTitle: "Success!",
+      successMessage: "Thank you for your interest in AZLABS. We've received your message and will get back to you soon.",
+      close: "Close",
+      errorRequired: "Please fill in all required fields.",
+      errorGeneric: "An error occurred. Please try again later."
+    },
+    getInTouch: "Get in Touch",
+    offices: {
+      singapore: "Singapore",
+      vietnam: "Vietnam",
+      usa: "USA"
     }
   },
   magazine: {
@@ -221,7 +276,15 @@ export const en = {
     ctaTitle: "Have a project in mind?",
     ctaSubtitle: "Let's build something exceptional together. Our team is ready to bring your vision to life.",
     ctaPrimary: "Start a Project",
-    ctaSecondary: "Read More Articles"
+    ctaSecondary: "Read More Articles",
+    insights: "Insights & Ideas",
+    subtitle: "Explore our latest thinking on technology, design, and digital transformation.",
+    viewAllArticles: "View All Articles",
+    featured: "Featured",
+    search: "Search articles...",
+    noArticles: "No articles found.",
+    readArticle: "Read Article",
+    readMore: "Read More"
   }
 };
 

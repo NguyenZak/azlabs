@@ -6,7 +6,7 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 import AnimatedText from "@/components/AnimatedText";
 
 export default function Testimonials({ data = [] }: { data?: any[] }) {
-  const { language } = useLanguage();
+  const { dict, language } = useLanguage();
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
@@ -53,17 +53,17 @@ export default function Testimonials({ data = [] }: { data?: any[] }) {
   }));
 
   return (
-    <section className="py-32 bg-[#f5f5f7] overflow-hidden">
+    <section id="testimonials" className="py-32 bg-[#f5f5f7] overflow-hidden">
       <div className="max-w-[1440px] mx-auto px-6 md:px-12">
         <div className="text-center mb-10">
           <h2 className="text-[32px] md:text-[56px] font-bold tracking-tight text-apple-text">
             <AnimatedText 
-              text={language === "vi" ? "Đánh giá từ đối tác." : "What our partners say."} 
+              text={dict.testimonials.title} 
               effect="random" 
             />
           </h2>
           <p className="text-apple-text-secondary text-lg md:text-xl mt-4">
-            {language === "vi" ? "Được tin tưởng bởi các đội ngũ tiên phong toàn cầu." : "Trusted by visionary teams worldwide."}
+            {dict.testimonials.subtitle}
           </p>
         </div>
         

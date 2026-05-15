@@ -71,127 +71,167 @@ export default async function ProjectDetail({ params }: { params: Promise<{ id: 
   });
 
   return (
-    <main className="min-h-screen bg-white font-apple">
-      {/* ── Breadcrumb ── */}
-      <div className="max-w-[1200px] mx-auto px-6 pt-32 pb-4">
-        <nav className="flex items-center gap-2 text-[12px] text-apple-text-secondary font-medium tracking-wide">
-          <Link href="/" className="hover:underline transition-colors uppercase tracking-widest">{dict.magazine.breadcrumbHome}</Link>
+    <main className="min-h-screen bg-white font-apple pb-20">
+      {/* ── Fixed Reading Progress ── */}
+      <div className="fixed top-0 left-0 w-full h-1 bg-apple-accent z-[100] origin-left scale-x-0" id="reading-progress" />
+
+      {/* ── Top Navigation / Breadcrumb ── */}
+      <div className="max-w-[1440px] mx-auto px-6 pt-32 pb-4">
+        <nav className="flex items-center gap-2 text-[10px] md:text-[12px] text-apple-text-secondary font-bold tracking-widest uppercase">
+          <Link href="/projects" className="hover:text-apple-accent transition-colors">Portfolio</Link>
           <ChevronRight className="w-2.5 h-2.5 opacity-30" />
-          <Link href="/projects" className="hover:underline transition-colors uppercase tracking-widest">Portfolio</Link>
-          <ChevronRight className="w-2.5 h-2.5 opacity-30" />
-          <span className="text-apple-text truncate uppercase tracking-widest opacity-50">{title}</span>
+          <span className="text-apple-text truncate opacity-50">{title}</span>
         </nav>
       </div>
 
-      {/* ── Project Header ── */}
-      <header className="max-w-[1200px] mx-auto px-6 pt-8 pb-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-end">
-          <div className="space-y-6">
-            <span className="text-apple-accent font-bold tracking-[0.2em] uppercase text-sm block">
-              {category}
-            </span>
-            <h1 className="text-[48px] md:text-[64px] lg:text-[80px] font-bold tracking-tight leading-[1.05] text-apple-text font-apple-display">
-              {title}
-            </h1>
+      {/* ── Project Title Section ── */}
+      <header className="max-w-[1440px] mx-auto px-6 pt-12 pb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24">
+          <div className="lg:col-span-8 space-y-8">
+             <div className="flex items-center gap-3">
+                <span className="px-4 py-1 bg-apple-accent text-white rounded-full text-[10px] font-bold uppercase tracking-widest leading-none">
+                  {category}
+                </span>
+                <span className="text-apple-text-secondary text-[12px] font-medium uppercase tracking-widest">Case Study</span>
+             </div>
+             <h1 className="text-5xl md:text-8xl lg:text-9xl font-bold tracking-tight text-apple-text leading-[0.9] font-apple-display">
+                {title}
+             </h1>
           </div>
-          
-          <div className="space-y-8 pb-4">
-            <p className="text-[21px] md:text-[24px] text-apple-text-secondary leading-relaxed font-medium tracking-tight">
-              {description}
-            </p>
-            
-            <div className="flex flex-wrap gap-8 pt-4">
-              <div className="space-y-1">
-                <span className="text-[10px] font-bold text-apple-text-secondary uppercase tracking-widest block">Date</span>
-                <span className="text-sm font-bold text-apple-text">{date}</span>
-              </div>
-              <div className="space-y-1">
-                <span className="text-[10px] font-bold text-apple-text-secondary uppercase tracking-widest block">Role</span>
-                <span className="text-sm font-bold text-apple-text">Design & Development</span>
-              </div>
-              {project.tags && project.tags.length > 0 && (
-                <div className="space-y-1">
-                  <span className="text-[10px] font-bold text-apple-text-secondary uppercase tracking-widest block">Stack</span>
-                  <div className="flex gap-2">
-                    {project.tags.map((tag: string) => (
-                      <span key={tag} className="text-sm font-bold text-apple-text px-2 py-0.5 bg-apple-bg-secondary rounded-md">{tag}</span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
+          <div className="lg:col-span-4 flex flex-col justify-end">
+             <p className="text-xl md:text-2xl text-apple-text-secondary leading-relaxed font-medium">
+                {description}
+             </p>
           </div>
         </div>
       </header>
 
-      {/* ── Hero Image ── */}
+      {/* ── Hero Showcase ── */}
       {project.image_url && (
-        <div className="max-w-[1440px] mx-auto px-6 mb-32">
-          <div className="aspect-[16/9] rounded-[48px] overflow-hidden shadow-2xl border border-apple-border relative group">
+        <section className="max-w-[1440px] mx-auto px-6 mb-32">
+          <div className="aspect-[21/9] md:aspect-[21/9] rounded-[48px] overflow-hidden shadow-2xl border border-apple-border relative group">
             <img
               src={project.image_url}
               alt={title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[2s]"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[3s] ease-out"
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
           </div>
-        </div>
+        </section>
       )}
 
-      {/* ── Project Details ── */}
-      <section className="max-w-[800px] mx-auto px-6 pb-32">
-        {details ? (
-          <div
-            className="
-              font-apple
-              prose prose-xl max-w-none
-              prose-p:text-[21px] prose-p:md:text-[24px] prose-p:leading-[1.47] prose-p:text-apple-text prose-p:tracking-[-0.011em] prose-p:mb-[32px] prose-p:font-normal
-              prose-headings:tracking-tight prose-headings:font-bold prose-headings:text-apple-text
-              prose-h2:text-[36px] prose-h2:md:text-[42px] prose-h2:mt-20 prose-h2:mb-10 prose-h2:leading-[1.1] prose-h2:tracking-tight
-              prose-h3:text-[28px] prose-h3:md:text-[32px] prose-h3:mt-16 prose-h3:mb-6 prose-h3:leading-[1.2] prose-h3:tracking-tight
-              prose-blockquote:border-l-[4px] prose-blockquote:border-apple-accent
-              prose-blockquote:bg-[#f5f5f7] prose-blockquote:p-12 prose-blockquote:rounded-[40px]
-              prose-blockquote:not-italic prose-blockquote:my-16 prose-blockquote:text-apple-text
-              prose-strong:text-apple-text prose-strong:font-bold
-              prose-a:text-apple-accent prose-a:no-underline prose-a:font-medium
-              hover:prose-a:underline
-              prose-img:rounded-[32px] prose-img:my-20 prose-img:w-full prose-img:shadow-xl
-              prose-ul:my-10 prose-li:my-4 prose-li:leading-relaxed prose-li:text-[21px] prose-li:md:text-[24px] prose-li:tracking-[-0.011em]
-            "
-            dangerouslySetInnerHTML={{ __html: details }}
-          />
-        ) : (
-          <div className="text-center py-20 space-y-8">
-            <div className="w-20 h-20 bg-apple-bg-secondary rounded-full flex items-center justify-center mx-auto">
-              <Clock className="w-8 h-8 text-apple-text-secondary opacity-30" />
+      {/* ── Executive Brief (Metadata Grid) ── */}
+      <section className="max-w-[1440px] mx-auto px-6 mb-32">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-16 p-12 bg-[#f5f5f7] rounded-[48px]">
+          <div className="space-y-3">
+             <span className="text-[10px] font-bold text-apple-text-secondary uppercase tracking-[0.2em] block">Client</span>
+             <span className="text-lg md:text-xl font-bold text-apple-text">{project.client || "Global Partner"}</span>
+          </div>
+          <div className="space-y-3">
+             <span className="text-[10px] font-bold text-apple-text-secondary uppercase tracking-[0.2em] block">Year</span>
+             <span className="text-lg md:text-xl font-bold text-apple-text">{date}</span>
+          </div>
+          <div className="space-y-3">
+             <span className="text-[10px] font-bold text-apple-text-secondary uppercase tracking-[0.2em] block">Services</span>
+             <span className="text-lg md:text-xl font-bold text-apple-text">Web, AI & Design</span>
+          </div>
+          <div className="space-y-3">
+             <span className="text-[10px] font-bold text-apple-text-secondary uppercase tracking-[0.2em] block">Link</span>
+             {project.live_url ? (
+               <a href={project.live_url} target="_blank" className="text-lg md:text-xl font-bold text-apple-accent hover:underline flex items-center gap-2">
+                 Live Preview <ExternalLink className="w-4 h-4" />
+               </a>
+             ) : (
+               <span className="text-lg md:text-xl font-bold text-apple-text opacity-30 italic">Proprietary</span>
+             )}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Main Case Study Content ── */}
+      <section className="max-w-[1440px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-24">
+        <aside className="lg:col-span-4 space-y-16">
+          <div className="sticky top-32 space-y-12">
+            <div className="space-y-6">
+              <h3 className="text-sm font-bold text-apple-text uppercase tracking-widest border-b border-apple-border pb-4">Technology Stack</h3>
+              <div className="flex flex-wrap gap-3">
+                {(project.tags || ["Next.js", "AI", "Tailwind", "Supabase"]).map((tag: string) => (
+                  <span key={tag} className="px-4 py-2 bg-[#f5f5f7] rounded-xl text-sm font-bold text-apple-text hover:bg-black hover:text-white transition-all cursor-default">
+                    {tag}
+                  </span>
+                ))}
+              </div>
             </div>
-            <div className="space-y-4">
-              <h2 className="text-3xl font-bold tracking-tight">Case Study in Progress</h2>
-              <p className="text-apple-text-secondary text-lg max-w-md mx-auto">
-                We're currently documenting the full journey of this project. Check back soon for the complete deep dive.
-              </p>
+
+            <div className="space-y-6">
+              <h3 className="text-sm font-bold text-apple-text uppercase tracking-widest border-b border-apple-border pb-4">Key Achievements</h3>
+              <ul className="space-y-4">
+                 {[
+                   "User Engagement +45%",
+                   "Load Time Optimization",
+                   "Intuitive UX Architecture",
+                   "Enterprise-grade Security"
+                 ].map(item => (
+                   <li key={item} className="flex items-center gap-3 text-apple-text-secondary text-sm font-medium">
+                      <div className="w-1.5 h-1.5 bg-apple-accent rounded-full" />
+                      {item}
+                   </li>
+                 ))}
+              </ul>
             </div>
           </div>
-        )}
+        </aside>
+
+        <div className="lg:col-span-8">
+          <div className="space-y-16">
+            {/* The Story / Content */}
+            <article
+              className="
+                font-apple
+                prose prose-2xl max-w-none
+                prose-p:text-[21px] prose-p:md:text-[24px] prose-p:leading-[1.5] prose-p:text-apple-text prose-p:tracking-[-0.011em] prose-p:mb-[32px] prose-p:font-normal
+                prose-headings:tracking-tight prose-headings:font-bold prose-headings:text-apple-text
+                prose-h2:text-[36px] prose-h2:md:text-[56px] prose-h2:mt-24 prose-h2:mb-12 prose-h2:leading-[1] prose-h2:tracking-tighter
+                prose-h3:text-[28px] prose-h3:md:text-[32px] prose-h3:mt-16 prose-h3:mb-8 prose-h3:leading-[1.2] prose-h3:tracking-tight
+                prose-blockquote:border-l-[4px] prose-blockquote:border-apple-accent
+                prose-blockquote:bg-[#f5f5f7] prose-blockquote:p-12 prose-blockquote:rounded-[48px]
+                prose-blockquote:not-italic prose-blockquote:my-20 prose-blockquote:text-apple-text
+                prose-strong:text-apple-text prose-strong:font-bold
+                prose-img:rounded-[48px] prose-img:my-24 prose-img:w-full prose-img:shadow-[0_40px_80px_rgba(0,0,0,0.1)]
+                prose-ul:my-10 prose-li:my-4 prose-li:leading-relaxed prose-li:text-[21px] prose-li:md:text-[24px]
+              "
+              dangerouslySetInnerHTML={{ __html: details }}
+            />
+
+            {!details && (
+              <div className="p-16 bg-[#f5f5f7] rounded-[48px] text-center space-y-6">
+                <Clock className="w-12 h-12 mx-auto text-apple-accent opacity-20" />
+                <h3 className="text-3xl font-bold tracking-tight">Compiling Success...</h3>
+                <p className="text-apple-text-secondary text-lg max-w-md mx-auto">
+                  We're currently documenting the full strategy and implementation details for this project.
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
       </section>
 
       {/* ── Related Projects ── */}
       {relatedProjects && relatedProjects.length > 0 && (
-        <section className="bg-[#fbfbfd] py-40">
-          <div className="max-w-[1440px] mx-auto px-6 md:px-12">
-            <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
+        <section className="bg-[#fbfbfd] mt-40 py-40 border-t border-apple-border">
+          <div className="max-w-[1440px] mx-auto px-6">
+            <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
               <div className="space-y-4">
-                <span className="text-apple-accent font-bold tracking-[0.2em] uppercase text-sm block">
-                  More Work
-                </span>
-                <h2 className="text-5xl md:text-7xl font-bold tracking-tighter text-apple-text leading-none">
-                  Exploration<br />Never Ends.
+                <span className="text-apple-accent font-bold tracking-[0.3em] uppercase text-xs block">Portfolio</span>
+                <h2 className="text-6xl md:text-8xl font-bold tracking-tighter text-apple-text leading-none">
+                  Discover<br />More Impact.
                 </h2>
               </div>
               <Link
                 href="/projects"
-                className="group flex items-center gap-3 px-8 py-4 bg-black text-white rounded-full font-bold hover:bg-apple-accent transition-all text-lg shadow-xl"
+                className="group flex items-center gap-4 px-10 py-5 bg-black text-white rounded-full font-bold hover:bg-apple-accent transition-all text-xl shadow-2xl"
               >
-                View Full Archive <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                Full Portfolio <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
 
@@ -201,30 +241,23 @@ export default async function ProjectDetail({ params }: { params: Promise<{ id: 
                 const rCategory = lang === "en" ? related.category_en : related.category_vi;
 
                 return (
-                  <Link key={related.id} href={`/projects/${related.id}`} className="group block">
-                    <div className="space-y-8">
-                      <div className="aspect-[16/10] overflow-hidden rounded-[40px] bg-white border border-apple-border shadow-sm group-hover:shadow-2xl transition-all duration-700">
-                        {related.image_url ? (
-                          <img
-                            src={related.image_url}
-                            alt={rTitle}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-apple-accent/5 to-purple-500/5 flex items-center justify-center">
-                            <span className="text-4xl font-black text-apple-text/5">AZ</span>
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="space-y-3 px-2">
-                        <span className="text-xs text-apple-accent font-bold uppercase tracking-widest block">
-                          {rCategory}
-                        </span>
-                        <h3 className="text-2xl font-bold tracking-tight text-apple-text group-hover:text-apple-accent transition-colors leading-tight">
-                          {rTitle}
-                        </h3>
-                      </div>
+                  <Link key={related.id} href={`/projects/${related.id}`} className="group block space-y-8">
+                    <div className="aspect-[16/10] overflow-hidden rounded-[48px] bg-white border border-apple-border group-hover:shadow-[0_40px_80px_rgba(0,0,0,0.15)] transition-all duration-700">
+                      {related.image_url ? (
+                        <img
+                          src={related.image_url}
+                          alt={rTitle}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-[#f5f5f7] flex items-center justify-center">
+                          <span className="text-4xl font-black text-black/5">AZ</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="px-4 space-y-3">
+                      <span className="text-[10px] text-apple-accent font-bold uppercase tracking-[0.2em] block">{rCategory}</span>
+                      <h3 className="text-3xl font-bold tracking-tight text-apple-text group-hover:text-apple-accent transition-colors leading-tight">{rTitle}</h3>
                     </div>
                   </Link>
                 );
@@ -234,17 +267,20 @@ export default async function ProjectDetail({ params }: { params: Promise<{ id: 
         </section>
       )}
 
-      {/* ── CTA ── */}
-      <section className="py-40 px-6">
-        <div className="max-w-5xl mx-auto text-center space-y-12">
-          <h2 className="text-5xl md:text-8xl font-bold tracking-tighter leading-none">
-            Have a project<br />in mind?
+      {/* ── High Impact CTA ── */}
+      <section className="py-60 px-6 bg-white relative overflow-hidden">
+        <div className="max-w-5xl mx-auto text-center space-y-16 relative z-10">
+          <h2 className="text-6xl md:text-9xl font-bold tracking-tighter leading-[0.8] text-apple-text">
+            Start your<br />own journey.
           </h2>
+          <p className="text-xl md:text-3xl text-apple-text-secondary max-w-2xl mx-auto font-medium">
+             Ready to transform your vision into a world-class digital reality?
+          </p>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-4 px-12 py-6 bg-apple-accent text-white rounded-full font-bold text-2xl hover:scale-105 transition-all shadow-2xl shadow-apple-accent/20"
+            className="inline-flex items-center gap-6 px-16 py-8 bg-apple-accent text-white rounded-full font-bold text-3xl hover:scale-105 transition-all shadow-[0_20px_40px_rgba(0,113,227,0.3)]"
           >
-            Let's build it <MoveRight className="w-8 h-8" />
+            Work with us <MoveRight className="w-10 h-10" />
           </Link>
         </div>
       </section>

@@ -14,7 +14,8 @@ import {
   Link as LinkIcon, 
   Code,
   Send,
-  Clock
+  Clock,
+  ExternalLink
 } from "lucide-react";
 import MediaPicker from "@/components/admin/MediaPicker";
 import { getSiteSettings, upsertSiteSettings } from "@/lib/actions/cms";
@@ -93,14 +94,26 @@ export default function AdminSettingsPage() {
           <h1 className="text-4xl font-bold tracking-tight text-apple-text">Site Settings</h1>
           <p className="text-apple-text-secondary mt-2 text-lg">Manage global configurations, branding, and contact info.</p>
         </div>
-        <button
-          onClick={handleSave}
-          disabled={isSaving}
-          className="flex items-center gap-2 bg-black text-white px-8 py-4 rounded-full font-bold hover:bg-apple-accent transition-all disabled:opacity-50 shadow-xl"
-        >
-          {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
-          {isSaving ? "Saving..." : "Save Settings"}
-        </button>
+        <div className="flex gap-4">
+          <a 
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 bg-white border border-apple-border px-6 py-4 rounded-full font-bold hover:bg-apple-bg transition-all shadow-sm text-blue-500 whitespace-nowrap"
+            title="View on site"
+          >
+            <ExternalLink className="w-5 h-5" />
+            View Site
+          </a>
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="flex items-center gap-2 bg-black text-white px-8 py-4 rounded-full font-bold hover:bg-apple-accent transition-all disabled:opacity-50 shadow-xl"
+          >
+            {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+            {isSaving ? "Saving..." : "Save Settings"}
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">

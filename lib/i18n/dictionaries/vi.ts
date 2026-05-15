@@ -8,7 +8,17 @@ export const vi: Dictionary = {
     solutions: "Giải pháp",
     about: "Về chúng tôi",
     contact: "Liên hệ",
-    cta: "Bắt đầu dự án"
+    cta: "Bắt đầu dự án",
+    studio: "Studio",
+    digitalStudio: "Digital Studio",
+    company: "Công ty",
+    social: "Mạng xã hội",
+    careers: "Tuyển dụng",
+    press: "Báo chí",
+    privacy: "Chính sách bảo mật",
+    terms: "Điều khoản dịch vụ",
+    cookies: "Chính sách Cookie",
+    copyrightNotice: "Bản quyền đã được bảo hộ."
   },
   hero: {
     badge: "AZLABS",
@@ -107,7 +117,19 @@ export const vi: Dictionary = {
         details: "Zenith là một nền tảng thương mại điện tử cao cấp kết hợp hình ảnh điện ảnh với quy trình thanh toán không ma sát.",
         tags: ["E-commerce", "Xa xỉ", "React"]
       }
-    ]
+    ],
+    archive: "Kho lưu trữ số",
+    elevateTitle: "Nâng tầm tiêu chuẩn.",
+    scroll: "Cuộn để khám phá",
+    nextLevel: "Sẵn sàng cho tầm cao mới?",
+    getInTouch: "Liên hệ ngay",
+    essenceTitle: "Tập trung vào giá trị cốt lõi.",
+    essenceSubtitle: "Các dự án của chúng tôi không chỉ là phần mềm. Chúng là những tài sản chiến lược được thiết kế để tạo ra giá trị lâu dài và lợi thế cạnh tranh.",
+    satisfaction: "Sự hài lòng",
+    delivered: "Đã bàn giao",
+    awards: "Giải thưởng",
+    growth: "Tăng trưởng",
+    noProjects: "Không tìm thấy dự án nào."
   },
   solutions: {
     title: "Giải pháp theo ngành nghề",
@@ -141,7 +163,23 @@ export const vi: Dictionary = {
         icon: "Activity",
         features: ["SDK khám bệnh từ xa", "Hồ sơ sức khỏe điện tử", "Giám sát từ xa"]
       }
+    ],
+    category: "Giải pháp",
+    engineeringTitle: "Kỹ thuật xuất sắc",
+    engineeringSubtitle: "Cách chúng tôi biến những thách thức phức tạp thành trải nghiệm kỹ thuật số liền mạch.",
+    methodology: [
+      { title: "Bảo mật hàng đầu", desc: "Các giao thức bảo mật cấp ngân hàng cho mọi giải pháp." },
+      { title: "Khả năng mở rộng", desc: "Được xây dựng để xử lý hàng triệu người dùng mà không có ma sát." },
+      { title: "Sức mạnh từ AI", desc: "Tận dụng các LLM tùy chỉnh cho trí tuệ doanh nghiệp." }
     ]
+  },
+  techStack: {
+    title: "Được vận hành bởi công nghệ hàng đầu thế giới.",
+    subtitle: "Xây dựng tương lai với hạ tầng dẫn đầu ngành."
+  },
+  features: {
+    title: "Trụ cột Đổi mới.",
+    items: []
   },
   about: {
     title: "Nghệ thuật kiến tạo sự xuất sắc về kỹ thuật số",
@@ -193,7 +231,12 @@ export const vi: Dictionary = {
           image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=2574&auto=format&fit=crop"
         }
       ]
-    }
+    },
+    journey: "Đồng hành cùng chúng tôi trên hành trình này."
+  },
+  testimonials: {
+    title: "Đánh giá từ đối tác.",
+    subtitle: "Được tin tưởng bởi các đội ngũ tiên phong toàn cầu."
   },
   contact: {
     title: "Hãy cùng tạo nên điều phi thường.",
@@ -207,7 +250,19 @@ export const vi: Dictionary = {
       companyPlaceholder: "Apple Inc.",
       message: "Chi tiết dự án",
       messagePlaceholder: "Chia sẻ tầm nhìn của bạn với chúng tôi...",
-      submit: "Bắt đầu dự án"
+      submit: "Bắt đầu dự án",
+      sending: "Đang gửi...",
+      successTitle: "Gửi thành công!",
+      successMessage: "Cảm ơn bạn đã quan tâm đến AZLABS. Chúng tôi đã nhận được thông tin và sẽ phản hồi cho bạn trong thời gian sớm nhất.",
+      close: "Đóng",
+      errorRequired: "Vui lòng điền đầy đủ các thông tin bắt buộc.",
+      errorGeneric: "Có lỗi xảy ra khi gửi tin nhắn. Vui lòng thử lại sau."
+    },
+    getInTouch: "Liên hệ với chúng tôi",
+    offices: {
+      singapore: "Singapore",
+      vietnam: "Việt Nam",
+      usa: "Hoa Kỳ"
     }
   },
   magazine: {
@@ -223,6 +278,14 @@ export const vi: Dictionary = {
     ctaTitle: "Bạn có ý tưởng cho dự án?",
     ctaSubtitle: "Hãy cùng tạo nên điều phi thường. Đội ngũ của chúng tôi đã sẵn sàng hiện thực hóa tầm nhìn của bạn.",
     ctaPrimary: "Bắt đầu dự án",
-    ctaSecondary: "Xem thêm bài viết"
+    ctaSecondary: "Xem thêm bài viết",
+    insights: "Bài viết & Kiến thức",
+    subtitle: "Khám phá những bài viết mới nhất về công nghệ, thiết kế và chuyển đổi số.",
+    viewAllArticles: "Xem tất cả bài viết",
+    featured: "Nổi bật",
+    search: "Tìm kiếm bài viết...",
+    noArticles: "Không tìm thấy bài viết nào.",
+    readArticle: "Đọc bài viết",
+    readMore: "Đọc thêm"
   }
 };

@@ -34,8 +34,8 @@ export default function About({ data }: { data: any }) {
             >
                 {subtitle}
             </motion.span>
-            <h2 className="text-[40px] md:text-[64px] leading-[1.1] text-apple-text">
-                <AnimatedText text={plainTitle} effect="random" />
+            <h2 className="text-[40px] md:text-[64px] leading-[1.1] text-apple-text font-bold">
+                <AnimatedText text={plainTitle} effect="soft-blur-in" once={true} />
             </h2>
             <motion.p 
                 initial={{ opacity: 0, y: 20 }}
@@ -79,7 +79,7 @@ export default function About({ data }: { data: any }) {
                 <p className="text-apple-text font-medium text-lg italic">
                     "{quote}"
                 </p>
-                <p className="mt-4 text-apple-text-secondary text-sm">— AZLABS Vision</p>
+                <p className="mt-4 text-apple-text-secondary text-sm">— {dict.nav.digitalStudio} Vision</p>
             </div>
           </div>
         </div>

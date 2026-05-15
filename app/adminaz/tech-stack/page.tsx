@@ -14,11 +14,21 @@ import {
   Code,
   Layout,
   Database,
-  Smartphone
+  Smartphone,
+  ExternalLink
 } from "lucide-react";
 import MediaPicker from "@/components/admin/MediaPicker";
-import { upsertTech, deleteTech } from "@/lib/actions/cms";
+import { 
+  upsertTech, 
+  deleteTech, 
+  generateAISamples,
+  parseTechWithAI 
+} from "@/lib/actions/cms";
 import { createClient } from "@/utils/supabase/client";
+import { slugify } from "@/lib/utils";
+import toast from "react-hot-toast";
+import { Sparkles, FileCode, Check, AlertCircle } from "lucide-react";
+
 
 const categories = ["Frontend", "Backend", "Mobile", "Infrastructure", "Database", "AI/ML"];
 
@@ -29,6 +39,12 @@ export default function TechStackAdmin() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentTech, setCurrentTech] = useState<any>(null);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  
+  // Bulk Add States
+  const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
+  const [bulkInput, setBulkInput] = useState("");
+  const [bulkPreview, setBulkPreview] = useState<any[]>([]);
+  const [isParsing, setIsParsing] = useState(false);
 
   const supabase = createClient();
 
@@ -94,6 +110,59 @@ export default function TechStackAdmin() {
     }
   };
 
+  const handleSeed = async () => {
+    setIsSubmitting(true);
+    const toastId = toast.loading("AI is analyzing the tech landscape...");
+    try {
+      const samples = await generateAISamples("tech_stack");
+      for (const sample of samples) {
+        await upsertTech(sample);
+      }
+      toast.success("Successfully seeded AI-generated tech stack!", { id: toastId });
+      fetchTechs();
+    } catch (error) {
+      toast.error("Failed to generate AI samples", { id: toastId });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleBulkParse = async () => {
+    if (!bulkInput.trim()) return;
+    setIsParsing(true);
+    try {
+      const detected = await parseTechWithAI(bulkInput);
+      setBulkPreview(detected);
+      toast.success(`AI detected ${detected.length} technologies!`);
+    } catch (error) {
+      toast.error("AI could not parse the input.");
+    } finally {
+      setIsParsing(false);
+    }
+  };
+
+  const handleSaveBulk = async () => {
+    setIsSubmitting(true);
+    const toastId = toast.loading(`Saving ${bulkPreview.length} items...`);
+    try {
+      for (const tech of bulkPreview) {
+        await upsertTech({
+          ...tech,
+          order_index: techs.length
+        });
+      }
+      toast.success("Successfully added technologies!", { id: toastId });
+      setIsBulkModalOpen(false);
+      setBulkInput("");
+      setBulkPreview([]);
+      fetchTechs();
+    } catch (error) {
+      toast.error("Failed to save items.", { id: toastId });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="space-y-8">
       <header className="flex justify-between items-center">
@@ -101,12 +170,27 @@ export default function TechStackAdmin() {
           <h1 className="text-4xl font-bold tracking-tight text-apple-text">Tech Stack</h1>
           <p className="text-apple-text-secondary mt-1 font-medium">Manage technologies powering your world-class solutions</p>
         </div>
-        <button
-          onClick={() => handleOpenModal()}
-          className="bg-black text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:opacity-90 transition-all shadow-xl"
-        >
-          <Plus className="w-5 h-5" /> Add Technology
-        </button>
+        <div className="flex gap-3">
+          <button 
+            onClick={() => setIsBulkModalOpen(true)}
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-white text-apple-text border border-apple-border rounded-2xl font-bold hover:bg-apple-bg transition-all shadow-sm text-sm"
+          >
+            <FileCode className="w-4 h-4" /> Bulk Add
+          </button>
+          <button 
+            onClick={handleSeed}
+            disabled={isSubmitting}
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-white text-apple-accent border border-apple-accent rounded-2xl font-bold hover:bg-apple-accent hover:text-white transition-all shadow-sm text-sm"
+          >
+            <Sparkles className="w-4 h-4" /> Seed Samples
+          </button>
+          <button
+            onClick={() => handleOpenModal()}
+            className="bg-black text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:opacity-90 transition-all shadow-xl"
+          >
+            <Plus className="w-5 h-5" /> Add Technology
+          </button>
+        </div>
       </header>
 
       {/* Categories Tabs & List */}
@@ -148,6 +232,16 @@ export default function TechStackAdmin() {
                 </div>
 
                 <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <a 
+                    href="/#tech-stack"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="p-2 bg-white/80 backdrop-blur shadow-sm rounded-full text-blue-500 hover:text-blue-700 transition-all"
+                    title="View on site"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
                   <button onClick={() => handleOpenModal(tech)} className="p-2 bg-white/80 backdrop-blur shadow-sm rounded-full text-apple-text-secondary hover:text-black transition-all">
                     <ImageIcon className="w-3 h-3" />
                   </button>
@@ -194,7 +288,19 @@ export default function TechStackAdmin() {
                       <input
                         type="text"
                         value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          const newSlug = slugify(val).replace(/-/g, ""); // SimpleIcons usually don't have hyphens
+                          setFormData(prev => ({ 
+                            ...prev, 
+                            name: val,
+                            slug: prev.slug === slugify(prev.name).replace(/-/g, "") || !prev.slug ? newSlug : prev.slug,
+                            logo_url: (prev.slug === slugify(prev.name).replace(/-/g, "") || !prev.slug) 
+                              ? `https://cdn.simpleicons.org/${newSlug}` 
+                              : prev.logo_url
+                          }));
+                        }}
+
                         className="w-full px-6 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all font-bold"
                         placeholder="e.g. Next.js"
                       />
@@ -306,6 +412,100 @@ export default function TechStackAdmin() {
                     {currentTech ? "Update Technology" : "Add to Stack"}
                   </button>
                 </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+      {/* Bulk Add Modal */}
+      <AnimatePresence>
+        {isBulkModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsBulkModalOpen(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="bg-white rounded-[40px] shadow-2xl w-full max-w-4xl max-h-[85vh] overflow-hidden flex flex-col relative z-10"
+            >
+              <div className="p-8 border-b border-apple-border flex justify-between items-center">
+                <div>
+                  <h2 className="text-2xl font-bold text-apple-text">Bulk Add with AI</h2>
+                  <p className="text-apple-text-secondary text-sm">Paste SVGs, links, or names. AI will do the rest.</p>
+                </div>
+                <button onClick={() => setIsBulkModalOpen(false)} className="p-2 hover:bg-apple-bg rounded-full transition-all">
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-8 space-y-8">
+                <div className="space-y-4">
+                  <label className="text-sm font-bold uppercase tracking-widest text-apple-text-secondary">Input Data</label>
+                  <textarea
+                    value={bulkInput}
+                    onChange={(e) => setBulkInput(e.target.value)}
+                    placeholder="Paste SVG code or list of techs here..."
+                    className="w-full h-48 bg-apple-bg p-6 rounded-3xl border-none focus:ring-2 focus:ring-apple-accent transition-all font-mono text-sm resize-none"
+                  />
+                  <button
+                    onClick={handleBulkParse}
+                    disabled={isParsing || !bulkInput.trim()}
+                    className="w-full py-4 bg-black text-white rounded-2xl font-bold hover:bg-apple-accent transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    {isParsing ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
+                    {isParsing ? "AI is analyzing..." : "Analyze with AI"}
+                  </button>
+                </div>
+
+                {bulkPreview.length > 0 && (
+                  <div className="space-y-6">
+                    <div className="flex justify-between items-center">
+                      <h3 className="font-bold text-apple-text flex items-center gap-2">
+                        <Check className="w-5 h-5 text-green-500" />
+                        Detected Technologies ({bulkPreview.length})
+                      </h3>
+                      <button onClick={() => setBulkPreview([])} className="text-red-500 text-sm font-bold hover:underline">Clear All</button>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {bulkPreview.map((item, idx) => (
+                        <div key={idx} className="flex items-center gap-4 p-4 bg-apple-bg rounded-2xl border border-apple-border">
+                          <img src={item.logo_url} className="w-8 h-8 object-contain" alt="" />
+                          <div className="flex-1">
+                            <p className="font-bold text-sm">{item.name}</p>
+                            <p className="text-[10px] uppercase font-bold text-apple-text-secondary tracking-widest">{item.category}</p>
+                          </div>
+                          <button onClick={() => setBulkPreview(bulkPreview.filter((_, i) => i !== idx))} className="text-apple-text-secondary hover:text-red-500">
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {bulkPreview.length === 0 && !isParsing && bulkInput && (
+                  <div className="flex flex-col items-center justify-center py-12 text-apple-text-secondary">
+                    <AlertCircle className="w-12 h-12 mb-4 opacity-20" />
+                    <p className="text-sm font-medium">Click "Analyze with AI" to detect technologies.</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="p-8 border-t border-apple-border bg-apple-bg/50 flex gap-4">
+                <button onClick={() => setIsBulkModalOpen(false)} className="flex-1 py-4 font-bold border border-apple-border rounded-2xl hover:bg-white transition-all">Cancel</button>
+                <button
+                  onClick={handleSaveBulk}
+                  disabled={isSubmitting || bulkPreview.length === 0}
+                  className="flex-[2] py-4 bg-black text-white rounded-2xl font-bold hover:bg-apple-accent transition-all disabled:opacity-50 shadow-xl"
+                >
+                  {isSubmitting ? "Saving..." : `Add ${bulkPreview.length} Technologies`}
+                </button>
               </div>
             </motion.div>
           </div>

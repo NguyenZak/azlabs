@@ -15,9 +15,10 @@ import {
   ChevronRight,
   Star,
   User,
-  Quote
+  Quote,
+  ExternalLink
 } from "lucide-react";
-import { getTestimonials, upsertTestimonial, deleteTestimonial } from "@/lib/actions/cms";
+import { getTestimonials, upsertTestimonial, deleteTestimonial, generateAISamples } from "@/lib/actions/cms";
 import MediaPicker from "@/components/admin/MediaPicker";
 import toast from "react-hot-toast";
 
@@ -110,37 +111,16 @@ export default function TestimonialsAdmin() {
 
   const handleSeed = async () => {
     setIsSubmitting(true);
-    const samples = [
-      {
-        name: "Sarah Chen",
-        role_en: "CTO at Nexus AI",
-        role_vi: "Giám đốc công nghệ tại Nexus AI",
-        content_en: "AZLABS transformed our legacy systems into a modern, high-performance ecosystem. Their attention to detail and Apple-like precision is unmatched.",
-        content_vi: "AZLABS đã chuyển đổi hệ thống cũ của chúng tôi thành một hệ sinh thái hiện đại, hiệu suất cao. Sự tỉ mỉ và độ chính xác kiểu Apple của họ là không đối thủ.",
-        avatar_url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop",
-        rating: 5,
-        order_index: 0
-      },
-      {
-        name: "Marcus Thorne",
-        role_en: "Founder of Vantix",
-        role_vi: "Người sáng lập Vantix",
-        content_en: "The AI pipeline they built for us reduced our operational costs by 40%. The UI is so clean, it feels like using a native Apple app.",
-        content_vi: "Quy trình AI họ xây dựng giúp giảm 40% chi phí vận hành. Giao diện mượt mà đến mức cảm giác như đang dùng ứng dụng Apple gốc.",
-        avatar_url: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&auto=format&fit=crop",
-        rating: 5,
-        order_index: 1
-      }
-    ];
-
+    const toastId = toast.loading("AI is generating authentic testimonials...");
     try {
+      const samples = await generateAISamples("testimonial");
       for (const sample of samples) {
         await upsertTestimonial(sample);
       }
-      toast.success("Successfully seeded premium testimonials!");
+      toast.success("Successfully seeded AI testimonials!", { id: toastId });
       loadTestimonials();
     } catch (error) {
-      toast.error("Failed to seed data");
+      toast.error("Failed to generate AI samples", { id: toastId });
     } finally {
       setIsSubmitting(false);
     }
@@ -337,15 +317,27 @@ export default function TestimonialsAdmin() {
 
               <div className="flex justify-between items-center pt-4 border-t border-apple-border mt-auto">
                  <span className="text-[10px] font-black text-apple-text-secondary uppercase tracking-widest opacity-40">Testimonial</span>
-                 <button 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDelete(t.id);
-                  }} 
-                  className="p-2 hover:bg-red-50 text-red-400 rounded-lg transition-all"
-                >
-                  <Trash2 className="w-5 h-5" />
-                </button>
+                 <div className="flex gap-2">
+                   <a 
+                    href="/#testimonials"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="p-2 hover:bg-blue-50 text-blue-500 rounded-lg transition-all"
+                    title="View on site"
+                  >
+                    <ExternalLink className="w-5 h-5" />
+                  </a>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(t.id);
+                    }} 
+                    className="p-2 hover:bg-red-50 text-red-400 rounded-lg transition-all"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                 </div>
               </div>
             </div>
           ))}

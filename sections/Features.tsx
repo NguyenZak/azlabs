@@ -18,34 +18,70 @@ interface Feature {
 const FeatureContent = ({ feature, language }: { feature: Feature, language: string }) => {
   const headline = language === "vi" ? feature.description_vi : feature.description_en;
   return (
-    <>
-      {[...new Array(3).fill(1)].map((_, index) => {
-        return (
-          <div
-            key={"dummy-content" + index}
-            className="bg-[#F5F5F7] dark:bg-neutral-800 p-8 md:p-14 rounded-3xl mb-4"
-          >
-            <p className="text-neutral-600 dark:text-neutral-400 text-base md:text-2xl max-w-3xl mx-auto">
-              <span className="font-bold text-neutral-700 dark:text-neutral-200">
-                {headline}
-              </span>{" "}
-              AZLABS mang đến những giải pháp công nghệ đột phá, tối ưu hóa quy trình và nâng tầm thương hiệu của bạn. 
-              Chúng tôi kết hợp sự sáng tạo với kỹ thuật hiện đại để tạo ra những sản phẩm vượt mong đợi.
-            </p>
-            <img
-              src={feature.image_url}
-              alt={language === "vi" ? feature.title_vi : feature.title_en}
-              className="md:w-1/2 md:h-1/2 h-full w-full mx-auto object-contain mt-10 rounded-2xl"
-            />
-          </div>
-        );
-      })}
-    </>
+    <div className="bg-[#F5F5F7] dark:bg-neutral-800 p-8 md:p-14 rounded-[40px] mb-8 overflow-hidden">
+      <div
+        className="text-neutral-600 dark:text-neutral-400 text-base md:text-xl max-w-4xl mx-auto leading-relaxed space-y-6 rich-text-content"
+        dangerouslySetInnerHTML={{ __html: headline }}
+      />
+
+      {feature.image_url && (
+        <div className="mt-12 rounded-3xl overflow-hidden shadow-2xl border border-black/5">
+          <img
+            src={feature.image_url}
+            alt={language === "vi" ? feature.title_vi : feature.title_en}
+            className="w-full h-auto object-cover"
+          />
+        </div>
+      )}
+
+      <style jsx global>{`
+        .rich-text-content h2 {
+          font-size: 2rem;
+          font-weight: 700;
+          color: #1d1d1f;
+          margin-top: 2rem;
+          margin-bottom: 1rem;
+          line-height: 1.2;
+        }
+        .rich-text-content h3 {
+          font-size: 1.5rem;
+          font-weight: 600;
+          color: #1d1d1f;
+          margin-top: 1.5rem;
+          margin-bottom: 0.75rem;
+        }
+        .rich-text-content p {
+          margin-bottom: 1.25rem;
+        }
+        .rich-text-content blockquote {
+          border-left: 4px solid #0071e3;
+          padding-left: 1.5rem;
+          font-style: italic;
+          color: #424245;
+          margin: 2rem 0;
+        }
+        .rich-text-content ul {
+          list-style-type: disc;
+          padding-left: 1.5rem;
+          margin-bottom: 1.25rem;
+        }
+        .rich-text-content li {
+          margin-bottom: 0.5rem;
+        }
+        .dark .rich-text-content h2, 
+        .dark .rich-text-content h3 {
+          color: #f5f5f7;
+        }
+        .dark .rich-text-content blockquote {
+          color: #a1a1a6;
+        }
+      `}</style>
+    </div>
   );
 };
 
 export default function FeatureGallery({ data }: { data: Feature[] }) {
-  const { language } = useLanguage();
+  const { dict, language } = useLanguage();
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
@@ -55,8 +91,8 @@ export default function FeatureGallery({ data }: { data: Feature[] }) {
   if (!data || data.length === 0 || !mounted) return null;
 
   const cards = data.map((feature, index) => ({
-    category: language === "vi" ? feature.title_vi : feature.title_en,
-    title: language === "vi" ? feature.description_vi : feature.description_en,
+    category: language === "vi" ? "Trụ cột đổi mới" : "Innovation Pillar",
+    title: language === "vi" ? feature.title_vi : feature.title_en,
     src: feature.image_url,
     content: <FeatureContent feature={feature} language={language} />,
   }));
@@ -68,12 +104,12 @@ export default function FeatureGallery({ data }: { data: Feature[] }) {
   return (
     <section id="features" className="py-32 bg-white overflow-hidden">
       <div className="max-w-[1440px] mx-auto">
-        <h2 className="px-6 md:px-12 text-[40px] md:text-[56px] font-bold text-apple-text tracking-tight mb-4">
-          <AnimatedText 
-            text={language === "vi" ? "Tìm hiểu AZLABS." : "Get to know AZLABS."} 
-            effect="random" 
-          />
-        </h2>
+        <AnimatedText
+          key={language}
+          text={dict.features.title}
+          className="px-6 md:px-12 text-[40px] md:text-[56px] font-bold text-apple-text tracking-tight mb-4"
+          effect="soft-blur-in"
+        />
       </div>
       <Carousel items={carouselItems} />
     </section>

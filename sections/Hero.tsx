@@ -75,7 +75,7 @@ export default function Hero({ slides = [] }: { slides?: any[] }) {
               <div className="w-3 h-6 bg-[#EA4335] rounded-full transform rotate-12" />
             </div>
             <span className="text-2xl font-medium text-[#5f6368] tracking-tight">
-              <span className="font-bold text-[#1d1d1f]">AzLabs</span> Digital Studio
+              <span className="font-bold text-[#1d1d1f]">AzLabs</span> {dict.nav.digitalStudio}
             </span>
           </div>
         </motion.div>
@@ -113,7 +113,7 @@ export default function Hero({ slides = [] }: { slides?: any[] }) {
                 href="/projects"
                 className="group flex items-center gap-3 bg-white/50 backdrop-blur text-[#1d1d1f] px-10 py-4 rounded-full text-lg font-medium hover:bg-white transition-all border border-apple-border/50"
               >
-                {language === "en" ? "View Work" : "Xem dự án"}
+                {dict.hero.ctaSecondary}
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>

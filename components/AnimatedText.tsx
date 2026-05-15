@@ -107,6 +107,7 @@ export default function AnimatedText({
   if (selectedEffect === "soft-blur-in") {
     return (
       <motion.span
+        key={text}
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
@@ -131,6 +132,7 @@ export default function AnimatedText({
   // Mask Reveal Up and Line-by-line Slide work best per-line or per-word
   return (
     <motion.span
+      key={text}
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"

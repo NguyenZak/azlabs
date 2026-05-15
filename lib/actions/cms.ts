@@ -82,8 +82,203 @@ export async function generateAIContent(topic: string) {
     const content = JSON.parse(contentString);
     return content;
   } catch (error: any) {
-    console.error("Groq AI Error:", error.message);
+    console.error("Groq AI Error:", error);
+    if (error.message === "fetch failed") {
+      throw new Error("Network error: Could not reach Groq AI. Please check your internet connection or ensure your GROQ_API_KEY is valid in .env.local and the server has been restarted.");
+    }
     throw new Error(error.message || "Failed to generate content from Groq AI.");
+  }
+}
+
+/**
+ * AI SAMPLE GENERATION
+ */
+export async function generateAISamples(type: "solution" | "feature" | "project" | "service" | "testimonial" | "post" | "hero_slide" | "team_member" | "tech_stack") {
+  if (!GROQ_API_KEY) {
+    throw new Error("Groq API Key is missing.");
+  }
+
+  const prompt = `Generate 3 professional, high-end ${type} items for AZLABS (a premium digital studio).
+  AZLABS builds world-class websites, mobile apps, and AI solutions.
+  
+  Return ONLY a JSON array of objects with this structure:
+  ${type === 'solution' ? `
+  [{
+    "title_en": "...",
+    "title_vi": "...",
+    "description_en": "Deep technical detail in HTML (h2, p, ul, li)...",
+    "description_vi": "Chi tiết kỹ thuật sâu bằng HTML (h2, p, ul, li)...",
+    "icon": "Brain",
+    "features_en": ["Feature 1", "Feature 2"],
+    "features_vi": ["Tính năng 1", "Tính năng 2"],
+    "order_index": 0
+  }]` : type === 'feature' ? `
+  [{
+    "title_en": "...",
+    "title_vi": "...",
+    "description_en": "Compelling story in HTML...",
+    "description_vi": "Câu chuyện hấp dẫn bằng HTML...",
+    "image_url": "https://images.unsplash.com/photo-...",
+    "order_index": 0
+  }]` : type === 'service' ? `
+  [{
+    "title_en": "...",
+    "title_vi": "...",
+    "description_en": "...",
+    "description_vi": "...",
+    "image_url": "https://images.unsplash.com/photo-...",
+    "features_en": ["Feature 1", "Feature 2"],
+    "features_vi": ["Tính năng 1", "Tính năng 2"],
+    "order_index": 0
+  }]` : type === 'testimonial' ? `
+  [{
+    "name": "...",
+    "role_en": "CEO at TechGlobal",
+    "role_vi": "CEO tại TechGlobal",
+    "content_en": "...",
+    "content_vi": "...",
+    "avatar_url": "https://images.unsplash.com/photo-...",
+    "company_logo_url": "https://images.unsplash.com/photo-...",
+    "rating": 5,
+    "order_index": 0
+  }]` : type === 'post' ? `
+  [{
+    "slug": "...",
+    "title_en": "...",
+    "title_vi": "...",
+    "excerpt_en": "...",
+    "excerpt_vi": "...",
+    "content_en": "HTML content...",
+    "content_vi": "HTML content...",
+    "image_url": "https://images.unsplash.com/photo-...",
+    "is_published": true
+  }]` : type === 'hero_slide' ? `
+  [{
+    "title_en": "...",
+    "title_vi": "...",
+    "subtitle_en": "...",
+    "subtitle_vi": "...",
+    "cta_text_en": "View Projects",
+    "cta_text_vi": "Xem dự án",
+    "cta_link": "/projects",
+    "image_url": "https://images.unsplash.com/photo-...",
+    "order_index": 0
+  }]` : type === 'team_member' ? `
+  [{
+    "name": "...",
+    "role_en": "Lead Developer",
+    "role_vi": "Trưởng nhóm phát triển",
+    "image": "https://images.unsplash.com/photo-...",
+    "order_index": 0
+  }]` : type === 'tech_stack' ? `
+  [{
+    "name": "Next.js",
+    "slug": "nextdotjs",
+    "category": "Frontend",
+    "logo_url": "https://images.unsplash.com/photo-...",
+    "order_index": 0
+  }]` : type === 'project' ? `
+  [{
+    "title_en": "...",
+    "title_vi": "...",
+    "category_en": "...",
+    "category_vi": "...",
+    "description_en": "...",
+    "description_vi": "...",
+    "details_en": "HTML content...",
+    "details_vi": "HTML content...",
+    "image_url": "https://images.unsplash.com/photo-...",
+    "order_index": 0
+  }]` : `[]`}
+
+  IMPORTANT: 
+  - All image_url, avatar_url, company_logo_url, logo_url, image MUST be high-quality, realistic images from Unsplash (https://images.unsplash.com/...).
+  - Choose images that match the premium, Apple-inspired aesthetic (minimalist, clean, tech-focused, professional).
+  - Use diverse and specific Unsplash IDs for each item.
+  - The tone must be Apple-inspired: minimalist, bold, and visionary.
+  - Vietnamese must be natural and professional.
+  - Description/Details MUST contain rich HTML formatting.
+  - Return ONLY raw JSON.`;
+
+  try {
+    const response = await fetch(GROQ_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${GROQ_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.8,
+        response_format: { type: "json_object" }
+      })
+    });
+
+    const result = await response.json();
+    const contentString = result.choices[0].message.content.trim();
+    const data = JSON.parse(contentString);
+    
+    // The model might wrap it in a key or return raw array
+    const items = Array.isArray(data) ? data : data.items || Object.values(data)[0];
+    
+    // Fallback if not an array
+    if (!Array.isArray(items)) {
+      console.error("AI Seed Error: Result is not an array", items);
+      return [];
+    }
+
+    return items;
+  } catch (error) {
+    console.error("AI Seed Error:", error);
+    throw new Error("Failed to generate AI samples.");
+  }
+}
+
+/**
+ * AI PARSING FOR BULK INPUT
+ */
+export async function parseTechWithAI(rawInput: string) {
+  if (!GROQ_API_KEY) {
+    throw new Error("Groq API Key is missing.");
+  }
+
+  const prompt = `
+  Analyze the following input which contains SVG code, names, or list of technologies:
+  ---
+  ${rawInput}
+  ---
+  
+  Extract each technology and return a JSON array of objects with these fields:
+  - "name": Official name of the tech (e.g., "Next.js", "PostgreSQL").
+  - "slug": SimpleIcons compatible slug (lowercase, no spaces, e.g., "nextdotjs", "postgresql").
+  - "category": Choose the MOST accurate from: ["Frontend", "Backend", "Mobile", "Infrastructure", "Database", "AI/ML"].
+  - "logo_url": If the input contains a direct SVG/image URL for this tech, use it. Otherwise, use "https://cdn.simpleicons.org/{slug}".
+
+  Return ONLY a raw JSON array. If you can't identify a tech, skip it.
+  `;
+
+  try {
+    const response = await fetch(GROQ_API_URL, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${GROQ_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.2,
+      }),
+    });
+
+    const result = await response.json();
+    const content = result.choices[0].message.content;
+    const jsonStr = content.match(/\[[\s\S]*\]/)?.[0] || content;
+    return JSON.parse(jsonStr);
+  } catch (error) {
+    console.error("AI Parsing Error:", error);
+    throw new Error("Failed to parse input with AI.");
   }
 }
 
@@ -107,6 +302,8 @@ export async function upsertProject(formData: any) {
       details_en: formData.details_en,
       details_vi: formData.details_vi,
       image_url: formData.image_url,
+      client: formData.client,
+      live_url: formData.live_url,
       tags: formData.tags,
       updated_at: new Date().toISOString(),
     })
@@ -226,6 +423,7 @@ export async function upsertSolution(formData: any) {
       title_vi: formData.title_vi,
       description_en: formData.description_en,
       description_vi: formData.description_vi,
+      image_url: formData.image_url,
       icon: formData.icon,
       features_en: formData.features_en,
       features_vi: formData.features_vi,
@@ -566,7 +764,10 @@ export async function upsertFeature(feature: any) {
 
   const { data, error } = await supabase
     .from("features")
-    .upsert([feature])
+    .upsert([{
+      ...feature,
+      text_color: feature.text_color || "text-neutral-900"
+    }])
     .select();
 
   if (error) throw new Error(error.message);
@@ -721,6 +922,15 @@ export async function upsertAboutContent(formData: any) {
     description_vi: formData.description_vi,
     quote_en: formData.quote_en,
     quote_vi: formData.quote_vi,
+    story_title_en: formData.story_title_en,
+    story_title_vi: formData.story_title_vi,
+    story_content_en: formData.story_content_en,
+    story_content_vi: formData.story_content_vi,
+    mission_title_en: formData.mission_title_en,
+    mission_title_vi: formData.mission_title_vi,
+    mission_content_en: formData.mission_content_en,
+    mission_content_vi: formData.mission_content_vi,
+    values: formData.values,
     image_url: formData.image_url,
     stats: formData.stats,
     updated_at: new Date().toISOString(),
@@ -800,4 +1010,55 @@ export async function upsertSiteSettings(formData: any) {
 
   revalidatePath("/", "layout"); // Revalidate all pages
   revalidatePath("/adminaz/settings");
+}
+
+/**
+ * TEAM MEMBERS ACTIONS
+ */
+export async function getTeamMembers() {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+  const { data, error } = await supabase
+    .from("team_members")
+    .select("*")
+    .order("order_index", { ascending: true });
+  
+  if (error) {
+    console.error("Error fetching team members:", error);
+    return [];
+  }
+  return data || [];
+}
+
+export async function upsertTeamMember(member: any) {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+
+  // Remove empty id to allow Supabase to generate one
+  const { id, ...memberData } = member;
+  const payload = id ? member : memberData;
+
+  const { data, error } = await supabase
+    .from("team_members")
+    .upsert([payload])
+    .select()
+    .single();
+
+  if (error) throw error;
+  revalidatePath("/about");
+  revalidatePath("/adminaz/about");
+  return data;
+}
+
+export async function deleteTeamMember(id: string) {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+  const { error } = await supabase
+    .from("team_members")
+    .delete()
+    .eq("id", id);
+
+  if (error) throw error;
+  revalidatePath("/about");
+  revalidatePath("/adminaz/about");
 }

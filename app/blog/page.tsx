@@ -8,7 +8,7 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { createClient } from "@/utils/supabase/client";
 
 export default function BlogListingPage() {
-  const { language } = useLanguage();
+  const { dict, language } = useLanguage();
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -56,15 +56,13 @@ export default function BlogListingPage() {
       <section className="px-6 md:px-12 max-w-[1440px] mx-auto py-20">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-16">
           <span className="text-apple-accent font-bold tracking-[0.2em] uppercase text-sm mb-4 inline-block">
-            Magazine
+            {dict.magazine.title}
           </span>
           <h1 className="text-5xl md:text-7xl font-bold text-apple-text tracking-tight mb-6">
-            {language === "en" ? "Insights & Ideas" : "Bài viết & Kiến thức"}
+            {dict.magazine.insights}
           </h1>
           <p className="text-apple-text-secondary text-xl max-w-2xl mx-auto leading-relaxed">
-            {language === "en"
-              ? "Explore our latest thinking on technology, design, and digital transformation."
-              : "Khám phá những bài viết mới nhất về công nghệ, thiết kế và chuyển đổi số."}
+            {dict.magazine.subtitle}
           </p>
         </motion.div>
 
@@ -74,7 +72,7 @@ export default function BlogListingPage() {
             <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-apple-text-secondary" />
             <input
               type="text"
-              placeholder={language === "en" ? "Search articles..." : "Tìm kiếm bài viết..."}
+              placeholder={dict.magazine.search}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full bg-[#f5f5f7] rounded-full pl-14 pr-8 py-5 font-medium focus:outline-none focus:ring-2 focus:ring-apple-accent/20 transition-all text-lg"
@@ -90,7 +88,7 @@ export default function BlogListingPage() {
       ) : filtered.length === 0 ? (
         <div className="text-center py-32 px-6">
           <p className="text-apple-text-secondary text-xl">
-            {language === "en" ? "No articles found." : "Không tìm thấy bài viết nào."}
+            {dict.magazine.noArticles}
           </p>
         </div>
       ) : (
@@ -135,7 +133,7 @@ export default function BlogListingPage() {
                     </p>
 
                     <div className="flex items-center gap-3 text-apple-accent font-bold group-hover:gap-4 transition-all">
-                      {language === "en" ? "Read Article" : "Đọc bài viết"}
+                      {dict.magazine.readArticle}
                       <ArrowRight className="w-4 h-4" />
                     </div>
                   </div>
@@ -185,7 +183,7 @@ export default function BlogListingPage() {
                       </p>
 
                       <div className="flex items-center gap-2 text-apple-accent font-bold text-sm mt-6 group-hover:gap-3 transition-all">
-                        {language === "en" ? "Read More" : "Đọc thêm"}
+                        {dict.magazine.readMore}
                         <ArrowRight className="w-3.5 h-3.5" />
                       </div>
                     </div>

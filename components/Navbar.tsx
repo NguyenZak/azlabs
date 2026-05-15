@@ -25,7 +25,7 @@ export default function Navbar({ settings }: { settings?: any }) {
     { name: dict.nav.services, href: "/services" },
     { name: dict.nav.work, href: "/projects" },
     { name: dict.nav.solutions, href: "/solutions" },
-    { name: "Magazine", href: "/blog" },
+    { name: dict.magazine.title, href: "/blog" },
     { name: dict.nav.about, href: "/about" },
     { name: dict.nav.contact, href: "/contact" },
   ];
@@ -46,7 +46,7 @@ export default function Navbar({ settings }: { settings?: any }) {
           </div>
           <span className="text-base font-medium text-[#5f6368] tracking-tight">
             <span className="font-bold text-[#1d1d1f]">AzLabs</span>
-            <span className="hidden sm:inline ml-1 text-sm opacity-60">Digital Studio</span>
+            <span className="hidden sm:inline ml-1 text-sm opacity-60">{dict.nav.digitalStudio}</span>
           </span>
         </Link>
 

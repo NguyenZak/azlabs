@@ -9,6 +9,7 @@ import React, {
 import {
   IconArrowNarrowLeft,
   IconArrowNarrowRight,
+  IconPlus,
   IconX,
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
@@ -26,13 +27,14 @@ type Card = {
   title: string;
   category: string;
   content: React.ReactNode;
+  textColor?: string; // e.g., "#ffffff" or "text-white"
 };
 
 export const CarouselContext = createContext<{
   onCardClose: (index: number) => void;
   currentIndex: number;
 }>({
-  onCardClose: () => {},
+  onCardClose: () => { },
   currentIndex: 0,
 });
 
@@ -144,20 +146,20 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
             }
           }
         `}</style>
-        <div className="mr-10 flex justify-end gap-2">
+        <div className="flex justify-end gap-3 px-4 md:px-10 mt-6 md:mt-10">
           <button
-            className="relative z-40 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 disabled:opacity-50"
+            className="relative z-40 flex h-14 w-14 items-center justify-center rounded-full bg-neutral-100 disabled:opacity-20 transition-all hover:bg-neutral-200 active:scale-95 group shadow-sm"
             onClick={scrollLeft}
             disabled={!canScrollLeft}
           >
-            <IconArrowNarrowLeft className="h-6 w-6 text-gray-500" />
+            <IconArrowNarrowLeft className="h-7 w-7 text-neutral-600 group-hover:scale-110 transition-transform" />
           </button>
           <button
-            className="relative z-40 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 disabled:opacity-50"
+            className="relative z-40 flex h-14 w-14 items-center justify-center rounded-full bg-neutral-100 disabled:opacity-20 transition-all hover:bg-neutral-200 active:scale-95 group shadow-sm"
             onClick={scrollRight}
             disabled={!canScrollRight}
           >
-            <IconArrowNarrowRight className="h-6 w-6 text-gray-500" />
+            <IconArrowNarrowRight className="h-7 w-7 text-neutral-600 group-hover:scale-110 transition-transform" />
           </button>
         </div>
       </div>
@@ -210,7 +212,7 @@ export const Card = ({
     <>
       <AnimatePresence>
         {open && (
-          <div className="fixed inset-0 z-50 h-screen overflow-auto">
+          <div className="fixed inset-0 z-50 h-screen overflow-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -224,7 +226,7 @@ export const Card = ({
               ref={containerRef}
               layoutId={layout ? `card-${card.title}-${index}` : undefined}
               data-lenis-prevent
-              className="relative z-[60] mx-auto my-10 h-fit max-h-[90vh] overflow-y-auto max-w-5xl rounded-3xl bg-white p-4 md:p-10 dark:bg-neutral-900"
+              className="relative z-[60] mx-auto my-10 h-fit max-h-[90vh] overflow-y-auto max-w-5xl rounded-3xl bg-white p-4 md:p-10 dark:bg-neutral-900 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
             >
               <button
                 className="sticky top-4 right-0 ml-auto flex h-8 w-8 items-center justify-center rounded-full bg-black dark:bg-white"
@@ -252,33 +254,42 @@ export const Card = ({
       <motion.button
         layoutId={layout ? `card-${card.title}-${index}` : undefined}
         onClick={handleOpen}
-        whileHover={{ 
-          scale: 1.02,
+        whileHover={{
+          scale: 1.01,
           transition: { duration: 0.2 }
         }}
         whileTap={{ scale: 0.98 }}
-        className="relative z-10 flex h-80 w-56 flex-col items-start justify-start overflow-hidden rounded-3xl bg-gray-100 md:h-[40rem] md:w-96 dark:bg-neutral-900"
+        className="relative z-10 flex h-[28rem] w-72 flex-col items-start justify-start overflow-hidden rounded-[32px] bg-neutral-900 border border-neutral-100 shadow-[0_4px_20px_rgba(0,0,0,0.05)] md:h-[40rem] md:w-96 transition-all hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)]"
       >
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-30 h-full bg-gradient-to-b from-black/50 via-transparent to-transparent" />
-        <div className="relative z-40 p-8">
+        {/* Black Gradient Overlay for Text Readability */}
+        <div className="absolute inset-x-0 top-0 z-30 h-1/2 bg-gradient-to-b from-black/60 via-black/20 to-transparent pointer-events-none" />
+
+        <div className="relative z-40 p-10 flex flex-col h-full w-full">
           <motion.p
             layoutId={layout ? `category-${card.category}-${index}` : undefined}
-            className="text-left font-sans text-sm font-medium text-white md:text-base"
+            className="text-left font-sans text-sm md:text-base font-semibold text-white/80"
           >
             {card.category}
           </motion.p>
           <motion.p
             layoutId={layout ? `title-${card.title}-${index}` : undefined}
-            className="mt-2 max-w-xs text-left font-sans text-xl font-semibold [text-wrap:balance] text-white md:text-3xl"
+            className="mt-6 max-w-xl text-left font-sans text-xl md:text-[16px] lg:text-[28px] font-semibold tracking-tighter text-white"
           >
             {card.title}
           </motion.p>
+
+          {/* Signature Plus Button - Always White Theme for consistency */}
+          <div className="mt-auto ml-auto">
+            <div className="h-12 w-12 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110 bg-white">
+              <IconPlus className="h-8 w-8 text-black" />
+            </div>
+          </div>
         </div>
         <BlurImage
           src={card.src}
           alt={card.title}
           fill
-          className="absolute inset-0 z-10 object-cover"
+          className="absolute inset-0 z-0 object-cover"
         />
       </motion.button>
     </>

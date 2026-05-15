@@ -1,5 +1,5 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 
 interface Particle {
@@ -201,6 +201,19 @@ const AntigravityInner: React.FC<AntigravityProps> = ({
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
   });
 
+  useEffect(() => {
+    return () => {
+      if (meshRef.current) {
+        meshRef.current.geometry.dispose();
+        if (Array.isArray(meshRef.current.material)) {
+          meshRef.current.material.forEach((m: any) => m.dispose());
+        } else {
+          (meshRef.current.material as any).dispose();
+        }
+      }
+    };
+  }, []);
+
   return (
     <instancedMesh ref={meshRef} args={[undefined as any, undefined as any, count]}>
       {particleShape === 'capsule' && <capsuleGeometry args={[0.1, 0.4, 4, 8]} />}
@@ -214,7 +227,16 @@ const AntigravityInner: React.FC<AntigravityProps> = ({
 
 export const Antigravity: React.FC<AntigravityProps> = (props) => {
   return (
-    <Canvas camera={{ position: [0, 0, 50], fov: 35 }}>
+    <Canvas 
+      camera={{ position: [0, 0, 50], fov: 35 }}
+      gl={{ 
+        powerPreference: "high-performance",
+        antialias: false,
+        stencil: false,
+        depth: true
+      }}
+      dpr={[1, 1.5]} // Limit pixel ratio for performance
+    >
       <AntigravityInner {...props} />
     </Canvas>
   );

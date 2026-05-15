@@ -15,16 +15,22 @@ import {
   ChevronRight,
   Globe,
   Box,
-  Layout
+  Layout,
+  Languages,
+  ExternalLink
 } from "lucide-react";
-import { getSolutions, upsertSolution, deleteSolution } from "@/lib/actions/cms";
+import LanguageTabs from "@/components/admin/LanguageTabs";
+import { getSolutions, upsertSolution, deleteSolution, generateAISamples } from "@/lib/actions/cms";
 import toast from "react-hot-toast";
+import MediaPicker from "@/components/admin/MediaPicker";
 
 export default function SolutionsAdmin() {
   const [solutions, setSolutions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activeLang, setActiveLang] = useState<"vi" | "en">("vi");
+  const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
   
   const [formData, setFormData] = useState({
     id: undefined,
@@ -33,6 +39,7 @@ export default function SolutionsAdmin() {
     description_en: "",
     description_vi: "",
     icon: "",
+    image_url: "",
     features_en: [] as string[],
     features_vi: [] as string[],
     order_index: 0
@@ -69,6 +76,7 @@ export default function SolutionsAdmin() {
         description_en: "",
         description_vi: "",
         icon: "",
+        image_url: "",
         features_en: [],
         features_vi: [],
         order_index: 0
@@ -105,37 +113,16 @@ export default function SolutionsAdmin() {
 
   const handleSeed = async () => {
     setIsSubmitting(true);
-    const samples = [
-      {
-        title_en: "Enterprise Cloud Core",
-        title_vi: "Lõi Đám mây Doanh nghiệp",
-        description_en: "A robust cloud foundation designed for infinite scale and zero-downtime operations.",
-        description_vi: "Nền tảng đám mây mạnh mẽ được thiết kế để mở rộng vô hạn và vận hành không gián đoạn.",
-        icon: "Cloud",
-        features_en: ["Auto-scaling", "Multi-region", "Security"],
-        features_vi: ["Tự động mở rộng", "Đa vùng", "Bảo mật"],
-        order_index: 0
-      },
-      {
-        title_en: "AI-Driven Insights",
-        title_vi: "Thông tin chi tiết từ AI",
-        description_en: "Transform raw data into actionable business intelligence using custom-trained LLMs.",
-        description_vi: "Biến dữ liệu thô thành trí tuệ doanh nghiệp có thể hành động bằng cách sử dụng các LLM được đào tạo tùy chỉnh.",
-        icon: "Brain",
-        features_en: ["Predictive Analysis", "Custom LLMs", "Real-time"],
-        features_vi: ["Phân tích dự đoán", "LLM tùy chỉnh", "Thời gian thực"],
-        order_index: 1
-      }
-    ];
-
+    const toastId = toast.loading("AI is crafting premium solutions...");
     try {
+      const samples = await generateAISamples("solution");
       for (const sample of samples) {
         await upsertSolution(sample);
       }
-      toast.success("Successfully seeded 2 premium solutions!");
+      toast.success("Successfully seeded AI-generated solutions!", { id: toastId });
       loadSolutions();
     } catch (error) {
-      toast.error("Failed to seed data");
+      toast.error("Failed to generate AI samples", { id: toastId });
     } finally {
       setIsSubmitting(false);
     }
@@ -175,25 +162,71 @@ export default function SolutionsAdmin() {
             <section className="space-y-8">
               <h2 className="text-sm font-black uppercase tracking-widest text-apple-text-secondary">Core Information</h2>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-3">
-                  <label className="text-xs font-bold text-apple-text px-1">Solution Title (EN)</label>
-                  <input type="text" value={formData.title_en} onChange={(e) => setFormData({ ...formData, title_en: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent text-lg font-bold" placeholder="e.g. AI Automation" />
-                </div>
-                <div className="space-y-3">
-                  <label className="text-xs font-bold text-apple-text px-1">Tiêu đề (VI)</label>
-                  <input type="text" value={formData.title_vi} onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent text-lg font-bold" placeholder="VD: Tự động hóa AI" />
-                </div>
+              <LanguageTabs activeLang={activeLang} onChange={setActiveLang} />
+
+              <div className="space-y-12">
+                {activeLang === "vi" ? (
+                  <motion.div 
+                    key="vi-fields"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="space-y-8"
+                  >
+                    <div className="space-y-3">
+                      <label className="text-xs font-bold text-apple-text px-1">Tiêu đề (VI)</label>
+                      <input type="text" value={formData.title_vi} onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent text-lg font-bold" placeholder="VD: Tự động hóa AI" />
+                    </div>
+                    <div className="space-y-3">
+                      <label className="text-xs font-bold text-apple-text px-1">Mô tả (VI)</label>
+                      <textarea rows={4} value={formData.description_vi} onChange={(e) => setFormData({ ...formData, description_vi: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent resize-none leading-relaxed" placeholder="Mô tả chi tiết..." />
+                    </div>
+                  </motion.div>
+                ) : (
+                  <motion.div 
+                    key="en-fields"
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="space-y-8"
+                  >
+                    <div className="space-y-3">
+                      <label className="text-xs font-bold text-apple-text px-1">Solution Title (EN)</label>
+                      <input type="text" value={formData.title_en} onChange={(e) => setFormData({ ...formData, title_en: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent text-lg font-bold" placeholder="e.g. AI Automation" />
+                    </div>
+                    <div className="space-y-3">
+                      <label className="text-xs font-bold text-apple-text px-1">Description (EN)</label>
+                      <textarea rows={4} value={formData.description_en} onChange={(e) => setFormData({ ...formData, description_en: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent resize-none leading-relaxed" placeholder="Detailed description..." />
+                    </div>
+                  </motion.div>
+                )}
               </div>
 
               <div className="space-y-8 pt-4">
-                <div className="space-y-3">
-                  <label className="text-xs font-bold text-apple-text px-1">Description (EN)</label>
-                  <textarea rows={4} value={formData.description_en} onChange={(e) => setFormData({ ...formData, description_en: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent resize-none leading-relaxed" placeholder="Detailed description..." />
-                </div>
-                <div className="space-y-3">
-                  <label className="text-xs font-bold text-apple-text px-1">Mô tả (VI)</label>
-                  <textarea rows={4} value={formData.description_vi} onChange={(e) => setFormData({ ...formData, description_vi: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent resize-none leading-relaxed" placeholder="Mô tả chi tiết..." />
+                <h2 className="text-sm font-black uppercase tracking-widest text-apple-text-secondary">Visuals & Features</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-4">
+                    <div 
+                      onClick={() => setIsMediaPickerOpen(true)}
+                      className="aspect-video bg-[#f5f5f7] rounded-3xl border-2 border-dashed border-apple-border flex items-center justify-center cursor-pointer hover:bg-gray-50 overflow-hidden relative"
+                    >
+                      {formData.image_url ? (
+                        <img src={formData.image_url} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="flex flex-col items-center gap-2">
+                          <ImageIcon className="w-6 h-6 text-gray-300" />
+                          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Upload Cover</span>
+                        </div>
+                      )}
+                    </div>
+                    <MediaPicker 
+                      isOpen={isMediaPickerOpen}
+                      onClose={() => setIsMediaPickerOpen(false)}
+                      onSelect={(url) => setFormData({ ...formData, image_url: url })} 
+                    />
+                  </div>
+                  <div className="space-y-4">
+                    <label className="text-xs font-bold text-apple-text px-1">Icon Name (Lucide)</label>
+                    <input type="text" value={formData.icon} onChange={(e) => setFormData({ ...formData, icon: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent" placeholder="e.g. Brain, Cloud, Shield" />
+                  </div>
                 </div>
               </div>
             </section>
@@ -241,7 +274,11 @@ export default function SolutionsAdmin() {
               className="group bg-white p-4 md:p-8 rounded-3xl md:rounded-[40px] border border-apple-border flex flex-col sm:flex-row items-start sm:items-center gap-6 md:gap-10 hover:shadow-2xl transition-all cursor-pointer hover:border-black/5"
             >
               <div className="w-full sm:w-32 aspect-video sm:aspect-square bg-[#f5f5f7] rounded-2xl md:rounded-[32px] overflow-hidden flex-shrink-0 border border-apple-border flex items-center justify-center">
-                 <Layout className="w-8 h-8 text-apple-accent" />
+                {solution.image_url ? (
+                  <img src={solution.image_url} className="w-full h-full object-cover" alt="" />
+                ) : (
+                  <Layout className="w-8 h-8 text-apple-accent" />
+                )}
               </div>
               
               <div className="flex-1 min-w-0">
@@ -253,6 +290,16 @@ export default function SolutionsAdmin() {
               </div>
 
               <div className="flex sm:flex-col gap-2 w-full sm:w-auto pt-4 sm:pt-0 border-t sm:border-none border-apple-border">
+                <a 
+                  href="/#solutions"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="flex-1 sm:flex-none p-3 hover:bg-blue-50 text-blue-500 rounded-xl transition-all flex items-center justify-center"
+                  title="View on site"
+                >
+                  <ExternalLink className="w-5 h-5 md:w-6 md:h-6" />
+                </a>
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();

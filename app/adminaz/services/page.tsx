@@ -14,9 +14,12 @@ import {
   ArrowLeft,
   ChevronRight,
   Globe,
-  Box
+  Box,
+  Languages,
+  ExternalLink
 } from "lucide-react";
-import { getServices, upsertService, deleteService } from "@/lib/actions/cms";
+import LanguageTabs from "@/components/admin/LanguageTabs";
+import { getServices, upsertService, deleteService, generateAISamples } from "@/lib/actions/cms";
 import MediaPicker from "@/components/admin/MediaPicker";
 import toast from "react-hot-toast";
 
@@ -26,6 +29,7 @@ export default function ServicesAdmin() {
   const [isEditing, setIsEditing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
+  const [activeLang, setActiveLang] = useState<"vi" | "en">("vi");
   
   const [formData, setFormData] = useState({
     id: undefined,
@@ -104,44 +108,16 @@ export default function ServicesAdmin() {
 
   const handleSeed = async () => {
     setIsSubmitting(true);
-    const samples = [
-      {
-        title_en: "Next-Gen Web Platforms",
-        title_vi: "Nền tảng Web Thế hệ mới",
-        description_en: "Ultra-fast, cinematic web experiences built with Next.js 15 and edge computing.",
-        description_vi: "Trải nghiệm web điện ảnh, siêu nhanh được xây dựng với Next.js 15 và edge computing.",
-        image_url: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1000&auto=format&fit=crop", // Cyber security / Tech
-        features_en: ["Edge Runtime", "Real-time Sync", "Ultra UX"],
-        features_vi: ["Edge Runtime", "Đồng bộ Real-time", "Trải nghiệm Ultra"]
-      },
-      {
-        title_en: "Advanced AI Core",
-        title_vi: "Lõi AI Nâng cao",
-        description_en: "Proprietary AI pipelines for autonomous content generation and intelligent data analysis.",
-        description_vi: "Quy trình AI độc quyền để tạo nội dung tự động và phân tích dữ liệu thông minh.",
-        image_url: "https://images.unsplash.com/photo-1676299081847-824916de030a?q=80&w=1000&auto=format&fit=crop", // Abstract AI / Neural
-        features_en: ["Custom LLMs", "Neural Networks", "Cognitive API"],
-        features_vi: ["LLM Tùy chỉnh", "Mạng lưới Thần kinh", "API Nhận thức"]
-      },
-      {
-        title_en: "Digital Ecosystems",
-        title_vi: "Hệ sinh thái Kỹ thuật số",
-        description_en: "Fully integrated cloud infrastructures that scale infinitely with your business.",
-        description_vi: "Cơ sở hạ tầng đám mây tích hợp đầy đủ, có khả năng mở rộng vô hạn cùng doanh nghiệp.",
-        image_url: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1000&auto=format&fit=crop", // Global data flow
-        features_en: ["Global CDN", "Microservices", "Zero-Trust"],
-        features_vi: ["CDN Toàn cầu", "Microservices", "Bảo mật Zero-Trust"]
-      }
-    ];
-
+    const toastId = toast.loading("AI is designing premium services...");
     try {
+      const samples = await generateAISamples("service");
       for (const sample of samples) {
         await upsertService(sample);
       }
-      toast.success("Successfully seeded 3 premium services!");
+      toast.success("Successfully seeded AI-generated services!", { id: toastId });
       loadServices();
     } catch (error) {
-      toast.error("Failed to seed data");
+      toast.error("Failed to generate AI samples", { id: toastId });
     } finally {
       setIsSubmitting(false);
     }
@@ -208,26 +184,42 @@ export default function ServicesAdmin() {
             <section className="space-y-8">
               <h2 className="text-sm font-black uppercase tracking-widest text-apple-text-secondary">Core Information</h2>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-3">
-                  <label className="text-xs font-bold text-apple-text px-1">Service Title (EN)</label>
-                  <input type="text" value={formData.title_en} onChange={(e) => setFormData({ ...formData, title_en: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent text-lg font-bold" placeholder="e.g. Mobile Development" />
-                </div>
-                <div className="space-y-3">
-                  <label className="text-xs font-bold text-apple-text px-1">Tiêu đề (VI)</label>
-                  <input type="text" value={formData.title_vi} onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent text-lg font-bold" placeholder="VD: Phát triển di động" />
-                </div>
-              </div>
+              <LanguageTabs activeLang={activeLang} onChange={setActiveLang} />
 
-              <div className="space-y-8 pt-4">
-                <div className="space-y-3">
-                  <label className="text-xs font-bold text-apple-text px-1">Description (EN)</label>
-                  <textarea rows={4} value={formData.description_en} onChange={(e) => setFormData({ ...formData, description_en: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent resize-none leading-relaxed" placeholder="Brief overview of what you offer..." />
-                </div>
-                <div className="space-y-3">
-                  <label className="text-xs font-bold text-apple-text px-1">Mô tả (VI)</label>
-                  <textarea rows={4} value={formData.description_vi} onChange={(e) => setFormData({ ...formData, description_vi: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent resize-none leading-relaxed" placeholder="Mô tả ngắn gọn về dịch vụ..." />
-                </div>
+              <div className="space-y-12">
+                {activeLang === "vi" ? (
+                  <motion.div 
+                    key="vi-fields"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="space-y-8"
+                  >
+                    <div className="space-y-3">
+                      <label className="text-xs font-bold text-apple-text px-1">Tiêu đề (VI)</label>
+                      <input type="text" value={formData.title_vi} onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent text-lg font-bold" placeholder="VD: Phát triển di động" />
+                    </div>
+                    <div className="space-y-3">
+                      <label className="text-xs font-bold text-apple-text px-1">Mô tả (VI)</label>
+                      <textarea rows={4} value={formData.description_vi} onChange={(e) => setFormData({ ...formData, description_vi: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent resize-none leading-relaxed" placeholder="Mô tả ngắn gọn về dịch vụ..." />
+                    </div>
+                  </motion.div>
+                ) : (
+                  <motion.div 
+                    key="en-fields"
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="space-y-8"
+                  >
+                    <div className="space-y-3">
+                      <label className="text-xs font-bold text-apple-text px-1">Service Title (EN)</label>
+                      <input type="text" value={formData.title_en} onChange={(e) => setFormData({ ...formData, title_en: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent text-lg font-bold" placeholder="e.g. Mobile Development" />
+                    </div>
+                    <div className="space-y-3">
+                      <label className="text-xs font-bold text-apple-text px-1">Description (EN)</label>
+                      <textarea rows={4} value={formData.description_en} onChange={(e) => setFormData({ ...formData, description_en: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent resize-none leading-relaxed" placeholder="Brief overview of what you offer..." />
+                    </div>
+                  </motion.div>
+                )}
               </div>
             </section>
           </div>
@@ -304,6 +296,16 @@ export default function ServicesAdmin() {
               </div>
 
               <div className="flex sm:flex-col gap-2 w-full sm:w-auto pt-4 sm:pt-0 border-t sm:border-none border-apple-border">
+                <a 
+                  href="/#services"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="flex-1 sm:flex-none p-3 hover:bg-blue-50 text-blue-500 rounded-xl transition-all flex items-center justify-center"
+                  title="View on site"
+                >
+                  <ExternalLink className="w-5 h-5 md:w-6 md:h-6" />
+                </a>
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();

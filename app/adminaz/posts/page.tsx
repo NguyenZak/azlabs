@@ -4,14 +4,16 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Plus, Search, Edit3, Trash2, Globe, Image as ImageIcon, 
-  X, FileText, BarChart, Settings, Save, Eye, Hash, Loader2
+  X, FileText, BarChart, Settings, Save, Eye, Hash, Loader2, ExternalLink
 } from "lucide-react";
 import toast from "react-hot-toast";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 import MediaPicker from "@/components/admin/MediaPicker";
 import { upsertPost, deletePost, generateAIContent } from "@/lib/actions/cms";
 import { createClient } from "@/utils/supabase/client";
-import { Sparkles, Wand2 } from "lucide-react";
+import { Sparkles, Wand2, Languages } from "lucide-react";
+import LanguageTabs from "@/components/admin/LanguageTabs";
+import { slugify } from "@/lib/utils";
 
 export default function PostsAdmin() {
   const [posts, setPosts] = useState<any[]>([]);
@@ -19,6 +21,7 @@ export default function PostsAdmin() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState<"content" | "seo">("content");
+  const [activeLang, setActiveLang] = useState<"vi" | "en">("vi");
   const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
   const [mediaTargetLang, setMediaTargetLang] = useState<"en" | "vi">("vi");
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -134,6 +137,23 @@ export default function PostsAdmin() {
       alert("Error deleting post");
     }
   };
+  const handleSeed = async () => {
+    setIsSubmitting(true);
+    const toastId = toast.loading("AI is curating world-class articles...");
+    try {
+      const { generateAISamples, upsertPost } = await import("@/lib/actions/cms");
+      const samples = await generateAISamples("post");
+      for (const sample of samples) {
+        await upsertPost(sample);
+      }
+      toast.success("Successfully seeded AI posts!", { id: toastId });
+      fetchPosts();
+    } catch (error) {
+      toast.error("Failed to generate AI samples", { id: toastId });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="relative min-h-[calc(100vh-120px)]">
@@ -152,12 +172,21 @@ export default function PostsAdmin() {
                 <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-apple-text">Blog Posts</h1>
                 <p className="text-sm text-apple-text-secondary mt-1">Manage and create stories for AZLABS.</p>
               </div>
-              <button 
-                onClick={() => handleOpenModal()}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-black text-white rounded-xl font-bold hover:opacity-90 transition-all shadow-xl"
-              >
-                <Plus className="w-5 h-5" /> New Article
-              </button>
+              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                <button 
+                  onClick={handleSeed}
+                  disabled={isSubmitting}
+                  className="flex items-center justify-center gap-2 px-6 py-3 bg-white text-apple-accent border border-apple-accent rounded-xl font-bold hover:bg-apple-accent hover:text-white transition-all shadow-sm text-sm"
+                >
+                  <Sparkles className="w-4 h-4" /> Seed Samples
+                </button>
+                <button 
+                  onClick={() => handleOpenModal()}
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-black text-white rounded-xl font-bold hover:opacity-90 transition-all shadow-xl"
+                >
+                  <Plus className="w-5 h-5" /> New Article
+                </button>
+              </div>
             </header>
 
             <div className="bg-white rounded-2xl md:rounded-[32px] border border-apple-border shadow-sm overflow-hidden">
@@ -201,6 +230,14 @@ export default function PostsAdmin() {
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
+                      <a 
+                        href={`/blog/${post.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-4 py-2 bg-blue-50 text-blue-500 rounded-lg flex items-center justify-center"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
                     </div>
                   </div>
                 ))}
@@ -231,6 +268,15 @@ export default function PostsAdmin() {
                       </td>
                       <td className="px-8 py-6 text-right">
                         <div className="flex justify-end gap-2">
+                          <a 
+                            href={`/blog/${post.slug}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 hover:bg-blue-50 text-blue-500 rounded-lg"
+                            title="View on site"
+                          >
+                            <ExternalLink className="w-5 h-5" />
+                          </a>
                           <button onClick={() => handleOpenModal(post)} className="p-2 hover:bg-gray-100 rounded-lg"><Edit3 className="w-5 h-5" /></button>
                           <button onClick={() => handleDelete(post.id)} className="p-2 hover:bg-red-50 text-red-400 rounded-lg"><Trash2 className="w-5 h-5" /></button>
                         </div>
@@ -323,67 +369,116 @@ export default function PostsAdmin() {
                 <AnimatePresence mode="wait">
                   {activeTab === "content" ? (
                     <motion.div key="content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-12">
-                      <div className="space-y-4">
-                        <input 
-                          type="text" 
-                          value={formData.title_en}
-                          onChange={(e) => setFormData({ ...formData, title_en: e.target.value })}
-                          className="w-full text-3xl md:text-5xl font-bold tracking-tight border-none p-0 focus:ring-0 bg-transparent placeholder:text-gray-200" 
-                          placeholder="English Title..." 
-                        />
-                        <input 
-                          type="text" 
-                          value={formData.title_vi}
-                          onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })}
-                          className="w-full text-xl md:text-3xl font-bold tracking-tight border-none p-0 focus:ring-0 bg-transparent placeholder:text-gray-300 text-apple-text-secondary" 
-                          placeholder="Tiêu đề tiếng Việt..." 
-                        />
-                      </div>
+                      <LanguageTabs activeLang={activeLang} onChange={setActiveLang} />
 
-                      <div className="space-y-8">
-                        <div className="space-y-3">
-                          <label className="text-[10px] font-black uppercase tracking-widest text-apple-text-secondary">Body (EN)</label>
-                          <RichTextEditor 
-                            content={formData.content_en} 
-                            onChange={(c) => setFormData({ ...formData, content_en: c })} 
-                            onImageClick={() => {
-                              setMediaTargetLang("en");
-                              setIsMediaPickerOpen(true);
-                            }}
-                          />
-                        </div>
-                        <div className="space-y-3">
-                          <label className="text-[10px] font-black uppercase tracking-widest text-apple-text-secondary">Nội dung (VI)</label>
-                          <RichTextEditor 
-                            content={formData.content_vi} 
-                            onChange={(c) => setFormData({ ...formData, content_vi: c })} 
-                            onImageClick={() => {
-                              setMediaTargetLang("vi");
-                              setIsMediaPickerOpen(true);
-                            }}
-                          />
-                        </div>
+                      <div className="space-y-12">
+                        {activeLang === "vi" ? (
+                          <motion.div 
+                            key="vi-fields"
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className="space-y-12"
+                          >
+                            <div className="space-y-4">
+                              <label className="text-[10px] font-black uppercase tracking-widest text-apple-text-secondary">Tiêu đề bài viết (VI)</label>
+                              <input 
+                                type="text" 
+                                value={formData.title_vi}
+                                onChange={(e) => {
+                                  const val = e.target.value;
+                                  const newSlug = slugify(val);
+                                  setFormData(prev => ({ 
+                                    ...prev, 
+                                    title_vi: val,
+                                    slug: prev.slug === slugify(prev.title_vi) || !prev.slug ? newSlug : prev.slug
+                                  }));
+                                }}
+
+                                className="w-full text-3xl md:text-5xl font-bold tracking-tight border-none p-0 focus:ring-0 bg-transparent placeholder:text-gray-300" 
+                                placeholder="Nhập tiêu đề tiếng Việt..." 
+                              />
+                            </div>
+                            <div className="space-y-3">
+                              <label className="text-[10px] font-black uppercase tracking-widest text-apple-text-secondary">Nội dung (VI)</label>
+                              <RichTextEditor 
+                                content={formData.content_vi} 
+                                onChange={(c) => setFormData({ ...formData, content_vi: c })} 
+                                onImageClick={() => {
+                                  setMediaTargetLang("vi");
+                                  setIsMediaPickerOpen(true);
+                                }}
+                              />
+                            </div>
+                          </motion.div>
+                        ) : (
+                          <motion.div 
+                            key="en-fields"
+                            initial={{ opacity: 0, x: 10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className="space-y-12"
+                          >
+                            <div className="space-y-4">
+                              <label className="text-[10px] font-black uppercase tracking-widest text-apple-text-secondary">Post Title (EN)</label>
+                              <input 
+                                type="text" 
+                                value={formData.title_en}
+                                onChange={(e) => {
+                                  const val = e.target.value;
+                                  const newSlug = slugify(val);
+                                  setFormData(prev => ({ 
+                                    ...prev, 
+                                    title_en: val,
+                                    slug: prev.slug === slugify(prev.title_en) || !prev.slug ? newSlug : prev.slug
+                                  }));
+                                }}
+
+                                className="w-full text-3xl md:text-5xl font-bold tracking-tight border-none p-0 focus:ring-0 bg-transparent placeholder:text-gray-300" 
+                                placeholder="Enter English title..." 
+                              />
+                            </div>
+                            <div className="space-y-3">
+                              <label className="text-[10px] font-black uppercase tracking-widest text-apple-text-secondary">Body Content (EN)</label>
+                              <RichTextEditor 
+                                content={formData.content_en} 
+                                onChange={(c) => setFormData({ ...formData, content_en: c })} 
+                                onImageClick={() => {
+                                  setMediaTargetLang("en");
+                                  setIsMediaPickerOpen(true);
+                                }}
+                              />
+                            </div>
+                          </motion.div>
+                        )}
                       </div>
                     </motion.div>
                   ) : (
-                    <motion.div key="seo" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8 bg-white p-12 rounded-[40px] border border-apple-border">
-                      <div className="grid grid-cols-1 gap-8">
-                        <div className="space-y-2">
-                          <label className="text-xs font-bold uppercase">Meta Title (EN)</label>
-                          <input type="text" value={formData.meta_title_en} onChange={(e) => setFormData({ ...formData, meta_title_en: e.target.value })} className="w-full p-4 bg-[#f5f5f7] rounded-xl border-none" />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-xs font-bold uppercase">Meta Title (VI)</label>
-                          <input type="text" value={formData.meta_title_vi} onChange={(e) => setFormData({ ...formData, meta_title_vi: e.target.value })} className="w-full p-4 bg-[#f5f5f7] rounded-xl border-none" />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-xs font-bold uppercase">Meta Description (EN)</label>
-                          <textarea rows={4} value={formData.meta_description_en} onChange={(e) => setFormData({ ...formData, meta_description_en: e.target.value })} className="w-full p-4 bg-[#f5f5f7] rounded-xl border-none resize-none" />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-xs font-bold uppercase">Meta Description (VI)</label>
-                          <textarea rows={4} value={formData.meta_description_vi} onChange={(e) => setFormData({ ...formData, meta_description_vi: e.target.value })} className="w-full p-4 bg-[#f5f5f7] rounded-xl border-none resize-none" />
-                        </div>
+                    <motion.div key="seo" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-12">
+                      <LanguageTabs activeLang={activeLang} onChange={setActiveLang} />
+                      
+                      <div className="bg-white p-12 rounded-[40px] border border-apple-border">
+                        {activeLang === "vi" ? (
+                          <div className="grid grid-cols-1 gap-8">
+                            <div className="space-y-2">
+                              <label className="text-xs font-bold uppercase">Meta Title (VI)</label>
+                              <input type="text" value={formData.meta_title_vi} onChange={(e) => setFormData({ ...formData, meta_title_vi: e.target.value })} className="w-full p-4 bg-[#f5f5f7] rounded-xl border-none" />
+                            </div>
+                            <div className="space-y-2">
+                              <label className="text-xs font-bold uppercase">Meta Description (VI)</label>
+                              <textarea rows={4} value={formData.meta_description_vi} onChange={(e) => setFormData({ ...formData, meta_description_vi: e.target.value })} className="w-full p-4 bg-[#f5f5f7] rounded-xl border-none resize-none" />
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="grid grid-cols-1 gap-8">
+                            <div className="space-y-2">
+                              <label className="text-xs font-bold uppercase">Meta Title (EN)</label>
+                              <input type="text" value={formData.meta_title_en} onChange={(e) => setFormData({ ...formData, meta_title_en: e.target.value })} className="w-full p-4 bg-[#f5f5f7] rounded-xl border-none" />
+                            </div>
+                            <div className="space-y-2">
+                              <label className="text-xs font-bold uppercase">Meta Description (EN)</label>
+                              <textarea rows={4} value={formData.meta_description_en} onChange={(e) => setFormData({ ...formData, meta_description_en: e.target.value })} className="w-full p-4 bg-[#f5f5f7] rounded-xl border-none resize-none" />
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </motion.div>
                   )}

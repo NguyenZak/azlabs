@@ -4,10 +4,10 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { MessageCircle, Image, Link as LinkIcon, Send, Code } from "lucide-react";
 
 export default function Footer({ settings }: { settings?: any }) {
-  const { language } = useLanguage();
+  const { dict, language } = useLanguage();
 
   const address = settings?.[`address_${language}`] || "San Francisco, CA";
-  const copyright = settings?.[`copyright_${language}`] || `© ${new Date().getFullYear()} AZLABS. All rights reserved.`;
+  const copyright = settings?.[`copyright_${language}`] || `© ${new Date().getFullYear()} AZLABS. ${dict.nav.home}.`; // fallback
   const email = settings?.email || "hello@azlabs.com";
   const phone = settings?.phone || "+1 (555) 000-0000";
 
@@ -24,25 +24,25 @@ export default function Footer({ settings }: { settings?: any }) {
       <div className="max-w-[1440px] mx-auto px-6 md:px-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-16">
           <div className="space-y-4">
-            <h4 className="text-[14px] font-bold text-apple-text uppercase tracking-wider">Company</h4>
+            <h4 className="text-[14px] font-bold text-apple-text uppercase tracking-wider">{dict.nav.company}</h4>
             <ul className="space-y-2">
-              <li><Link href="/about" className="text-[12px] text-apple-text-secondary hover:underline">About Us</Link></li>
-              <li><Link href="/projects" className="text-[12px] text-apple-text-secondary hover:underline">Our Work</Link></li>
-              <li><Link href="#" className="text-[12px] text-apple-text-secondary hover:underline">Careers</Link></li>
-              <li><Link href="#" className="text-[12px] text-apple-text-secondary hover:underline">Press</Link></li>
+              <li><Link href="/about" className="text-[12px] text-apple-text-secondary hover:underline">{dict.nav.about}</Link></li>
+              <li><Link href="/projects" className="text-[12px] text-apple-text-secondary hover:underline">{dict.nav.work}</Link></li>
+              <li><Link href="#" className="text-[12px] text-apple-text-secondary hover:underline">{dict.nav.careers}</Link></li>
+              <li><Link href="#" className="text-[12px] text-apple-text-secondary hover:underline">{dict.nav.press}</Link></li>
             </ul>
           </div>
           <div className="space-y-4">
-            <h4 className="text-[14px] font-bold text-apple-text uppercase tracking-wider">Services</h4>
+            <h4 className="text-[14px] font-bold text-apple-text uppercase tracking-wider">{dict.nav.services}</h4>
             <ul className="space-y-2">
-              <li><Link href="/services" className="text-[12px] text-apple-text-secondary hover:underline">Web Development</Link></li>
-              <li><Link href="/services" className="text-[12px] text-apple-text-secondary hover:underline">Mobile Apps</Link></li>
-              <li><Link href="/services" className="text-[12px] text-apple-text-secondary hover:underline">AI Solutions</Link></li>
-              <li><Link href="/services" className="text-[12px] text-apple-text-secondary hover:underline">UI/UX Design</Link></li>
+              <li><Link href="/services" className="text-[12px] text-apple-text-secondary hover:underline">{dict.services.items[0].title}</Link></li>
+              <li><Link href="/services" className="text-[12px] text-apple-text-secondary hover:underline">{dict.services.items[1].title}</Link></li>
+              <li><Link href="/services" className="text-[12px] text-apple-text-secondary hover:underline">{dict.services.items[2].title}</Link></li>
+              <li><Link href="/services" className="text-[12px] text-apple-text-secondary hover:underline">{dict.services.items[3].title}</Link></li>
             </ul>
           </div>
           <div className="space-y-4">
-            <h4 className="text-[14px] font-bold text-apple-text uppercase tracking-wider">Social</h4>
+            <h4 className="text-[14px] font-bold text-apple-text uppercase tracking-wider">{dict.nav.social}</h4>
             <div className="flex flex-wrap gap-4">
               {socialLinks.map((link, idx) => (
                 <a 
@@ -65,7 +65,7 @@ export default function Footer({ settings }: { settings?: any }) {
             </div>
           </div>
           <div className="space-y-4">
-            <h4 className="text-[14px] font-bold text-apple-text uppercase tracking-wider">Contact</h4>
+            <h4 className="text-[14px] font-bold text-apple-text uppercase tracking-wider">{dict.nav.contact}</h4>
             <ul className="space-y-2">
               <li className="text-[12px] text-apple-text-secondary">{email}</li>
               <li className="text-[12px] text-apple-text-secondary">{phone}</li>
@@ -86,13 +86,13 @@ export default function Footer({ settings }: { settings?: any }) {
               </span>
             </div>
             <p className="text-[12px] text-apple-text-secondary">
-              {copyright}
+              {settings?.[`copyright_${language}`] || `© ${new Date().getFullYear()} AZLABS. ${dict.nav.copyrightNotice}`}
             </p>
           </div>
           <div className="flex gap-6">
-            <Link href="#" className="text-[12px] text-apple-text-secondary hover:underline">Privacy Policy</Link>
-            <Link href="#" className="text-[12px] text-apple-text-secondary hover:underline">Terms of Service</Link>
-            <Link href="#" className="text-[12px] text-apple-text-secondary hover:underline">Cookie Policy</Link>
+            <Link href="#" className="text-[12px] text-apple-text-secondary hover:underline">{dict.nav.privacy}</Link>
+            <Link href="#" className="text-[12px] text-apple-text-secondary hover:underline">{dict.nav.terms}</Link>
+            <Link href="#" className="text-[12px] text-apple-text-secondary hover:underline">{dict.nav.cookies}</Link>
           </div>
         </div>
       </div>

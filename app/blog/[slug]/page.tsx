@@ -6,6 +6,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { en } from "@/lib/i18n/dictionaries/en";
 import { vi } from "@/lib/i18n/dictionaries/vi";
+import { BlogContentWrapper } from "@/components/BlogContentWrapper";
 
 /* ── SEO Metadata ── */
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -81,97 +82,60 @@ export default async function BlogPostDetail({ params }: { params: Promise<{ slu
 
   return (
     <main className="min-h-screen bg-white font-apple">
-      {/* ── Breadcrumb ── */}
-      <div className="max-w-[720px] mx-auto px-6 pt-32 pb-4">
-        <nav className="flex items-center gap-2 text-[12px] text-apple-text-secondary font-medium tracking-wide">
-          <Link href="/" className="hover:underline transition-colors uppercase tracking-widest">{dict.magazine.breadcrumbHome}</Link>
-          <ChevronRight className="w-2.5 h-2.5 opacity-30" />
-          <Link href="/blog" className="hover:underline transition-colors uppercase tracking-widest">{dict.magazine.breadcrumbMagazine}</Link>
-          <ChevronRight className="w-2.5 h-2.5 opacity-30" />
-          <span className="text-apple-text truncate uppercase tracking-widest opacity-50">{title}</span>
-        </nav>
-      </div>
+      <div className="pt-32">
+        <BlogContentWrapper
+          title={title}
+          excerpt={excerpt || ""}
+          date={date}
+          readTime={readTime}
+          readTimeText={dict.magazine.readTime}
+          imageUrl={post.image_url || undefined}
+        >
+          <div
+            className="
+              font-apple
+              prose prose-lg max-w-none
+              prose-p:text-[19px] prose-p:md:text-[21px] prose-p:leading-[1.6] prose-p:text-apple-text prose-p:tracking-[-0.011em] prose-p:mb-[32px] prose-p:font-normal
+              prose-headings:tracking-tight prose-headings:font-bold prose-headings:text-apple-text
+              prose-h2:text-[32px] prose-h2:md:text-[40px] prose-h2:mt-16 prose-h2:mb-8 prose-h2:leading-[1.1] prose-h2:tracking-tight
+              prose-h3:text-[24px] prose-h3:md:text-[30px] prose-h3:mt-12 prose-h3:mb-6 prose-h3:leading-[1.2] prose-h3:tracking-tight
+              prose-blockquote:border-l-[4px] prose-blockquote:border-apple-accent
+              prose-blockquote:bg-[#f5f5f7] prose-blockquote:p-8 prose-blockquote:md:p-12 prose-blockquote:rounded-[32px]
+              prose-blockquote:not-italic prose-blockquote:my-16 prose-blockquote:text-apple-text
+              prose-strong:text-apple-text prose-strong:font-bold
+              prose-a:text-apple-accent prose-a:no-underline prose-a:font-medium
+              hover:prose-a:underline
+              prose-img:rounded-[32px] prose-img:my-16 prose-img:w-full prose-img:shadow-lg
+              prose-ul:my-10 prose-li:my-4 prose-li:leading-relaxed prose-li:text-[19px] prose-li:md:text-[21px] prose-li:tracking-[-0.011em]
+              prose-code:bg-[#f5f5f7] prose-code:px-2 prose-code:py-1 prose-code:rounded-lg prose-code:font-medium prose-code:text-[0.9em] prose-code:before:content-none prose-code:after:content-none
+              prose-pre:bg-[#1d1d1f] prose-pre:rounded-[24px] prose-pre:shadow-xl prose-pre:p-8 prose-pre:my-12
+            "
+            dangerouslySetInnerHTML={{ __html: content }}
+          />
 
-      {/* ── Article Header ── */}
-      <header className="max-w-[720px] mx-auto px-6 pt-8 pb-16">
-        <div className="space-y-6">
-          <h1 className="text-[40px] md:text-[48px] lg:text-[56px] font-bold tracking-tight leading-[1.1] text-apple-text font-apple-display">
-            {title}
-          </h1>
-
-          {excerpt && (
-            <p className="text-[19px] md:text-[21px] text-apple-text leading-[1.47] font-normal tracking-[-0.011em]">
-              {excerpt}
-            </p>
-          )}
-
-          <div className="flex items-center gap-4 pt-6 text-[14px] text-apple-text-secondary font-medium">
-             <Calendar className="w-4 h-4" /> {date}
-             <span className="opacity-30">|</span>
-             <Clock className="w-4 h-4" /> {readTime} {dict.magazine.readTime}
-          </div>
-        </div>
-      </header>
-
-      {/* ── Featured Image ── */}
-      {post.image_url && (
-        <div className="max-w-[720px] mx-auto px-6 mb-20">
-          <div className="aspect-[2/1] md:aspect-[21/9] rounded-[40px] overflow-hidden shadow-2xl border border-apple-border">
-            <img
-              src={post.image_url}
-              alt={title}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        </div>
-      )}
-
-      {/* ── Article Content ── */}
-      <article className="max-w-[720px] mx-auto px-6 pb-20">
-        <div
-          className="
-            font-apple
-            prose prose-lg max-w-none
-            prose-p:text-[19px] prose-p:md:text-[21px] prose-p:leading-[1.47] prose-p:text-apple-text prose-p:tracking-[-0.011em] prose-p:mb-[25px] prose-p:font-normal
-            prose-headings:tracking-tight prose-headings:font-bold prose-headings:text-apple-text
-            prose-h2:text-[32px] prose-h2:md:text-[36px] prose-h2:mt-12 prose-h2:mb-6 prose-h2:leading-[1.1] prose-h2:tracking-tight
-            prose-h3:text-[24px] prose-h3:md:text-[28px] prose-h3:mt-10 prose-h3:mb-4 prose-h3:leading-[1.2] prose-h3:tracking-tight
-            prose-blockquote:border-l-[3px] prose-blockquote:border-apple-accent
-            prose-blockquote:bg-[#f5f5f7] prose-blockquote:p-8 prose-blockquote:md:p-12 prose-blockquote:rounded-[32px]
-            prose-blockquote:not-italic prose-blockquote:my-12 prose-blockquote:text-apple-text
-            prose-strong:text-apple-text prose-strong:font-bold
-            prose-a:text-apple-accent prose-a:no-underline prose-a:font-medium
-            hover:prose-a:underline
-            prose-img:rounded-[24px] prose-img:my-12 prose-img:w-full
-            prose-ul:my-8 prose-li:my-3 prose-li:leading-relaxed prose-li:text-[19px] prose-li:md:text-[21px] prose-li:tracking-[-0.011em]
-            prose-code:bg-[#f5f5f7] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:font-medium prose-code:text-[0.9em] prose-code:before:content-none prose-code:after:content-none
-            prose-pre:bg-[#1d1d1f] prose-pre:rounded-2xl prose-pre:shadow-sm prose-pre:p-6
-          "
-          dangerouslySetInnerHTML={{ __html: content }}
-        />
-      </article>
-
-      {/* ── Tags / Share Bar ── */}
-      <div className="max-w-3xl mx-auto px-6 pb-20">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-6 p-8 bg-[#f5f5f7] rounded-[32px]">
-          <div className="flex items-center gap-3">
-            <span className="text-sm font-bold text-apple-text-secondary uppercase tracking-widest">{dict.magazine.share}</span>
-            {["Twitter", "LinkedIn", "Facebook"].map((platform) => (
-              <button
-                key={platform}
-                className="px-4 py-2 bg-white rounded-full text-xs font-bold text-apple-text hover:bg-black hover:text-white transition-all shadow-sm"
+          {/* ── Tags / Share Bar ── */}
+          <div className="mt-24 pb-20 border-t border-apple-border pt-12">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-bold text-apple-text-secondary uppercase tracking-widest">{dict.magazine.share}</span>
+                {["Twitter", "LinkedIn", "Facebook"].map((platform) => (
+                  <button
+                    key={platform}
+                    className="px-5 py-2.5 bg-[#f5f5f7] rounded-full text-xs font-bold text-apple-text hover:bg-black hover:text-white transition-all shadow-sm"
+                  >
+                    {platform}
+                  </button>
+                ))}
+              </div>
+              <Link
+                href="/blog"
+                className="flex items-center gap-2 text-sm font-bold text-apple-accent hover:gap-3 transition-all"
               >
-                {platform}
-              </button>
-            ))}
+                <ArrowLeft className="w-4 h-4" /> {dict.magazine.back}
+              </Link>
+            </div>
           </div>
-          <Link
-            href="/blog"
-            className="flex items-center gap-2 text-sm font-bold text-apple-accent hover:gap-3 transition-all"
-          >
-            <ArrowLeft className="w-4 h-4" /> {dict.magazine.back}
-          </Link>
-        </div>
+        </BlogContentWrapper>
       </div>
 
       {/* ── Related Articles ── */}

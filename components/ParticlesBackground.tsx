@@ -226,6 +226,7 @@ const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({
           containerRef.current.removeChild(renderer.domElement);
         }
         renderer.dispose();
+        renderer.forceContextLoss();
       }
       particlesGeometry.dispose();
       pMaterial.dispose();

@@ -9,7 +9,7 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 import AnimatedText from "@/components/AnimatedText";
 
 export default function Magazine({ posts = [] }: { posts?: any[] }) {
-  const { language } = useLanguage();
+  const { dict, language } = useLanguage();
 
   if (posts.length === 0) return null;
 
@@ -33,10 +33,10 @@ export default function Magazine({ posts = [] }: { posts?: any[] }) {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-20">
           <div>
             <span className="text-apple-accent font-bold tracking-[0.2em] uppercase text-sm mb-4 block">
-              Magazine
+              {dict.magazine.title}
             </span>
             <h2 className="text-[48px] md:text-[64px] font-bold tracking-tight leading-[1.1] text-apple-text">
-              <AnimatedText text={language === "en" ? "Insights & Ideas" : "Bài viết & Kiến thức"} effect="random" />
+              <AnimatedText text={dict.magazine.insights} effect="random" />
             </h2>
           </div>
 
@@ -49,7 +49,7 @@ export default function Magazine({ posts = [] }: { posts?: any[] }) {
               href="/blog"
               className="group flex items-center gap-2 bg-black text-white px-8 py-4 rounded-full font-bold hover:bg-apple-accent transition-all"
             >
-              {language === "en" ? "View All Articles" : "Xem tất cả"}
+              {dict.magazine.viewAllArticles}
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </motion.div>
@@ -82,7 +82,7 @@ export default function Magazine({ posts = [] }: { posts?: any[] }) {
 
               <div className="flex items-center gap-4 mb-4 text-sm text-apple-text-secondary font-medium">
                 <span className="px-3 py-1 bg-apple-accent/10 text-apple-accent rounded-full font-bold text-xs uppercase tracking-wider">
-                  Featured
+                  {dict.magazine.featured}
                 </span>
                 <span className="flex items-center gap-1">
                   <Calendar className="w-3 h-3" /> {getDate(featured)}

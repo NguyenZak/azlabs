@@ -3,6 +3,7 @@
 import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, MoveRight } from "lucide-react";
+import { IconArrowNarrowLeft, IconArrowNarrowRight } from "@tabler/icons-react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import Link from "next/link";
 import gsap from "gsap";
@@ -22,20 +23,25 @@ export default function ProjectsClient({ data }: { data: any[] }) {
     if (!horizontal || !container) return;
 
     const ctx = gsap.context(() => {
-      const scrollWidth = horizontal.scrollWidth;
-      const amountToScroll = scrollWidth - window.innerWidth;
+      // Only apply horizontal scroll on desktop (min-width: 768px)
+      const mm = gsap.matchMedia();
+      
+      mm.add("(min-width: 768px)", () => {
+        const scrollWidth = horizontal.scrollWidth;
+        const amountToScroll = scrollWidth - window.innerWidth;
 
-      gsap.to(horizontal, {
-        x: -amountToScroll,
-        ease: "none",
-        scrollTrigger: {
-          trigger: container,
-          start: "top top",
-          end: () => `+=${scrollWidth}`,
-          pin: true,
-          scrub: 1,
-          invalidateOnRefresh: true,
-        }
+        gsap.to(horizontal, {
+          x: -amountToScroll,
+          ease: "none",
+          scrollTrigger: {
+            trigger: container,
+            start: "top top",
+            end: () => `+=${scrollWidth}`,
+            pin: true,
+            scrub: 1.5, // Increased for more "viscous" smooth feel
+            invalidateOnRefresh: true,
+          }
+        });
       });
     });
 
@@ -55,125 +61,156 @@ export default function ProjectsClient({ data }: { data: any[] }) {
   return (
     <div className="bg-white overflow-hidden">
       {/* Intro Header */}
-      <section className="h-[60vh] flex flex-col justify-end px-6 md:px-24 pb-20">
+      <section className="min-h-[50vh] md:h-[60vh] flex flex-col justify-end px-6 md:px-24 pb-12 md:pb-20 pt-32">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
           className="max-w-[1440px] mx-auto w-full"
         >
-          <span className="text-apple-accent font-bold tracking-[0.4em] uppercase text-xs mb-8 block">
-            Digital Archive
+          <span className="text-apple-accent font-bold tracking-[0.4em] uppercase text-[10px] md:text-xs mb-4 md:mb-8 block">
+            {dict.projects.archive}
           </span>
-          <h1 className="text-[64px] md:text-[120px] font-bold tracking-tighter leading-none mb-12">
-            Elevating the<br />
-            Standard.
+          <h1 className="text-4xl md:text-[120px] font-bold tracking-tighter leading-[0.9] mb-8 md:mb-12">
+            {dict.projects.elevateTitle.split('.')[0]}<br />
+            {dict.projects.elevateTitle.split('.')[1] || "Standard."}
           </h1>
-          <div className="flex flex-col md:flex-row justify-between items-end gap-12">
-            <p className="text-apple-text-secondary text-xl md:text-2xl max-w-xl leading-relaxed">
+          <div className="flex flex-col md:flex-row justify-between md:items-end gap-6 md:gap-12">
+            <p className="text-apple-text-secondary text-lg md:text-2xl max-w-xl leading-relaxed">
               {dict.projects.subtitle}
             </p>
-            <div className="flex items-center gap-4 text-apple-text font-bold">
-              <span>Scroll to navigate</span>
+            <div className="hidden md:flex items-center gap-4 text-apple-text font-bold">
+              <span>{dict.projects.scroll}</span>
               <MoveRight className="w-8 h-8 animate-bounce-x" />
             </div>
           </div>
         </motion.div>
       </section>
 
-      {/* Horizontal Showcase Section */}
-      <div ref={containerRef} className="relative h-screen bg-[#0a0a0a]">
-        <div ref={horizontalRef} className="flex h-full items-center px-[10vw]">
+      {/* Horizontal/Vertical Showcase Section */}
+      <div ref={containerRef} className="relative h-auto md:h-screen bg-[#0a0a0a] py-20 md:py-0">
+        <div ref={horizontalRef} className="flex flex-col md:flex-row h-full md:items-center px-6 md:px-[10vw] gap-12 md:gap-0 will-change-transform">
           {finalProjects.map((project: any, index: number) => (
             <div 
               key={project.id} 
-              className="flex-shrink-0 w-[80vw] md:w-[60vw] h-[70vh] mr-[15vw] relative flex items-center"
+              className="flex-shrink-0 w-full md:w-[60vw] h-[50vh] md:h-[70vh] md:mr-[15vw] relative flex items-center will-change-transform"
             >
-              <div className="absolute top-0 left-0 w-full text-white/5 text-[20vw] font-bold select-none whitespace-nowrap pointer-events-none transform -translate-y-1/2">
+              {/* Background Title - Hidden on mobile for clarity */}
+              <div className="absolute top-0 left-0 w-full text-white/5 text-[20vw] font-bold select-none whitespace-nowrap pointer-events-none transform -translate-y-1/2 hidden md:block">
                 {project.title}
               </div>
 
-              <div className="relative w-full h-full rounded-[40px] overflow-hidden group">
+              <div className="relative w-full h-full rounded-[32px] md:rounded-[40px] overflow-hidden group border border-white/5 shadow-2xl">
                 <img 
                   src={project.image} 
                   alt={project.title} 
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s] ease-out"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 md:opacity-60 transition-opacity duration-700" />
                 
-                <div className="absolute bottom-16 left-16 right-16 flex flex-col md:flex-row justify-between items-end gap-8">
+                <div className="absolute bottom-8 left-8 right-8 md:bottom-16 md:left-16 md:right-16 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 md:gap-8 z-10">
                   <div className="max-w-md">
-                    <p className="text-apple-accent font-bold tracking-widest uppercase text-xs mb-4">
+                    <p className="text-apple-accent font-bold tracking-widest uppercase text-[10px] md:text-xs mb-2 md:mb-4">
                       {project.category}
                     </p>
-                    <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight">
+                    <h2 className="text-2xl md:text-6xl font-bold text-white mb-3 md:mb-6 tracking-tight leading-none">
                       {project.title}
                     </h2>
-                    <p className="text-white/60 text-lg leading-relaxed">
+                    <p className="text-white/60 text-sm md:text-lg leading-relaxed line-clamp-2 md:line-clamp-none">
                       {project.description}
                     </p>
                   </div>
                   
                   <Link 
                     href={`/projects/${project.id}`}
-                    className="w-20 h-20 rounded-full bg-white flex items-center justify-center text-apple-text hover:bg-apple-accent hover:text-white transition-all duration-500 transform hover:scale-110"
+                    className="w-12 h-12 md:w-20 md:h-20 rounded-full bg-white flex items-center justify-center text-apple-text hover:bg-apple-accent hover:text-white transition-all duration-700 transform hover:scale-110 shadow-xl"
                   >
-                    <ArrowRight className="w-8 h-8" />
+                    <ArrowRight className="w-5 h-5 md:w-8 md:h-8" />
                   </Link>
                 </div>
               </div>
 
+              {/* Counter - Hidden on mobile */}
               <div className="absolute -right-[10vw] top-1/2 -translate-y-1/2 hidden md:block">
                 <div className="w-[1px] h-[300px] bg-white/10" />
                 <div className="mt-8 text-white/30 text-xs font-mono uppercase tracking-[0.3em] vertical-text">
-                  Project.No 0{index + 1}
+                  Project.No {index + 1 < 10 ? `0${index + 1}` : index + 1}
                 </div>
               </div>
             </div>
           ))}
 
-          <div className="flex-shrink-0 w-[60vw] h-full flex flex-col justify-center items-center text-center px-12">
-            <h3 className="text-white text-5xl md:text-7xl font-bold mb-12 tracking-tight">
-              Ready for the<br />Next Level?
+          {/* Last Slide / CTA */}
+          <div className="flex-shrink-0 w-full md:w-[60vw] py-20 md:py-0 h-full flex flex-col justify-center items-center text-center px-6 md:px-12">
+            <h3 className="text-white text-4xl md:text-7xl font-bold mb-8 md:mb-12 tracking-tight">
+              {dict.projects.nextLevel.split('?')[0]}?<br />
+              {dict.projects.nextLevel.split('?')[1]}
             </h3>
             <Link
               href="/contact"
-              className="bg-apple-accent text-white px-12 py-6 rounded-full text-2xl font-bold hover:bg-apple-accent-hover transition-all"
+              className="bg-apple-accent text-white px-8 py-4 md:px-12 md:py-6 rounded-full text-lg md:text-2xl font-bold hover:bg-apple-accent-hover transition-all shadow-2xl"
             >
-              Get in Touch
+              {dict.projects.getInTouch}
             </Link>
           </div>
+        </div>
+
+        {/* Desktop Navigation Arrows - Synchronized with Features */}
+        <div className="hidden md:flex absolute bottom-12 right-12 md:right-24 items-center gap-3 z-50">
+           <button 
+             onClick={() => {
+               const scrollAmount = window.innerWidth * 0.8;
+               window.scrollBy({ top: -scrollAmount, behavior: 'smooth' });
+             }}
+             className="flex h-14 w-14 items-center justify-center rounded-full bg-white/10 backdrop-blur-md border border-white/20 transition-all hover:bg-white/20 active:scale-95 group shadow-xl"
+           >
+             <IconArrowNarrowLeft className="h-7 w-7 text-white group-hover:scale-110 transition-transform" />
+           </button>
+           <button 
+             onClick={() => {
+               const scrollAmount = window.innerWidth * 0.8;
+               window.scrollBy({ top: scrollAmount, behavior: 'smooth' });
+             }}
+             className="flex h-14 w-14 items-center justify-center rounded-full bg-white/10 backdrop-blur-md border border-white/20 transition-all hover:bg-white/20 active:scale-95 group shadow-xl"
+           >
+             <IconArrowNarrowRight className="h-7 w-7 text-white group-hover:scale-110 transition-transform" />
+           </button>
         </div>
       </div>
 
       {/* Grid Summary Footer */}
-      <section className="py-40 px-6 md:px-24">
-        <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-24">
-          <div className="space-y-8">
-            <h2 className="text-4xl md:text-6xl font-bold tracking-tight">Focusing on<br />the Essence.</h2>
-            <p className="text-apple-text-secondary text-xl leading-relaxed">
-              Our projects are more than just software. They are strategic assets designed to create long-term value and competitive advantages.
+      <section className="py-24 md:py-40 px-6 md:px-24">
+        <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24">
+          <div className="space-y-6 md:space-y-8">
+            <h2 className="text-3xl md:text-6xl font-bold tracking-tight leading-tight">
+              {dict.projects.essenceTitle.split('.')[0]}.<br className="hidden md:block" />
+              {dict.projects.essenceTitle.split('.')[1]}
+            </h2>
+            <p className="text-apple-text-secondary text-lg md:text-xl leading-relaxed">
+              {dict.projects.essenceSubtitle}
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-8">
-            <div className="p-8 border border-apple-border rounded-[32px]">
-              <p className="text-4xl font-bold mb-2">99%</p>
-              <p className="text-apple-text-secondary text-sm">Customer Satisfaction</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8">
+            <div className="p-6 md:p-8 border border-apple-border rounded-[24px] md:rounded-[32px] bg-[#f5f5f7]/30">
+              <p className="text-3xl md:text-4xl font-bold mb-1 md:mb-2 text-apple-accent">99%</p>
+              <p className="text-apple-text-secondary text-[12px] md:text-sm font-medium uppercase tracking-widest">{dict.projects.satisfaction}</p>
             </div>
-            <div className="p-8 border border-apple-border rounded-[32px]">
-              <p className="text-4xl font-bold mb-2">150+</p>
-              <p className="text-apple-text-secondary text-sm">Projects Delivered</p>
+            <div className="p-6 md:p-8 border border-apple-border rounded-[24px] md:rounded-[32px] bg-[#f5f5f7]/30">
+              <p className="text-3xl md:text-4xl font-bold mb-1 md:mb-2 text-apple-accent">150+</p>
+              <p className="text-apple-text-secondary text-[12px] md:text-sm font-medium uppercase tracking-widest">{dict.projects.delivered}</p>
             </div>
-            <div className="p-8 border border-apple-border rounded-[32px]">
-              <p className="text-4xl font-bold mb-2">10+</p>
-              <p className="text-apple-text-secondary text-sm">Industry Awards</p>
+            <div className="p-6 md:p-8 border border-apple-border rounded-[24px] md:rounded-[32px] bg-[#f5f5f7]/30">
+              <p className="text-3xl md:text-4xl font-bold mb-1 md:mb-2 text-apple-accent">10+</p>
+              <p className="text-apple-text-secondary text-[12px] md:text-sm font-medium uppercase tracking-widest">{dict.projects.awards}</p>
             </div>
-            <div className="p-8 border border-apple-border rounded-[32px]">
-              <p className="text-4xl font-bold mb-2">50%</p>
-              <p className="text-apple-text-secondary text-sm">Revenue Growth</p>
+            <div className="p-6 md:p-8 border border-apple-border rounded-[24px] md:rounded-[32px] bg-[#f5f5f7]/30">
+              <p className="text-3xl md:text-4xl font-bold mb-1 md:mb-2 text-apple-accent">50%</p>
+              <p className="text-apple-text-secondary text-[12px] md:text-sm font-medium uppercase tracking-widest">{dict.projects.growth}</p>
             </div>
           </div>
         </div>
       </section>
     </div>
+
   );
 }

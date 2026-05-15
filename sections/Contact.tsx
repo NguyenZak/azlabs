@@ -7,8 +7,9 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { submitContact } from "@/lib/actions/cms";
 import toast from "react-hot-toast";
 
-export default function Contact() {
+export default function Contact({ settings }: { settings?: any }) {
   const { dict } = useLanguage();
+  const email = settings?.email || "hello@azlabs.com";
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -21,7 +22,7 @@ export default function Contact() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) {
-      toast.error("Vui lòng điền đầy đủ các thông tin bắt buộc.");
+      toast.error(dict.contact.form.errorRequired);
       return;
     }
 
@@ -31,7 +32,7 @@ export default function Contact() {
       setShowSuccess(true);
       setFormData({ name: "", email: "", company: "", message: "" });
     } catch (error) {
-      toast.error("Có lỗi xảy ra khi gửi tin nhắn. Vui lòng thử lại sau.");
+      toast.error(dict.contact.form.errorGeneric);
     } finally {
       setLoading(false);
     }
@@ -61,8 +62,8 @@ export default function Contact() {
                   <Send className="w-6 h-6" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-apple-text-secondary uppercase tracking-widest">Email us</p>
-                  <p className="text-xl font-bold text-apple-text">hello@azlabs.com</p>
+                  <p className="text-sm font-bold text-apple-text-secondary uppercase tracking-widest">{dict.contact.form.email}</p>
+                  <p className="text-xl font-bold text-apple-text">{email}</p>
                 </div>
               </div>
             </div>
@@ -125,7 +126,7 @@ export default function Contact() {
               >
                 {loading ? (
                   <>
-                    Sending...
+                    {dict.contact.form.sending}
                     <Loader2 className="w-5 h-5 animate-spin" />
                   </>
                 ) : (
@@ -169,17 +170,17 @@ export default function Contact() {
               </div>
 
               <h2 className="text-3xl font-bold text-apple-text mb-4 tracking-tight">
-                Gửi thành công!
+                {dict.contact.form.successTitle}
               </h2>
               <p className="text-apple-text-secondary text-lg leading-relaxed mb-10">
-                Cảm ơn bạn đã quan tâm đến AZLABS. Chúng tôi đã nhận được thông tin và sẽ phản hồi cho bạn trong thời gian sớm nhất.
+                {dict.contact.form.successMessage}
               </p>
 
               <button 
                 onClick={() => setShowSuccess(false)}
                 className="w-full py-5 bg-black text-white rounded-full font-bold text-lg hover:opacity-90 transition-all shadow-xl"
               >
-                Đóng
+                {dict.contact.form.close}
               </button>
             </motion.div>
           </div>

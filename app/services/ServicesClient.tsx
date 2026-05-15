@@ -101,9 +101,10 @@ export default function ServicesClient({ data }: { data: any[] }) {
               <h2 className="text-3xl md:text-4xl font-bold text-apple-text mb-6">
                 {service.title}
               </h2>
-              <p className="text-apple-text-secondary text-lg mb-8 leading-relaxed">
-                {service.details}
-              </p>
+              <div 
+                className="text-apple-text-secondary text-lg mb-8 leading-relaxed rich-text-content"
+                dangerouslySetInnerHTML={{ __html: service.details }}
+              />
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
                 {service.features.map((feature: string) => (
@@ -132,10 +133,10 @@ export default function ServicesClient({ data }: { data: any[] }) {
           <div className="absolute inset-0 opacity-20 bg-[url('/grid.svg')] bg-repeat" />
           <div className="relative z-10">
             <h2 className="text-4xl md:text-6xl font-bold mb-8">
-              Ready to transform your vision?
+              {dict.magazine.ctaTitle}
             </h2>
             <p className="text-white/60 text-xl mb-12 max-w-2xl mx-auto">
-              Let's build something exceptional together. Our team is ready to bring your ideas to life with precision and craft.
+              {dict.magazine.ctaSubtitle}
             </p>
             <Link
               href="#contact"
@@ -146,6 +147,25 @@ export default function ServicesClient({ data }: { data: any[] }) {
           </div>
         </div>
       </section>
+
+      <style jsx global>{`
+        .rich-text-content p {
+          margin-bottom: 1rem;
+        }
+        .rich-text-content p:last-child {
+          margin-bottom: 0;
+        }
+        .rich-text-content strong {
+          color: #1d1d1f;
+          font-weight: 600;
+        }
+        .rich-text-content h2, .rich-text-content h3 {
+          font-weight: 700;
+          color: #1d1d1f;
+          margin-top: 1.5rem;
+          margin-bottom: 0.75rem;
+        }
+      `}</style>
     </div>
   );
 }

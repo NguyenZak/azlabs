@@ -8,20 +8,64 @@ import AnimatedText from "@/components/AnimatedText";
 const ProjectContent = ({ project, language }: { project: any, language: string }) => {
   const details = language === "vi" ? project.details_vi : project.details_en;
   return (
-    <div className="bg-[#F5F5F7] dark:bg-neutral-800 p-8 md:p-14 rounded-3xl mb-4">
-      <p className="text-neutral-600 dark:text-neutral-400 text-base md:text-2xl max-w-3xl mx-auto">
-        <span className="font-bold text-neutral-700 dark:text-neutral-200">
-          {language === "vi" ? project.title_vi : project.title_en}
-        </span>{" "}
-        {details || (language === "vi" ? "Đang cập nhật nội dung chi tiết cho dự án này..." : "Detailed content for this project is being updated...")}
-      </p>
+    <div className="bg-[#F5F5F7] dark:bg-neutral-800 p-8 md:p-14 rounded-[40px] mb-8 overflow-hidden">
+      <div 
+        className="text-neutral-600 dark:text-neutral-400 text-base md:text-xl max-w-4xl mx-auto leading-relaxed space-y-6 rich-text-content"
+        dangerouslySetInnerHTML={{ __html: details || "" }}
+      />
+      
       {project.image_url && (
-        <img
-          src={project.image_url}
-          alt={language === "vi" ? project.title_vi : project.title_en}
-          className="md:w-3/4 h-full w-full mx-auto object-cover mt-10 rounded-3xl shadow-2xl"
-        />
+        <div className="mt-12 rounded-3xl overflow-hidden shadow-2xl border border-black/5">
+          <img
+            src={project.image_url}
+            alt={language === "vi" ? project.title_vi : project.title_en}
+            className="w-full h-auto object-cover"
+          />
+        </div>
       )}
+
+      <style jsx global>{`
+        .rich-text-content h2 {
+          font-size: 2rem;
+          font-weight: 700;
+          color: #1d1d1f;
+          margin-top: 2rem;
+          margin-bottom: 1rem;
+          line-height: 1.2;
+        }
+        .rich-text-content h3 {
+          font-size: 1.5rem;
+          font-weight: 600;
+          color: #1d1d1f;
+          margin-top: 1.5rem;
+          margin-bottom: 0.75rem;
+        }
+        .rich-text-content p {
+          margin-bottom: 1.25rem;
+        }
+        .rich-text-content blockquote {
+          border-left: 4px solid #0071e3;
+          padding-left: 1.5rem;
+          font-style: italic;
+          color: #424245;
+          margin: 2rem 0;
+        }
+        .rich-text-content ul {
+          list-style-type: disc;
+          padding-left: 1.5rem;
+          margin-bottom: 1.25rem;
+        }
+        .rich-text-content li {
+          margin-bottom: 0.5rem;
+        }
+        .dark .rich-text-content h2, 
+        .dark .rich-text-content h3 {
+          color: #f5f5f7;
+        }
+        .dark .rich-text-content blockquote {
+          color: #a1a1a6;
+        }
+      `}</style>
     </div>
   );
 };
@@ -66,7 +110,7 @@ export default function Portfolio({ data = [] }: { data?: any[] }) {
         <Carousel items={carouselItems} />
       ) : (
         <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-20 text-center text-apple-text-secondary">
-          No projects found.
+          {dict.projects.noProjects}
         </div>
       )}
     </section>

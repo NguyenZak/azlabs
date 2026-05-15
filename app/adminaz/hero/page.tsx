@@ -12,12 +12,12 @@ import {
   ChevronLeft,
   Link as LinkIcon,
   Layout,
-  Type
+  Type,
+  ExternalLink
 } from "lucide-react";
-import { upsertHeroSlide, deleteHeroSlide } from "@/lib/actions/cms";
+import { upsertHeroSlide, deleteHeroSlide, generateAISamples } from "@/lib/actions/cms";
 import { createClient } from "@/utils/supabase/client";
 import toast from "react-hot-toast";
-import { HERO_SAMPLES } from "@/lib/services/data";
 
 export default function HeroSliderAdmin() {
   const [slides, setSlides] = useState<any[]>([]);
@@ -92,17 +92,17 @@ export default function HeroSliderAdmin() {
     }
   };
   const handleSeed = async () => {
-    if (!confirm("Seed sample tech slides? This will add to your current slides.")) return;
     setIsSubmitting(true);
-    
+    const toastId = toast.loading("AI is imagining cinematic experiences...");
     try {
-      for (const sample of HERO_SAMPLES) {
+      const samples = await generateAISamples("hero_slide");
+      for (const sample of samples) {
         await upsertHeroSlide(sample);
       }
-      toast.success("Successfully seeded tech slides!");
+      toast.success("Successfully seeded AI cinematic slides!", { id: toastId });
       fetchSlides();
     } catch (error) {
-      toast.error("Error seeding slides");
+      toast.error("Failed to generate AI samples", { id: toastId });
     } finally {
       setIsSubmitting(false);
     }
@@ -319,6 +319,15 @@ export default function HeroSliderAdmin() {
             </div>
 
             <div className="flex gap-2">
+              <a 
+                href="/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 hover:bg-blue-50 text-blue-500 rounded-2xl transition-all"
+                title="View on site"
+              >
+                <ExternalLink className="w-6 h-6" />
+              </a>
               <button 
                 onClick={() => handleStartEdit(slide)}
                 className="p-4 hover:bg-[#f5f5f7] rounded-2xl text-apple-text-secondary transition-all"

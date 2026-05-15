@@ -1,6 +1,7 @@
 import Hero from "@/sections/Hero";
 import Services from "@/sections/Services";
 import Features from "@/sections/Features";
+import Solutions from "@/sections/Solutions";
 import Portfolio from "@/sections/Portfolio";
 import TechStack from "@/sections/TechStack";
 import About from "@/sections/About";
@@ -33,18 +34,24 @@ export default async function Home() {
   let techStack = [];
   let testimonials = [];
   let featuresData = [];
+  let solutionsData = [];
+  let settings = null;
   try {
     const { data: projectsData } = await supabase.from("projects").select("*").order("created_at", { ascending: false });
     const { data: servicesData } = await supabase.from("services").select("*").order("created_at", { ascending: true });
     const { data: techData } = await supabase.from("tech_stack").select("*").order("order_index", { ascending: true });
     const { data: testimonialsData } = await supabase.from("testimonials").select("*").order("order_index", { ascending: true });
     const { data: featuresRaw } = await supabase.from("features").select("*").order("order_index", { ascending: true });
+    const { data: solutionsRaw } = await supabase.from("solutions").select("*").order("order_index", { ascending: true });
+    const { data: settingsData } = await supabase.from("site_settings").select("*").maybeSingle();
     
     projects = projectsData || [];
     services = servicesData || [];
     techStack = techData || [];
     testimonials = testimonialsData || [];
     featuresData = featuresRaw || [];
+    solutionsData = solutionsRaw || [];
+    settings = settingsData;
   } catch (error) {
     console.error("Error fetching data:", error);
   }
@@ -76,13 +83,14 @@ export default async function Home() {
     <>
       <Hero slides={heroSlides} />
       <Services data={services} />
+      <Solutions data={solutionsData} />
       <Features data={featuresData} />
       <Portfolio data={projects} />
       <TechStack data={techStack} />
       <About data={aboutContent} />
       <Magazine posts={posts} />
       <Testimonials data={testimonials} />
-      <Contact />
+      <Contact settings={settings} />
     </>
   );
 }
