@@ -42,7 +42,8 @@ export default function AdminSettingsPage() {
     twitter_url: "",
     github_url: "",
     copyright_en: "",
-    copyright_vi: ""
+    copyright_vi: "",
+    homepage_template: "default"
   });
 
   useEffect(() => {
@@ -169,6 +170,71 @@ export default function AdminSettingsPage() {
                       <span className="text-white font-bold text-[10px]">Change</span>
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Template Selection */}
+          <div className="bg-white p-10 rounded-[40px] border border-apple-border shadow-sm space-y-8">
+            <div className="flex items-center gap-3 text-apple-accent">
+              <Globe className="w-5 h-5" />
+              <h2 className="font-bold uppercase tracking-widest text-sm">Giao diện Trang chủ (Homepage Template)</h2>
+            </div>
+            
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div 
+                  onClick={() => setFormData({ ...formData, homepage_template: "default" })}
+                  className={`cursor-pointer border-2 rounded-3xl p-6 transition-all duration-300 relative overflow-hidden flex flex-col justify-between h-44 ${
+                    formData.homepage_template === "default" || !formData.homepage_template
+                      ? "border-black bg-neutral-50 shadow-md scale-[1.02]"
+                      : "border-apple-border bg-white hover:border-black/30 hover:scale-[1.01]"
+                  }`}
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-bold text-lg text-apple-text">Studio Classic</h3>
+                      <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                        formData.homepage_template === "default" || !formData.homepage_template
+                          ? "border-black bg-black"
+                          : "border-apple-border"
+                      }`}>
+                        {(formData.homepage_template === "default" || !formData.homepage_template) && (
+                          <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                        )}
+                      </div>
+                    </div>
+                    <p className="text-xs text-apple-text-secondary leading-relaxed">Giao diện nguyên bản, thanh lịch và cân bằng cho studio sáng tạo. Trực quan và tối giản.</p>
+                  </div>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-apple-text bg-neutral-200/55 px-2.5 py-1 rounded-full w-fit">Original</span>
+                </div>
+
+                <div 
+                  onClick={() => setFormData({ ...formData, homepage_template: "tech" })}
+                  className={`cursor-pointer border-2 rounded-3xl p-6 transition-all duration-300 relative overflow-hidden flex flex-col justify-between h-44 ${
+                    formData.homepage_template === "tech"
+                      ? "border-blue-500 bg-blue-50/20 shadow-md scale-[1.02]"
+                      : "border-apple-border bg-white hover:border-blue-500/30 hover:scale-[1.01]"
+                  }`}
+                >
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl pointer-events-none" />
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-bold text-lg text-blue-600">Cyber Tech</h3>
+                      <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                        formData.homepage_template === "tech"
+                          ? "border-blue-500 bg-blue-500"
+                          : "border-apple-border"
+                      }`}>
+                        {formData.homepage_template === "tech" && (
+                          <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                        )}
+                      </div>
+                    </div>
+                    <p className="text-xs text-apple-text-secondary leading-relaxed">Giao diện công nghệ cao, hiện đại với terminal code, mạng lưới 3D, biểu đồ kiến trúc và hiệu ứng phát sáng.</p>
+                  </div>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-blue-600 bg-blue-100/50 px-2.5 py-1 rounded-full w-fit">Futuristic</span>
                 </div>
               </div>
             </div>

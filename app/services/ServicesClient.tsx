@@ -10,7 +10,8 @@ import {
   Database, 
   Cloud,
   CheckCircle2,
-  ArrowRight
+  ArrowRight,
+  Terminal
 } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import Link from "next/link";
@@ -25,7 +26,7 @@ const icons: any = {
   cloud: Cloud,
 };
 
-export default function ServicesClient({ data }: { data: any[] }) {
+export default function ServicesClient({ data, settings }: { data: any[], settings?: any }) {
   const { dict, language } = useLanguage();
 
   const finalServices = data.length > 0 
@@ -41,6 +42,138 @@ export default function ServicesClient({ data }: { data: any[] }) {
         ...item,
         icon: icons[item.id] || icons.web
       }));
+
+  const isTechTemplate = settings?.homepage_template === "tech";
+
+  if (isTechTemplate) {
+    return (
+      <div className="min-h-screen bg-black text-white pt-[100px] pb-20">
+        {/* Page Header */}
+        <section className="px-6 md:px-12 max-w-[1440px] mx-auto mb-20 text-center">
+          <motion.span 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-block text-blue-400 font-mono font-bold tracking-widest uppercase text-xs mb-6 bg-blue-950/30 px-3 py-1 rounded-full"
+          >
+            [{dict.nav.services}]
+          </motion.span>
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-[48px] md:text-[72px] font-bold tracking-tight text-white mb-8 uppercase"
+          >
+            {dict.services.title}
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-neutral-400 font-light text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed"
+          >
+            {dict.services.subtitle}
+          </motion.p>
+        </section>
+
+        {/* Services Detailed List */}
+        <section className="px-6 md:px-12 max-w-[1440px] mx-auto space-y-12">
+          {finalServices.map((service: any, index: number) => (
+            <motion.div
+              key={service.id}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className={`flex flex-col ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-stretch gap-12 p-8 md:p-12 bg-neutral-950/60 border border-neutral-900 rounded-[32px] overflow-hidden group hover:border-neutral-800 transition-all duration-300`}
+            >
+              {/* Visual Part */}
+              <div className="w-full lg:w-1/2 aspect-video rounded-2xl bg-neutral-950 border border-neutral-900 flex items-center justify-center relative overflow-hidden group-hover:scale-[1.01] transition-transform duration-500">
+                {service.image_url ? (
+                  <img src={service.image_url} alt={service.title} className="w-full h-full object-cover opacity-70 group-hover:opacity-95 transition-opacity duration-300" />
+                ) : (
+                  <div className="relative z-10 text-blue-500 transform group-hover:scale-105 transition-transform duration-500 flex flex-col items-center gap-3">
+                     <AppleIcon icon={service.icon} size={48} />
+                     <span className="text-[9px] font-mono text-neutral-500 uppercase tracking-widest">Active System Module</span>
+                  </div>
+                )}
+                {/* Scanner sweep line */}
+                <div className="absolute inset-0 w-full h-0.5 bg-gradient-to-r from-transparent via-blue-500/10 to-transparent -top-1 group-hover:animate-sweep pointer-events-none" />
+              </div>
+
+              {/* Content Part */}
+              <div className="w-full lg:w-1/2 flex flex-col justify-between py-2">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Terminal className="w-4 h-4 text-blue-500" />
+                    <span className="text-[9px] font-mono text-neutral-500 uppercase tracking-wider font-bold">SYSTEM INTEGRATION NODE // 0{index + 1}</span>
+                  </div>
+                  <h2 className="text-3xl font-bold tracking-tight text-white uppercase">
+                    {service.title}
+                  </h2>
+                  <div 
+                    className="text-neutral-400 font-light text-sm leading-relaxed mb-6 prose prose-invert"
+                    dangerouslySetInnerHTML={{ __html: service.details }}
+                  />
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-neutral-900/60">
+                    {service.features.map((feature: string) => (
+                      <div key={feature} className="flex items-center gap-3 text-xs font-mono text-neutral-300">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                        <span>{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pt-8">
+                  <Link
+                    href="#contact"
+                    className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-6 py-3.5 rounded-xl text-xs font-mono font-bold transition-all uppercase tracking-wider"
+                  >
+                    {dict.nav.cta}
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </section>
+
+        {/* CTA Bottom Section */}
+        <section className="mt-32 px-6 md:px-12 max-w-[1440px] mx-auto text-center">
+          <div className="bg-neutral-950 border border-neutral-900 rounded-[48px] p-12 md:p-24 relative overflow-hidden">
+            {/* Subtle glow */}
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-blue-500/5 rounded-full blur-[140px] pointer-events-none" />
+            
+            <div className="relative z-10 space-y-6">
+              <h2 className="text-4xl md:text-6xl font-bold tracking-tight text-white uppercase">
+                {dict.magazine.ctaTitle}
+              </h2>
+              <p className="text-neutral-400 font-light text-lg max-w-2xl mx-auto leading-relaxed">
+                {dict.magazine.ctaSubtitle}
+              </p>
+              <Link
+                href="#contact"
+                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-8 py-4 rounded-xl text-sm font-mono font-bold transition-all uppercase tracking-wider shadow-lg shadow-blue-500/10"
+              >
+                {dict.nav.cta}
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <style jsx global>{`
+          @keyframes sweep {
+            0% { top: 0%; }
+            100% { top: 100%; }
+          }
+          .group:hover .group-hover\\:animate-sweep {
+            animation: sweep 1.5s linear infinite;
+          }
+        `}</style>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-apple-bg pt-[100px] pb-20">
@@ -91,7 +224,7 @@ export default function ServicesClient({ data }: { data: any[] }) {
               ) : (
                 <div className="relative z-10 text-apple-accent transform group-hover:scale-110 transition-transform duration-700">
                    <AppleIcon icon={service.icon} size={48} />
-                </div>
+                 </div>
               )}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] border border-apple-accent/5 rounded-full" />
             </div>

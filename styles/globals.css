@@ -345,3 +345,36 @@ h6 {
     @apply font-sans;
   }
 }
+
+/* Force pure black backgrounds in tech template to remove gray */
+html.tech-template,
+html.tech-template body,
+.tech-template {
+  --background: oklch(0 0 0) !important;
+  background-color: #000000 !important;
+}
+
+/* Tech template typography override */
+.tech-template h1,
+.tech-template h2,
+.tech-template h3,
+.tech-template h4,
+.tech-template h5,
+.tech-template h6,
+.tech-template .font-tech-title {
+  font-family: var(--font-space-grotesk), sans-serif !important;
+  letter-spacing: -0.01em;
+}
+
+.tech-template .font-orbitron {
+  font-family: var(--font-orbitron), sans-serif !important;
+}
+
+/* Hide main browser scrollbar but preserve scroll functionality */
+html, body {
+  -ms-overflow-style: none !important;  /* IE and Edge */
+  scrollbar-width: none !important;  /* Firefox */
+}
+html::-webkit-scrollbar, body::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari, Opera */
+}

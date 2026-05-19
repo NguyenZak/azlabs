@@ -28,7 +28,17 @@ export const FuturisticGlobe = () => {
     const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true }); // Antialias off for performance
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // Capped pixel ratio
     renderer.setSize(window.innerWidth, window.innerHeight);
-    containerRef.current.appendChild(renderer.domElement);
+
+    // Style the canvas element to fill container absolutely
+    const canvas = renderer.domElement;
+    canvas.style.position = "absolute";
+    canvas.style.top = "0";
+    canvas.style.left = "0";
+    canvas.style.width = "100%";
+    canvas.style.height = "100%";
+    canvas.style.objectFit = "cover";
+
+    containerRef.current.appendChild(canvas);
 
     // --- Container ---
     const mainGroup = new THREE.Group();
@@ -64,7 +74,7 @@ export const FuturisticGlobe = () => {
       color: "#4285F4",
       wireframe: true,
       transparent: true,
-      opacity: 0.08, 
+      opacity: 0.08,
       blending: THREE.AdditiveBlending
     });
     globeGroup.add(new THREE.Mesh(wireframeGeom, wireframeMat));
@@ -74,7 +84,7 @@ export const FuturisticGlobe = () => {
     mainGroup.add(plexusGroup);
 
     const plexusParticleCount = 120; // Reduced from 180
-    const plexusRangeX = 3000; 
+    const plexusRangeX = 3000;
     const plexusRangeY = 1800;
     const plexusRangeZ = 1200;
 
@@ -86,7 +96,7 @@ export const FuturisticGlobe = () => {
       const x = (Math.random() - 0.5) * plexusRangeX;
       const y = (Math.random() - 0.5) * plexusRangeY;
       const z = (Math.random() - 0.5) * plexusRangeZ;
-      
+
       plexusPositions[i * 3] = x;
       plexusPositions[i * 3 + 1] = y;
       plexusPositions[i * 3 + 2] = z;
@@ -133,7 +143,7 @@ export const FuturisticGlobe = () => {
 
     const animate = (time: number) => {
       frameId = requestAnimationFrame(animate);
-      
+
       // PAUSE if not visible
       if (!isVisible.current) return;
 
@@ -192,7 +202,7 @@ export const FuturisticGlobe = () => {
       window.removeEventListener("resize", handleResize);
       observer.disconnect();
       cancelAnimationFrame(frameId);
-      
+
       if (containerRef.current && renderer.domElement) {
         containerRef.current.removeChild(renderer.domElement);
       }
@@ -203,21 +213,21 @@ export const FuturisticGlobe = () => {
       wireframeGeom.dispose();
       plexusGeometry.dispose();
       lineGeometry.dispose();
-      
+
       material.dispose();
       wireframeMat.dispose();
       lineMaterial.dispose();
       (plexusPoints.material as THREE.Material).dispose();
-      
+
       renderer.dispose();
       renderer.forceContextLoss(); // Tell the browser to free this context immediately
     };
   }, []);
 
   return (
-    <div 
-      ref={containerRef} 
-      className="absolute inset-0 z-0 pointer-events-none flex items-center justify-center overflow-hidden opacity-60 mix-blend-screen" 
+    <div
+      ref={containerRef}
+      className="absolute inset-0 z-0 pointer-events-none flex items-center justify-center overflow-hidden opacity-0 mix-blend-screen"
     />
   );
 };

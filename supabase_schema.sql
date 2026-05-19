@@ -203,6 +203,9 @@ CREATE TABLE IF NOT EXISTS site_settings (
     copyright_en TEXT,
     copyright_vi TEXT,
     
+    -- Homepage Template Choice
+    homepage_template TEXT DEFAULT 'default',
+    
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 

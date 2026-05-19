@@ -1,4 +1,4 @@
-import { getServices } from "@/lib/actions/cms";
+import { getServices, getSiteSettings } from "@/lib/actions/cms";
 import ServicesClient from "./ServicesClient";
 import { constructMetadata } from "@/lib/seo";
 
@@ -11,7 +11,10 @@ export async function generateMetadata() {
 }
 
 export default async function ServicesPage() {
-  const services = await getServices();
+  const [services, settings] = await Promise.all([
+    getServices(),
+    getSiteSettings()
+  ]);
 
-  return <ServicesClient data={services} />;
+  return <ServicesClient data={services} settings={settings} />;
 }

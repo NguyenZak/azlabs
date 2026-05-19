@@ -1,8 +1,11 @@
-import { getProjects } from "@/lib/actions/cms";
+import { getProjects, getSiteSettings } from "@/lib/actions/cms";
 import ProjectsClient from "./ProjectsClient";
 
 export default async function ProjectsPage() {
-  const projects = await getProjects();
+  const [projects, settings] = await Promise.all([
+    getProjects(),
+    getSiteSettings()
+  ]);
 
-  return <ProjectsClient data={projects} />;
+  return <ProjectsClient data={projects} settings={settings} />;
 }

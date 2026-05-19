@@ -5,6 +5,7 @@ import { constructMetadata } from "@/lib/seo";
 import BlogListingClient from "./BlogListingClient";
 import JsonLd from "@/components/JsonLd";
 import { generateBreadcrumbSchema } from "@/lib/schema";
+import { getSiteSettings } from "@/lib/actions/cms";
 
 export async function generateMetadata() {
   return constructMetadata({
@@ -18,11 +19,16 @@ export default async function BlogListingPage() {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
   
-  const { data: posts } = await supabase
-    .from("posts")
-    .select("*")
-    .eq("is_published", true)
-    .order("published_at", { ascending: false });
+  const [postsRes, settings] = await Promise.all([
+    supabase
+      .from("posts")
+      .select("*")
+      .eq("is_published", true)
+      .order("published_at", { ascending: false }),
+    getSiteSettings()
+  ]);
+
+  const posts = postsRes.data;
 
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: "Trang chủ", item: "/" },
@@ -32,7 +38,7 @@ export default async function BlogListingPage() {
   return (
     <>
       <JsonLd data={breadcrumbSchema} />
-      <BlogListingClient initialPosts={posts || []} />
+      <BlogListingClient initialPosts={posts || []} settings={settings} />
     </>
   );
 }

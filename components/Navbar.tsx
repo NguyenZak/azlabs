@@ -30,6 +30,104 @@ export default function Navbar({ settings }: { settings?: any }) {
     { name: dict.nav.contact, href: "/contact" },
   ];
 
+  const isTechTemplate = settings?.homepage_template === "tech";
+
+  if (isTechTemplate) {
+    return (
+      <nav
+        className={cn(
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-300 h-[56px] flex items-center bg-black/75 backdrop-blur-md border-b",
+          isScrolled ? "border-neutral-900 bg-black/90" : "border-transparent"
+        )}
+      >
+        <div className="max-w-[1440px] mx-auto w-full px-6 md:px-12 flex items-center justify-between">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="flex gap-0.5">
+              <div className="w-2 h-5 bg-[#4285F4] rounded-full transform -rotate-12 group-hover:-rotate-45 transition-transform duration-500" />
+              <div className="w-2 h-5 bg-[#EA4335] rounded-full transform rotate-12 group-hover:rotate-45 transition-transform duration-500" />
+            </div>
+            <span className="text-base font-medium font-mono tracking-tight text-neutral-400">
+              <span className="font-bold text-white">AzLabs</span>
+              <span className="hidden sm:inline ml-1 text-sm opacity-60">// {dict.nav.digitalStudio}</span>
+            </span>
+          </Link>
+
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center gap-6 font-mono">
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className="text-[11px] font-bold text-neutral-400 hover:text-white transition-colors uppercase tracking-wider"
+              >
+                {link.name}
+              </Link>
+            ))}
+          </div>
+
+          {/* Desktop CTA & Lang */}
+          <div className="hidden md:flex items-center gap-6 font-mono">
+            <button
+              onClick={() => setLanguage(language === "en" ? "vi" : "en")}
+              className="flex items-center gap-1.5 text-[10px] font-bold text-neutral-400 hover:text-white transition-colors uppercase tracking-widest"
+            >
+              <Languages className="w-3.5 h-3.5 text-blue-500" />
+              {language === "en" ? "VN" : "EN"}
+            </button>
+
+            <Link
+              href="#contact"
+              className="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded text-[10px] font-bold transition-all uppercase tracking-widest border border-blue-500 shadow-md shadow-blue-500/25"
+            >
+              {dict.nav.cta}
+            </Link>
+          </div>
+
+          {/* Mobile Toggle & Lang */}
+          <div className="flex items-center gap-4 md:hidden">
+            <button
+              onClick={() => setLanguage(language === "en" ? "vi" : "en")}
+              className="text-[11px] font-bold text-neutral-400 font-mono"
+            >
+              {language === "en" ? "VN" : "EN"}
+            </button>
+            <button
+              className="text-white"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X /> : <Menu />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="absolute top-[56px] left-0 right-0 bg-black/95 border-b border-neutral-900 h-screen flex flex-col p-6 gap-6 md:hidden animate-fade-in font-mono">
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className="text-xl font-bold text-white border-b border-neutral-900 pb-4 uppercase tracking-wider"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {link.name}
+              </Link>
+            ))}
+            <Link
+              href="#contact"
+              className="bg-blue-600 text-white px-6 py-4 rounded text-center font-bold uppercase tracking-wider border border-blue-500"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              {dict.nav.cta}
+            </Link>
+          </div>
+        )}
+      </nav>
+    );
+  }
+
+  // Classic default Apple layout
   return (
     <nav
       className={cn(

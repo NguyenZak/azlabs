@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Geist } from "next/font/google";
+import { Inter, Geist, Plus_Jakarta_Sans, Space_Grotesk, Orbitron } from "next/font/google";
 import "@/styles/globals.css";
 import SmoothScrollProvider from "@/components/SmoothScroll";
 import Navbar from "@/components/Navbar";
@@ -11,6 +11,23 @@ const inter = Inter({
   display: "swap",
 });
 
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ["latin", "vietnamese"],
+  variable: "--font-plus-jakarta",
+  display: "swap",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin", "vietnamese"],
+  variable: "--font-space-grotesk",
+  display: "swap",
+});
+
+const orbitron = Orbitron({
+  subsets: ["latin"],
+  variable: "--font-orbitron",
+  display: "swap",
+});
 
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 import LayoutWrapper from "@/components/LayoutWrapper";
@@ -53,7 +70,7 @@ export default async function RootLayout({
   const siteSchema = generateWebSiteSchema();
 
   return (
-    <html lang="vi" className={cn(inter.variable, "font-sans", geist.variable)}>
+    <html lang="vi" className={cn(inter.variable, "font-sans", geist.variable, plusJakarta.variable, spaceGrotesk.variable, orbitron.variable)}>
       <head>
         <JsonLd data={orgSchema} />
         <JsonLd data={siteSchema} />

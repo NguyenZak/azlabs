@@ -48,7 +48,7 @@ export default function Hero({ slides = [] }: { slides?: any[] }) {
   const ctaLink = currentSlide.cta_link || "/contact";
 
   return (
-    <section className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-white px-6">
+    <section className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-background px-6">
       {/* Premium Interactive Particles */}
       <div className="absolute inset-0 z-0">
         <Antigravity

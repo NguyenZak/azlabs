@@ -992,6 +992,7 @@ export async function upsertSiteSettings(formData: any) {
     github_url: formData.github_url,
     copyright_en: formData.copyright_en,
     copyright_vi: formData.copyright_vi,
+    homepage_template: formData.homepage_template || "default",
     updated_at: new Date().toISOString(),
   };
 

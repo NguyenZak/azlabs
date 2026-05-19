@@ -11,6 +11,7 @@ import Contact from "@/sections/Contact";
 import { constructMetadata } from "@/lib/seo";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
+import TechHome from "@/components/TechHome";
 
 export async function generateMetadata() {
   return constructMetadata({
@@ -85,6 +86,23 @@ export default async function Home() {
     aboutContent = data;
   } catch (error) {
     console.error("Error fetching about content:", error);
+  }
+
+  if (settings?.homepage_template === "tech") {
+    return (
+      <TechHome
+        heroSlides={heroSlides}
+        projects={projects}
+        services={services}
+        techStack={techStack}
+        testimonials={testimonials}
+        featuresData={featuresData}
+        solutionsData={solutionsData}
+        settings={settings}
+        posts={posts}
+        aboutContent={aboutContent}
+      />
+    );
   }
 
   return (

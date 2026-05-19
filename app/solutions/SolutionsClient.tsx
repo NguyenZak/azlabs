@@ -1,59 +1,15 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
-import { Carousel, Card } from "@/components/ui/apple-cards-carousel";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
-import AnimatedText from "@/components/AnimatedText";
+import { Terminal, CheckCircle2, ArrowRight, Shield, Layers, HelpCircle, Activity } from "lucide-react";
 
-const SolutionContent = ({ solution, language }: { solution: any, language: string }) => {
-  return (
-    <div className="bg-[#F5F5F7] dark:bg-neutral-800 p-8 md:p-14 rounded-[40px] mb-8 overflow-hidden">
-      <div className="max-w-4xl mx-auto">
-        <h2 className="text-3xl md:text-5xl font-bold text-apple-text dark:text-white mb-6 leading-tight">
-          {solution.title}
-        </h2>
-        <div 
-          className="text-neutral-600 dark:text-neutral-400 text-lg md:text-xl leading-relaxed mb-10 rich-text-content"
-          dangerouslySetInnerHTML={{ __html: solution.description }}
-        />
-        
-        {solution.features && solution.features.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-12">
-            {solution.features.map((feature: string, idx: number) => (
-              <div key={idx} className="flex items-center gap-3 p-4 bg-white dark:bg-neutral-900 rounded-2xl border border-black/5 shadow-sm">
-                <div className="w-2 h-2 rounded-full bg-apple-accent" />
-                <span className="font-semibold text-apple-text dark:text-white">{feature}</span>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {solution.image && (
-        <div className="mt-12 rounded-3xl overflow-hidden shadow-2xl border border-black/5">
-          <img
-            src={solution.image}
-            alt={solution.title}
-            className="w-full h-auto object-cover"
-          />
-        </div>
-      )}
-
-      <style jsx global>{`
-        .rich-text-content h2 { font-size: 2rem; font-weight: 700; color: #1d1d1f; margin: 2rem 0 1rem; line-height: 1.2; }
-        .rich-text-content p { margin-bottom: 1.25rem; }
-        .dark .rich-text-content h2 { color: #f5f5f7; }
-      `}</style>
-    </div>
-  );
-};
-
-export default function SolutionsClient({ data }: { data: any[] }) {
+export default function SolutionsClient({ data, settings }: { data: any[], settings?: any }) {
   const { dict, language } = useLanguage();
-  const [mounted, setMounted] = React.useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setMounted(true);
   }, []);
 
@@ -81,45 +37,142 @@ export default function SolutionsClient({ data }: { data: any[] }) {
         image: defaultImages[index % defaultImages.length],
       }));
 
-  const carouselItems = finalSolutions.map((solution, index) => (
-    <Card 
-      key={solution.id + index} 
-      card={{
-        src: solution.image,
-        title: solution.title,
-        category: solution.category,
-        content: <SolutionContent solution={solution} language={language} />,
-      }} 
-      index={index} 
-      layout={true}
-    />
-  ));
+  const isTechTemplate = settings?.homepage_template === "tech";
 
+  if (isTechTemplate) {
+    return (
+      <div className="min-h-screen bg-black text-white pt-[100px] pb-20">
+        {/* Page Header */}
+        <section className="px-6 md:px-12 max-w-[1440px] mx-auto mb-20">
+          <div className="max-w-4xl space-y-4">
+            <span className="inline-block text-blue-400 font-mono font-bold tracking-widest uppercase text-xs bg-blue-950/30 px-3 py-1 rounded-full">
+              [{dict.solutions.category}]
+            </span>
+            <h1 className="text-[56px] md:text-[80px] font-bold tracking-tight text-white uppercase leading-none">
+              {dict.solutions.title}
+            </h1>
+            <p className="text-neutral-400 font-light text-xl md:text-2xl leading-relaxed max-w-2xl">
+              {dict.solutions.subtitle}
+            </p>
+          </div>
+        </section>
+
+        {/* Solutions Grid */}
+        <section className="px-6 md:px-12 max-w-[1440px] mx-auto space-y-12">
+          {finalSolutions.map((solution: any, index: number) => (
+            <motion.div
+              key={solution.id}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              className="bg-neutral-950 border border-neutral-900 rounded-[32px] p-8 md:p-12 hover:border-neutral-800 transition-all duration-300 relative overflow-hidden"
+            >
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                {/* Content */}
+                <div className="lg:col-span-7 space-y-6">
+                  <div className="flex items-center gap-2">
+                    <Terminal className="w-4 h-4 text-blue-500" />
+                    <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest font-bold">INTEGRATED SOLUTION // 0{index + 1}</span>
+                  </div>
+                  
+                  <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white uppercase">
+                    {solution.title}
+                  </h2>
+
+                  <div 
+                    className="text-neutral-400 font-light text-sm leading-relaxed prose prose-invert"
+                    dangerouslySetInnerHTML={{ __html: solution.description }}
+                  />
+
+                  {solution.features && solution.features.length > 0 && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-6 border-t border-neutral-900">
+                      {solution.features.map((feature: string, idx: number) => (
+                        <div key={idx} className="flex items-center gap-3 text-xs font-mono text-neutral-300">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                          <span>{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Cover/Graphic representation */}
+                <div className="lg:col-span-5 relative aspect-video lg:aspect-square rounded-2xl overflow-hidden border border-neutral-900">
+                  <img src={solution.image} alt={solution.title} className="w-full h-full object-cover opacity-70" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </section>
+
+        {/* Trust & Methodology Section */}
+        <section className="mt-40 bg-neutral-950 border-t border-b border-neutral-900 py-32 px-6">
+          <div className="max-w-[1440px] mx-auto">
+            <div className="text-center mb-24 space-y-4">
+              <h2 className="text-4xl md:text-6xl font-bold tracking-tight text-white uppercase">{dict.solutions.engineeringTitle}</h2>
+              <p className="text-neutral-400 font-light text-lg max-w-2xl mx-auto leading-relaxed">
+                {dict.solutions.engineeringSubtitle}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {dict.solutions.methodology.map((item: any, idx: number) => (
+                <div key={idx} className="p-8 bg-black border border-neutral-900 rounded-2xl relative overflow-hidden group">
+                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-neutral-900 group-hover:bg-blue-500 transition-colors" />
+                  <h3 className="text-lg font-bold mb-4 text-white font-mono uppercase tracking-wider">// {item.title}</h3>
+                  <p className="text-neutral-400 font-light text-sm leading-relaxed">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  // Fallback default Apple UI
   return (
     <div className="min-h-screen bg-white pt-[100px] pb-20 overflow-hidden">
       {/* Page Header */}
       <section className="px-6 md:px-12 max-w-[1440px] mx-auto mb-20">
         <div className="max-w-4xl">
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ type: "spring", stiffness: 100, damping: 20 }}
-            className="text-[56px] md:text-[80px] font-bold text-apple-text mb-8 leading-[1.1] tracking-tight"
-          >
-            <AnimatedText text={dict.solutions.title} effect="soft-blur-in" />
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.2 }}
-            className="text-apple-text-secondary text-xl md:text-2xl leading-relaxed max-w-2xl"
-          >
+          <h1 className="text-[56px] md:text-[80px] font-bold text-apple-text mb-8 leading-[1.1] tracking-tight">
+            {dict.solutions.title}
+          </h1>
+          <p className="text-apple-text-secondary text-xl md:text-2xl leading-relaxed max-w-2xl">
             {dict.solutions.subtitle}
-          </motion.p>
+          </p>
         </div>
       </section>
 
-      <Carousel items={carouselItems} />
+      {/* Solutions Grid */}
+      <section className="px-6 md:px-12 max-w-[1440px] mx-auto space-y-12">
+        {finalSolutions.map((solution: any, index: number) => (
+          <div key={solution.id} className="bg-apple-bg-secondary p-8 md:p-12 rounded-[40px] border border-apple-border flex flex-col lg:flex-row gap-12 items-center">
+            <div className="w-full lg:w-1/2">
+              <h2 className="text-3xl md:text-4xl font-bold text-apple-text mb-6">{solution.title}</h2>
+              <div 
+                className="text-apple-text-secondary text-lg mb-8 leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: solution.description }}
+              />
+              {solution.features && solution.features.length > 0 && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+                  {solution.features.map((feature: string, idx: number) => (
+                    <div key={idx} className="flex items-center gap-3">
+                      <div className="w-2 h-2 rounded-full bg-apple-accent shrink-0" />
+                      <span className="font-semibold text-apple-text">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="w-full lg:w-1/2 aspect-video rounded-3xl overflow-hidden shadow-xl border border-black/5">
+              <img src={solution.image} alt={solution.title} className="w-full h-full object-cover" />
+            </div>
+          </div>
+        ))}
+      </section>
 
       {/* Trust & Methodology Section */}
       <section className="mt-40 bg-black text-white py-32 px-6">

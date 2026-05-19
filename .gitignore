@@ -41,3 +41,8 @@ yarn-error.log*
 next-env.d.ts
 SF-Pro.dmg
 SF-Pro.dmg
+
+# supabase
+supabase/.temp/
+.temp/
+
