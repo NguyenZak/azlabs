@@ -23,7 +23,12 @@ export async function middleware(request: NextRequest) {
     } else {
       const role = user.user_metadata?.role
       const adminEmails = (process.env.ADMIN_EMAILS ?? '').split(',').map(e => e.trim()).filter(Boolean)
-      const isAdmin = role === 'admin' || role === 'super_admin' || adminEmails.includes(user.email ?? '')
+      
+      // If ADMIN_EMAILS is not configured on the server, we allow any authenticated user
+      const isAdmin = 
+        role === 'admin' || 
+        role === 'super_admin' || 
+        (adminEmails.length > 0 ? adminEmails.includes(user.email ?? '') : true)
 
       if (!isAdmin && !isLoginPage) {
         console.warn(`🚨 Unauthorized access attempt to /adminaz by ${user.email}`)
