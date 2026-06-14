@@ -7,9 +7,18 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { submitContact } from "@/lib/actions/cms";
 import toast from "react-hot-toast";
 
-export default function TechContact({ settings }: { settings?: any }) {
+export default function TechContact({ 
+  settings,
+  customTitle,
+  customSubtitle
+}: { 
+  settings?: any;
+  customTitle?: string;
+  customSubtitle?: string;
+}) {
   const { dict, language } = useLanguage();
-  const email = settings?.email || "hello@azlabs.com";
+  const rawEmail = settings?.email;
+  const email = (!rawEmail || rawEmail === "hello@azlabs.com") ? "azlabs.it@gmail.com" : rawEmail;
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -60,10 +69,10 @@ export default function TechContact({ settings }: { settings?: any }) {
                 COMMUNICATION GATEWAY
               </span>
               <h2 className="text-[40px] md:text-[64px] font-bold tracking-tight leading-none text-white">
-                {dict.contact.title}
+                {customTitle || dict.contact.title}
               </h2>
               <p className="text-neutral-400 font-light text-sm md:text-base leading-relaxed max-w-lg">
-                {dict.contact.subtitle}
+                {customSubtitle || dict.contact.subtitle}
               </p>
             </div>
 

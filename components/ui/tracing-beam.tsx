@@ -18,7 +18,7 @@ export const TracingBeam = ({
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start start", "end start"],
+    offset: ["start center", "end end"],
   });
 
   const contentRef = useRef<HTMLDivElement>(null);
@@ -26,19 +26,33 @@ export const TracingBeam = ({
 
   useEffect(() => {
     if (contentRef.current) {
-      setSvgHeight(contentRef.current.offsetHeight);
+      const resizeObserver = new ResizeObserver((entries) => {
+        for (let entry of entries) {
+          setSvgHeight(entry.contentRect.height);
+        }
+      });
+      resizeObserver.observe(contentRef.current);
+      return () => resizeObserver.disconnect();
     }
   }, []);
 
   const y1 = useSpring(
-    useTransform(scrollYProgress, [0, 0.8], [50, svgHeight]),
+    useTransform(scrollYProgress, (pos) => {
+      if (pos <= 0) return 50;
+      if (pos >= 0.8) return svgHeight;
+      return 50 + (pos / 0.8) * (svgHeight - 50);
+    }),
     {
       stiffness: 500,
       damping: 90,
     }
   );
   const y2 = useSpring(
-    useTransform(scrollYProgress, [0, 1], [50, svgHeight - 200]),
+    useTransform(scrollYProgress, (pos) => {
+      if (pos <= 0) return 50;
+      if (pos >= 1) return svgHeight > 200 ? svgHeight - 200 : 50;
+      return 50 + pos * ((svgHeight > 200 ? svgHeight - 200 : 50) - 50);
+    }),
     {
       stiffness: 500,
       damping: 90,
@@ -50,7 +64,7 @@ export const TracingBeam = ({
       ref={ref}
       className={cn("relative w-full max-w-4xl mx-auto h-full", className)}
     >
-      <div className="absolute -left-4 md:-left-20 top-3">
+      <div className="absolute left-0 md:left-1/2 md:-translate-x-1/2 top-3 w-5">
         <motion.div
           transition={{
             duration: 0.2,
@@ -62,7 +76,7 @@ export const TracingBeam = ({
                 ? "none"
                 : "rgba(0, 0, 0, 0.24) 0px 3px 8px",
           }}
-          className="ml-[27px] h-4 w-4 rounded-full border border-netural-200 shadow-sm flex items-center justify-center"
+          className="mx-auto h-4 w-4 rounded-full border border-netural-200 shadow-sm flex items-center justify-center relative z-20"
         >
           <motion.div
             transition={{
@@ -82,11 +96,11 @@ export const TracingBeam = ({
           viewBox={`0 0 20 ${svgHeight}`}
           width="20"
           height={svgHeight} // Set the height dynamic
-          className=" ml-4 block"
+          className="mx-auto block"
           aria-hidden="true"
         >
           <motion.path
-            d={`M 1 0 V ${svgHeight} l 18 24 V ${svgHeight}`}
+            d={`M 10 0 V ${svgHeight}`}
             fill="none"
             stroke="#9091A0"
             strokeOpacity="0.16"
@@ -95,7 +109,7 @@ export const TracingBeam = ({
             }}
           ></motion.path>
           <motion.path
-            d={`M 1 0 V ${svgHeight} l 18 24 V ${svgHeight}`}
+            d={`M 10 0 V ${svgHeight}`}
             fill="none"
             stroke="url(#gradient)"
             strokeWidth="1.25"

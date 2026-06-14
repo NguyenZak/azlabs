@@ -32,7 +32,7 @@ const nextConfig: NextConfig = {
               default-src 'self';
               script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.supabase.co https://vercel.live;
               style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://vercel.live;
-              img-src 'self' data: https://*.supabase.co https://images.unsplash.com https://res.cloudinary.com https://vercel.com https://vercel.live;
+              img-src 'self' data: https://*.supabase.co https://images.unsplash.com https://res.cloudinary.com https://vercel.com https://vercel.live https://cdn.simpleicons.org;
               font-src 'self' data: https://fonts.gstatic.com;
               connect-src 'self' https://*.supabase.co wss://*.supabase.co https://vercel.live https://*.pusher.com wss://*.pusher.com;
               frame-src 'self' https://vercel.live;

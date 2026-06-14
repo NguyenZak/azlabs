@@ -4,6 +4,7 @@ export const vi: Dictionary = {
   nav: {
     home: "Trang chủ",
     services: "Dịch vụ",
+    portfolio: "Hồ sơ năng lực",
     work: "Dự án",
     solutions: "Giải pháp",
     about: "Về chúng tôi",

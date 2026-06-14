@@ -8,10 +8,13 @@ import { MessageCircle, Image, Link as LinkIcon, Send, Code, Terminal, Activity 
 export default function TechFooter({ settings }: { settings?: any }) {
   const { dict, language } = useLanguage();
 
-  const address = settings?.[`address_${language}`] || "San Francisco, CA";
+  const rawAddress = settings?.[`address_${language}`];
+  const address = rawAddress || "47 Vũ Trọng Phụng";
   const copyright = settings?.[`copyright_${language}`] || `© ${new Date().getFullYear()} AZLABS. All rights reserved.`;
-  const email = settings?.email || "hello@azlabs.com";
-  const phone = settings?.phone || "+1 (555) 000-0000";
+  const rawEmail = settings?.email;
+  const email = (!rawEmail || rawEmail === "hello@azlabs.com") ? "azlabs.it@gmail.com" : rawEmail;
+  const rawPhone = settings?.phone;
+  const phone = (!rawPhone || rawPhone === "+1 (555) 000-0000" || rawPhone === "+84 123 456 789") ? "0876698333" : rawPhone;
 
   const socialLinks = [
     { icon: LinkIcon, href: settings?.linkedin_url, label: "LinkedIn" },

@@ -3,12 +3,14 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 import { Menu, X, Languages } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 
 export default function Navbar({ settings }: { settings?: any }) {
   const { dict, language, setLanguage } = useLanguage();
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -23,6 +25,7 @@ export default function Navbar({ settings }: { settings?: any }) {
   const navLinks = [
     { name: dict.nav.home, href: "/" },
     { name: dict.nav.services, href: "/services" },
+    { name: dict.nav.portfolio, href: "/portfolio" },
     { name: dict.nav.work, href: "/projects" },
     { name: dict.nav.solutions, href: "/solutions" },
     { name: dict.magazine.title, href: "/blog" },
@@ -55,15 +58,21 @@ export default function Navbar({ settings }: { settings?: any }) {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-6 font-mono">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className="text-[11px] font-bold text-neutral-400 hover:text-white transition-colors uppercase tracking-wider"
-              >
-                {link.name}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className={cn(
+                    "text-[11px] font-bold transition-colors uppercase tracking-wider",
+                    isActive ? "text-blue-400" : "text-neutral-400 hover:text-white"
+                  )}
+                >
+                  {link.name}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Desktop CTA & Lang */}
@@ -104,16 +113,22 @@ export default function Navbar({ settings }: { settings?: any }) {
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="absolute top-[56px] left-0 right-0 bg-black/95 border-b border-neutral-900 h-screen flex flex-col p-6 gap-6 md:hidden animate-fade-in font-mono">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className="text-xl font-bold text-white border-b border-neutral-900 pb-4 uppercase tracking-wider"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {link.name}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className={cn(
+                    "text-xl font-bold border-b border-neutral-900 pb-4 uppercase tracking-wider",
+                    isActive ? "text-blue-400" : "text-white"
+                  )}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {link.name}
+                </Link>
+              );
+            })}
             <Link
               href="#contact"
               className="bg-blue-600 text-white px-6 py-4 rounded text-center font-bold uppercase tracking-wider border border-blue-500"
@@ -150,15 +165,21 @@ export default function Navbar({ settings }: { settings?: any }) {
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              className="text-[12px] font-normal text-apple-text/70 hover:text-apple-text transition-colors"
-            >
-              {link.name}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
+            return (
+              <Link
+                key={link.name}
+                href={link.href}
+                className={cn(
+                  "text-[12px] transition-colors",
+                  isActive ? "text-apple-accent font-semibold" : "font-normal text-apple-text/70 hover:text-apple-text"
+                )}
+              >
+                {link.name}
+              </Link>
+            );
+          })}
         </div>
 
         {/* Desktop CTA & Lang */}
@@ -199,16 +220,22 @@ export default function Navbar({ settings }: { settings?: any }) {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="absolute top-[52px] left-0 right-0 bg-white h-screen flex flex-col p-6 gap-6 md:hidden animate-fade-in">
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              className="text-2xl font-semibold text-apple-text border-b border-apple-border pb-4"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              {link.name}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
+            return (
+              <Link
+                key={link.name}
+                href={link.href}
+                className={cn(
+                  "text-2xl border-b border-apple-border pb-4",
+                  isActive ? "font-bold text-apple-accent" : "font-semibold text-apple-text"
+                )}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {link.name}
+              </Link>
+            );
+          })}
           <Link
             href="#contact"
             className="bg-apple-accent text-white px-6 py-4 rounded-xl text-center font-bold"

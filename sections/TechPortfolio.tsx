@@ -16,7 +16,15 @@ interface Project {
   image_url?: string;
 }
 
-export default function TechPortfolio({ data = [] }: { data?: any[] }) {
+export default function TechPortfolio({ 
+  data = [], 
+  customTitle, 
+  customSubtitle 
+}: { 
+  data?: any[]; 
+  customTitle?: string; 
+  customSubtitle?: string; 
+}) {
   const { dict, language } = useLanguage();
   const [mounted, setMounted] = useState(false);
   const [activeProject, setActiveProject] = useState<Project | null>(null);
@@ -59,12 +67,12 @@ export default function TechPortfolio({ data = [] }: { data?: any[] }) {
               Deployment Registry
             </span>
             <h2 className="text-[40px] md:text-[60px] font-bold tracking-tight leading-none text-white">
-              {language === "vi" ? "Dự Án Thực Tế" : "System Deployments"}
+              {customTitle || (language === "vi" ? "Dự Án Thực Tế" : "System Deployments")}
             </h2>
             <p className="text-neutral-400 font-light text-sm md:text-base leading-relaxed">
-              {language === "vi"
+              {customSubtitle || (language === "vi"
                 ? "Danh sách các giải pháp phần mềm và trang web doanh nghiệp đã được triển khai lên môi trường sản xuất."
-                : "Active registry of custom websites and enterprise solutions deployed into production environments."}
+                : "Active registry of custom websites and enterprise solutions deployed into production environments.")}
             </p>
           </div>
         </div>

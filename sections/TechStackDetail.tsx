@@ -186,7 +186,7 @@ export default function TechStackDetail({ data = [] }: { data?: TechItem[] }) {
               <AnimatePresence mode="popLayout">
                 {filteredTech.map((tech, index) => {
                   const isSelected = selectedTech === tech.slug || (tech.id && selectedTech === tech.id);
-                  const logoUrlRaw = tech.logo_url || `https://cdn.simpleicons.org/${tech.slug || 'code'}/ffffff`;
+                  const logoUrlRaw = tech.logo_url || `https://cdn.simpleicons.org/${tech.slug || 'code'}`;
                   
                   const toBase64 = (str: string) => {
                     if (typeof window === 'undefined') return Buffer.from(str).toString('base64');
@@ -259,7 +259,7 @@ export default function TechStackDetail({ data = [] }: { data?: TechItem[] }) {
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center p-2.5">
                     <img
-                      src={selectedItem?.logo_url || `https://cdn.simpleicons.org/${selectedItem?.slug || 'code'}/ffffff`}
+                      src={selectedItem?.logo_url || `https://cdn.simpleicons.org/${selectedItem?.slug || 'code'}`}
                       alt={selectedItem?.name}
                       className="w-full h-full object-contain"
                     />

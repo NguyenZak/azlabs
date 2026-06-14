@@ -9,7 +9,8 @@ import toast from "react-hot-toast";
 
 export default function Contact({ settings }: { settings?: any }) {
   const { dict } = useLanguage();
-  const email = settings?.email || "hello@azlabs.com";
+  const rawEmail = settings?.email;
+  const email = (!rawEmail || rawEmail === "hello@azlabs.com") ? "azlabs.it@gmail.com" : rawEmail;
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
