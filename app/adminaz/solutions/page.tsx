@@ -130,10 +130,10 @@ export default function SolutionsAdmin() {
 
   if (isEditing) {
     return (
-      <div className="min-h-screen -m-4 md:-m-12 bg-white">
-        <header className="px-4 md:px-12 py-4 md:py-6 border-b border-apple-border flex justify-between items-center sticky top-0 bg-white/80 backdrop-blur-md z-10 gap-2">
+      <div className="min-h-screen -m-4 md:-m-12 bg-neutral-950/60">
+        <header className="px-4 md:px-12 py-4 md:py-6 border-b border-neutral-800 flex justify-between items-center sticky top-0 bg-neutral-950/60/80 backdrop-blur-md z-10 gap-2">
           <div className="flex items-center gap-3 md:gap-6">
-            <button onClick={() => setIsEditing(false)} className="p-2 hover:bg-[#f5f5f7] rounded-full transition-all">
+            <button onClick={() => setIsEditing(false)} className="p-2 hover:bg-neutral-900/50 rounded-full transition-all">
               <ArrowLeft className="w-5 h-5 md:w-6 md:h-6" />
             </button>
             <h1 className="text-lg md:text-2xl font-bold tracking-tight truncate">
@@ -143,14 +143,14 @@ export default function SolutionsAdmin() {
           <div className="flex items-center gap-2 md:gap-4 shrink-0">
             <button 
               onClick={() => setIsEditing(false)} 
-              className="hidden sm:block px-4 py-2 text-apple-text-secondary font-bold hover:bg-[#f5f5f7] rounded-full transition-all text-sm"
+              className="hidden sm:block px-4 py-2 text-neutral-400 font-bold hover:bg-neutral-900/50 rounded-full transition-all text-sm"
             >
               Cancel
             </button>
             <button 
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="px-4 md:px-8 py-2 md:py-2.5 bg-black text-white rounded-full font-bold shadow-xl hover:opacity-90 transition-all flex items-center gap-2 disabled:opacity-50 text-xs md:text-sm"
+              className="px-4 md:px-8 py-2 md:py-2.5 bg-blue-600 text-white rounded-full font-bold shadow-xl hover:opacity-90 transition-all flex items-center gap-2 disabled:opacity-50 text-xs md:text-sm"
             >
               {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               Save
@@ -160,7 +160,7 @@ export default function SolutionsAdmin() {
 
         <div className="max-w-5xl mx-auto p-6 md:p-20 space-y-12">
             <section className="space-y-8">
-              <h2 className="text-sm font-black uppercase tracking-widest text-apple-text-secondary">Core Information</h2>
+              <h2 className="text-sm font-black uppercase tracking-widest text-neutral-400">Core Information</h2>
               
               <LanguageTabs activeLang={activeLang} onChange={setActiveLang} />
 
@@ -173,12 +173,12 @@ export default function SolutionsAdmin() {
                     className="space-y-8"
                   >
                     <div className="space-y-3">
-                      <label className="text-xs font-bold text-apple-text px-1">Tiêu đề (VI)</label>
-                      <input type="text" value={formData.title_vi} onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent text-lg font-bold" placeholder="VD: Tự động hóa AI" />
+                      <label className="text-xs font-bold text-white px-1">Tiêu đề (VI)</label>
+                      <input type="text" value={formData.title_vi} onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })} className="w-full p-5 bg-neutral-900/50 rounded-3xl border-none focus:ring-2 focus:ring-blue-500/50 text-lg font-bold" placeholder="VD: Tự động hóa AI" />
                     </div>
                     <div className="space-y-3">
-                      <label className="text-xs font-bold text-apple-text px-1">Mô tả (VI)</label>
-                      <textarea rows={4} value={formData.description_vi} onChange={(e) => setFormData({ ...formData, description_vi: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent resize-none leading-relaxed" placeholder="Mô tả chi tiết..." />
+                      <label className="text-xs font-bold text-white px-1">Mô tả (VI)</label>
+                      <textarea rows={4} value={formData.description_vi} onChange={(e) => setFormData({ ...formData, description_vi: e.target.value })} className="w-full p-5 bg-neutral-900/50 rounded-3xl border-none focus:ring-2 focus:ring-blue-500/50 resize-none leading-relaxed" placeholder="Mô tả chi tiết..." />
                     </div>
                   </motion.div>
                 ) : (
@@ -189,30 +189,30 @@ export default function SolutionsAdmin() {
                     className="space-y-8"
                   >
                     <div className="space-y-3">
-                      <label className="text-xs font-bold text-apple-text px-1">Solution Title (EN)</label>
-                      <input type="text" value={formData.title_en} onChange={(e) => setFormData({ ...formData, title_en: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent text-lg font-bold" placeholder="e.g. AI Automation" />
+                      <label className="text-xs font-bold text-white px-1">Solution Title (EN)</label>
+                      <input type="text" value={formData.title_en} onChange={(e) => setFormData({ ...formData, title_en: e.target.value })} className="w-full p-5 bg-neutral-900/50 rounded-3xl border-none focus:ring-2 focus:ring-blue-500/50 text-lg font-bold" placeholder="e.g. AI Automation" />
                     </div>
                     <div className="space-y-3">
-                      <label className="text-xs font-bold text-apple-text px-1">Description (EN)</label>
-                      <textarea rows={4} value={formData.description_en} onChange={(e) => setFormData({ ...formData, description_en: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent resize-none leading-relaxed" placeholder="Detailed description..." />
+                      <label className="text-xs font-bold text-white px-1">Description (EN)</label>
+                      <textarea rows={4} value={formData.description_en} onChange={(e) => setFormData({ ...formData, description_en: e.target.value })} className="w-full p-5 bg-neutral-900/50 rounded-3xl border-none focus:ring-2 focus:ring-blue-500/50 resize-none leading-relaxed" placeholder="Detailed description..." />
                     </div>
                   </motion.div>
                 )}
               </div>
 
               <div className="space-y-8 pt-4">
-                <h2 className="text-sm font-black uppercase tracking-widest text-apple-text-secondary">Visuals & Features</h2>
+                <h2 className="text-sm font-black uppercase tracking-widest text-neutral-400">Visuals & Features</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-4">
                     <div 
                       onClick={() => setIsMediaPickerOpen(true)}
-                      className="aspect-video bg-[#f5f5f7] rounded-3xl border-2 border-dashed border-apple-border flex items-center justify-center cursor-pointer hover:bg-gray-50 overflow-hidden relative"
+                      className="aspect-video bg-neutral-900/50 rounded-3xl border-2 border-dashed border-neutral-800 flex items-center justify-center cursor-pointer hover:bg-gray-50 overflow-hidden relative"
                     >
                       {formData.image_url ? (
                         <img src={formData.image_url} className="w-full h-full object-cover" />
                       ) : (
                         <div className="flex flex-col items-center gap-2">
-                          <ImageIcon className="w-6 h-6 text-gray-300" />
+                          <ImageIcon className="w-6 h-6 text-neutral-600" />
                           <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Upload Cover</span>
                         </div>
                       )}
@@ -224,8 +224,8 @@ export default function SolutionsAdmin() {
                     />
                   </div>
                   <div className="space-y-4">
-                    <label className="text-xs font-bold text-apple-text px-1">Icon Name (Lucide)</label>
-                    <input type="text" value={formData.icon} onChange={(e) => setFormData({ ...formData, icon: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent" placeholder="e.g. Brain, Cloud, Shield" />
+                    <label className="text-xs font-bold text-white px-1">Icon Name (Lucide)</label>
+                    <input type="text" value={formData.icon} onChange={(e) => setFormData({ ...formData, icon: e.target.value })} className="w-full p-5 bg-neutral-900/50 rounded-3xl border-none focus:ring-2 focus:ring-blue-500/50" placeholder="e.g. Brain, Cloud, Shield" />
                   </div>
                 </div>
               </div>
@@ -239,21 +239,21 @@ export default function SolutionsAdmin() {
     <div className="space-y-8 md:space-y-12">
       <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div>
-          <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-apple-text">Solutions</h1>
-          <p className="text-apple-text-secondary mt-2 text-base md:text-lg">Premium technology solutions for global scale.</p>
+          <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-white">Solutions</h1>
+          <p className="text-neutral-400 mt-2 text-base md:text-lg">Premium technology solutions for global scale.</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           <button 
             onClick={handleSeed}
             disabled={isSubmitting}
-            className="flex items-center justify-center gap-3 px-6 py-3 bg-white text-apple-accent border-2 border-apple-accent rounded-full font-bold hover:bg-apple-accent hover:text-white transition-all shadow-xl text-sm"
+            className="flex items-center justify-center gap-3 px-6 py-3 bg-neutral-950/60 text-blue-400 border-2 border-blue-500/50 rounded-full font-bold hover:bg-blue-600 hover:text-white transition-all shadow-xl text-sm"
           >
             {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
             Seed Samples
           </button>
           <button 
             onClick={() => handleStartEdit()}
-            className="flex items-center justify-center gap-3 px-6 py-3 bg-black text-white rounded-full font-bold hover:scale-[1.02] transition-all shadow-2xl text-sm"
+            className="flex items-center justify-center gap-3 px-6 py-3 bg-blue-600 text-white rounded-full font-bold hover:scale-[1.02] transition-all shadow-2xl text-sm"
           >
             <Plus className="w-4 h-4" /> Add Solution
           </button>
@@ -262,8 +262,8 @@ export default function SolutionsAdmin() {
 
       {loading ? (
         <div className="py-40 flex flex-col items-center gap-4">
-          <Loader2 className="w-10 h-10 animate-spin text-apple-accent" />
-          <p className="text-apple-text-secondary font-medium animate-pulse">Cataloging solutions...</p>
+          <Loader2 className="w-10 h-10 animate-spin text-blue-400" />
+          <p className="text-neutral-400 font-medium animate-pulse">Cataloging solutions...</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-6">
@@ -271,25 +271,25 @@ export default function SolutionsAdmin() {
             <div 
               key={solution.id}
               onClick={() => handleStartEdit(solution)}
-              className="group bg-white p-4 md:p-8 rounded-3xl md:rounded-[40px] border border-apple-border flex flex-col sm:flex-row items-start sm:items-center gap-6 md:gap-10 hover:shadow-2xl transition-all cursor-pointer hover:border-black/5"
+              className="group bg-neutral-950/60 p-4 md:p-8 rounded-3xl md:rounded-[40px] border border-neutral-800 flex flex-col sm:flex-row items-start sm:items-center gap-6 md:gap-10 hover:shadow-2xl transition-all cursor-pointer hover:border-black/5"
             >
-              <div className="w-full sm:w-32 aspect-video sm:aspect-square bg-[#f5f5f7] rounded-2xl md:rounded-[32px] overflow-hidden flex-shrink-0 border border-apple-border flex items-center justify-center">
+              <div className="w-full sm:w-32 aspect-video sm:aspect-square bg-neutral-900/50 rounded-2xl md:rounded-[32px] overflow-hidden flex-shrink-0 border border-neutral-800 flex items-center justify-center">
                 {solution.image_url ? (
                   <img src={solution.image_url} className="w-full h-full object-cover" alt="" />
                 ) : (
-                  <Layout className="w-8 h-8 text-apple-accent" />
+                  <Layout className="w-8 h-8 text-blue-400" />
                 )}
               </div>
               
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-xl md:text-2xl font-bold text-apple-text truncate">{solution.title_en}</h3>
-                  <ChevronRight className="w-5 h-5 text-apple-text-secondary group-hover:translate-x-2 transition-transform shrink-0" />
+                  <h3 className="text-xl md:text-2xl font-bold text-white truncate">{solution.title_en}</h3>
+                  <ChevronRight className="w-5 h-5 text-neutral-400 group-hover:translate-x-2 transition-transform shrink-0" />
                 </div>
-                <p className="text-apple-text-secondary text-sm md:text-base line-clamp-1 max-w-3xl font-medium mb-3 md:mb-4">{solution.title_vi}</p>
+                <p className="text-neutral-400 text-sm md:text-base line-clamp-1 max-w-3xl font-medium mb-3 md:mb-4">{solution.title_vi}</p>
               </div>
 
-              <div className="flex sm:flex-col gap-2 w-full sm:w-auto pt-4 sm:pt-0 border-t sm:border-none border-apple-border">
+              <div className="flex sm:flex-col gap-2 w-full sm:w-auto pt-4 sm:pt-0 border-t sm:border-none border-neutral-800">
                 <a 
                   href="/#solutions"
                   target="_blank"

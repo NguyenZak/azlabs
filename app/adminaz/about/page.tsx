@@ -172,7 +172,7 @@ export default function AdminAboutPage() {
   if (isLoading) {
     return (
       <div className="h-[60vh] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-apple-accent" />
+        <Loader2 className="w-8 h-8 animate-spin text-blue-400" />
       </div>
     );
   }
@@ -181,15 +181,15 @@ export default function AdminAboutPage() {
     <div className="space-y-12">
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-4xl font-bold tracking-tight text-apple-text">About & Team</h1>
-          <p className="text-apple-text-secondary mt-2 text-lg">Manage company philosophy, mission, and team members.</p>
+          <h1 className="text-4xl font-bold tracking-tight text-white">About & Team</h1>
+          <p className="text-neutral-400 mt-2 text-lg">Manage company philosophy, mission, and team members.</p>
         </div>
         <div className="flex gap-4">
           <a 
             href="/#about"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 bg-white border border-apple-border px-6 py-4 rounded-full font-bold hover:bg-apple-bg transition-all shadow-sm text-blue-500"
+            className="flex items-center gap-2 bg-neutral-950/60 border border-neutral-800 px-6 py-4 rounded-full font-bold hover:bg-apple-bg transition-all shadow-sm text-blue-500"
             title="View on site"
           >
             <ExternalLink className="w-5 h-5" />
@@ -199,7 +199,7 @@ export default function AdminAboutPage() {
             onClick={() => {
               setEditingMember({ name: "", role_en: "", role_vi: "", image: "", order_index: teamMembers.length });
             }}
-            className="flex items-center gap-2 bg-white border border-apple-border px-6 py-4 rounded-full font-bold hover:bg-apple-bg transition-all shadow-sm"
+            className="flex items-center gap-2 bg-neutral-950/60 border border-neutral-800 px-6 py-4 rounded-full font-bold hover:bg-apple-bg transition-all shadow-sm"
           >
             <Plus className="w-5 h-5" />
             Add Member
@@ -207,7 +207,7 @@ export default function AdminAboutPage() {
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="flex items-center gap-2 bg-black text-white px-8 py-4 rounded-full font-bold hover:bg-apple-accent transition-all disabled:opacity-50 shadow-xl"
+            className="flex items-center gap-2 bg-blue-600 text-white px-8 py-4 rounded-full font-bold hover:bg-blue-600 transition-all disabled:opacity-50 shadow-xl"
           >
             {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
             {isSaving ? "Saving..." : "Save Changes"}
@@ -216,18 +216,18 @@ export default function AdminAboutPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-8 border-b border-apple-border">
+      <div className="flex gap-8 border-b border-neutral-800">
         {["content", "story", "values", "team"].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`pb-4 text-sm font-bold uppercase tracking-widest transition-all relative ${
-              activeTab === tab ? "text-apple-accent" : "text-apple-text-secondary hover:text-apple-text"
+              activeTab === tab ? "text-blue-400" : "text-neutral-400 hover:text-white"
             }`}
           >
             {tab}
             {activeTab === tab && (
-              <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-apple-accent" />
+              <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600" />
             )}
           </button>
         ))}
@@ -237,8 +237,8 @@ export default function AdminAboutPage() {
         {activeTab === "content" && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <div className="space-y-12">
-              <div className="bg-white p-10 rounded-[40px] border border-apple-border shadow-sm space-y-8">
-                <h2 className="font-bold uppercase tracking-widest text-sm text-apple-accent">Philosophy Headlines</h2>
+              <div className="bg-neutral-950/60 p-10 rounded-[40px] border border-neutral-800 shadow-sm space-y-8">
+                <h2 className="font-bold uppercase tracking-widest text-sm text-blue-400">Philosophy Headlines</h2>
                 <div className="space-y-6">
                   <LanguageTabs activeLang={activeLang} onChange={setActiveLang} />
 
@@ -294,8 +294,8 @@ export default function AdminAboutPage() {
                 </div>
               </div>
               
-              <div className="bg-white p-10 rounded-[40px] border border-apple-border shadow-sm space-y-8">
-                <h2 className="font-bold uppercase tracking-widest text-sm text-apple-accent">Statistics</h2>
+              <div className="bg-neutral-950/60 p-10 rounded-[40px] border border-neutral-800 shadow-sm space-y-8">
+                <h2 className="font-bold uppercase tracking-widest text-sm text-blue-400">Statistics</h2>
                 <div className="space-y-4">
                   {formData.stats.map((stat: any, i: number) => (
                     <div key={i} className="flex gap-4 items-center">
@@ -304,13 +304,13 @@ export default function AdminAboutPage() {
                       <button onClick={() => removeStat(i)}><Trash2 className="w-4 h-4 text-red-500" /></button>
                     </div>
                   ))}
-                  <button onClick={addStat} className="text-apple-accent text-sm font-bold">+ Add Stat</button>
+                  <button onClick={addStat} className="text-blue-400 text-sm font-bold">+ Add Stat</button>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white p-10 rounded-[40px] border border-apple-border shadow-sm space-y-8">
-              <h2 className="font-bold uppercase tracking-widest text-sm text-apple-accent">Main Image</h2>
+            <div className="bg-neutral-950/60 p-10 rounded-[40px] border border-neutral-800 shadow-sm space-y-8">
+              <h2 className="font-bold uppercase tracking-widest text-sm text-blue-400">Main Image</h2>
               <div 
                 className="aspect-[4/3] rounded-3xl bg-apple-bg overflow-hidden cursor-pointer relative group"
                 onClick={() => {
@@ -328,8 +328,8 @@ export default function AdminAboutPage() {
           <div className="space-y-8">
             <LanguageTabs activeLang={activeLang} onChange={setActiveLang} />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              <div className="bg-white p-10 rounded-[40px] border border-apple-border shadow-sm space-y-8">
-                <h2 className="font-bold uppercase tracking-widest text-sm text-apple-accent">Our Story</h2>
+              <div className="bg-neutral-950/60 p-10 rounded-[40px] border border-neutral-800 shadow-sm space-y-8">
+                <h2 className="font-bold uppercase tracking-widest text-sm text-blue-400">Our Story</h2>
                 {activeLang === "vi" ? (
                   <>
                     <input
@@ -364,8 +364,8 @@ export default function AdminAboutPage() {
                   </>
                 )}
               </div>
-              <div className="bg-white p-10 rounded-[40px] border border-apple-border shadow-sm space-y-8">
-                <h2 className="font-bold uppercase tracking-widest text-sm text-apple-accent">Our Mission</h2>
+              <div className="bg-neutral-950/60 p-10 rounded-[40px] border border-neutral-800 shadow-sm space-y-8">
+                <h2 className="font-bold uppercase tracking-widest text-sm text-blue-400">Our Mission</h2>
                 {activeLang === "vi" ? (
                   <>
                     <input
@@ -405,17 +405,17 @@ export default function AdminAboutPage() {
         )}
 
         {activeTab === "values" && (
-          <div className="bg-white p-10 rounded-[40px] border border-apple-border shadow-sm space-y-8">
+          <div className="bg-neutral-950/60 p-10 rounded-[40px] border border-neutral-800 shadow-sm space-y-8">
             <div className="flex justify-between items-center">
-              <h2 className="font-bold uppercase tracking-widest text-sm text-apple-accent">Core Values</h2>
-              <button onClick={addValue} className="text-apple-accent font-bold text-sm">+ Add Value</button>
+              <h2 className="font-bold uppercase tracking-widest text-sm text-blue-400">Core Values</h2>
+              <button onClick={addValue} className="text-blue-400 font-bold text-sm">+ Add Value</button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {(formData.values || []).map((val: any, i: number) => (
                 <div key={i} className="p-6 bg-apple-bg rounded-3xl space-y-4 relative group">
                   <button onClick={() => removeValue(i)} className="absolute top-4 right-4 text-red-500 opacity-0 group-hover:opacity-100"><Trash2 className="w-4 h-4" /></button>
-                  <input type="text" placeholder="Title (EN)" value={val.title_en} onChange={(e) => updateValue(i, "title_en", e.target.value)} className="w-full bg-white p-3 rounded-xl border border-apple-border" />
-                  <textarea placeholder="Description (EN)" value={val.description_en} onChange={(e) => updateValue(i, "description_en", e.target.value)} className="w-full bg-white p-3 rounded-xl border border-apple-border h-24" />
+                  <input type="text" placeholder="Title (EN)" value={val.title_en} onChange={(e) => updateValue(i, "title_en", e.target.value)} className="w-full bg-neutral-950/60 p-3 rounded-xl border border-neutral-800" />
+                  <textarea placeholder="Description (EN)" value={val.description_en} onChange={(e) => updateValue(i, "description_en", e.target.value)} className="w-full bg-neutral-950/60 p-3 rounded-xl border border-neutral-800 h-24" />
                 </div>
               ))}
             </div>
@@ -428,7 +428,7 @@ export default function AdminAboutPage() {
               <button
                 onClick={handleSeedTeam}
                 disabled={isSaving}
-                className="flex items-center gap-2 bg-white border border-apple-accent text-apple-accent px-6 py-3 rounded-full font-bold hover:bg-apple-accent hover:text-white transition-all shadow-sm text-sm"
+                className="flex items-center gap-2 bg-neutral-950/60 border border-blue-500/50 text-blue-400 px-6 py-3 rounded-full font-bold hover:bg-blue-600 hover:text-white transition-all shadow-sm text-sm"
               >
                 <Sparkles className="w-4 h-4" />
                 Seed Team
@@ -436,7 +436,7 @@ export default function AdminAboutPage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {teamMembers.map((member) => (
-              <div key={member.id} className="bg-white p-6 rounded-[32px] border border-apple-border shadow-sm group">
+              <div key={member.id} className="bg-neutral-950/60 p-6 rounded-[32px] border border-neutral-800 shadow-sm group">
                 <div className="aspect-[3/4] rounded-2xl overflow-hidden mb-4 bg-apple-bg relative">
                   <img src={member.image} className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center gap-2">
@@ -444,17 +444,17 @@ export default function AdminAboutPage() {
                       href="/#about"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="bg-white p-2 rounded-full text-blue-500 hover:text-blue-700"
+                      className="bg-neutral-950/60 p-2 rounded-full text-blue-500 hover:text-blue-700"
                       title="View on site"
                     >
                       <ExternalLink className="w-4 h-4" />
                     </a>
-                    <button onClick={() => setEditingMember(member)} className="bg-white p-2 rounded-full"><Save className="w-4 h-4" /></button>
-                    <button onClick={() => handleDeleteMember(member.id)} className="bg-white p-2 rounded-full text-red-500"><Trash2 className="w-4 h-4" /></button>
+                    <button onClick={() => setEditingMember(member)} className="bg-neutral-950/60 p-2 rounded-full"><Save className="w-4 h-4" /></button>
+                    <button onClick={() => handleDeleteMember(member.id)} className="bg-neutral-950/60 p-2 rounded-full text-red-500"><Trash2 className="w-4 h-4" /></button>
                   </div>
                 </div>
                 <h3 className="font-bold text-lg">{member.name}</h3>
-                <p className="text-apple-text-secondary text-sm">{member.role_en}</p>
+                <p className="text-neutral-400 text-sm">{member.role_en}</p>
               </div>
             ))}
             </div>
@@ -465,7 +465,7 @@ export default function AdminAboutPage() {
       {/* Member Edit Modal */}
       {editingMember && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white rounded-[40px] p-10 w-full max-w-lg space-y-6">
+          <div className="bg-neutral-950/60 rounded-[40px] p-10 w-full max-w-lg space-y-6">
             <h2 className="text-2xl font-bold">Edit Member</h2>
             <div className="space-y-4">
               <input
@@ -493,8 +493,8 @@ export default function AdminAboutPage() {
               </div>
             </div>
             <div className="flex gap-4">
-              <button onClick={() => setEditingMember(null)} className="flex-1 py-4 font-bold border border-apple-border rounded-full">Cancel</button>
-              <button onClick={handleSaveMember} className="flex-1 py-4 font-bold bg-black text-white rounded-full">Save</button>
+              <button onClick={() => setEditingMember(null)} className="flex-1 py-4 font-bold border border-neutral-800 rounded-full">Cancel</button>
+              <button onClick={handleSaveMember} className="flex-1 py-4 font-bold bg-blue-600 text-white rounded-full">Save</button>
             </div>
           </div>
         </div>

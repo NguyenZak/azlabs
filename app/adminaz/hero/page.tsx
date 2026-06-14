@@ -118,7 +118,7 @@ export default function HeroSliderAdmin() {
         <div className="flex items-center gap-4 mb-8">
           <button 
             onClick={() => setIsEditing(false)}
-            className="p-3 hover:bg-white rounded-2xl transition-all border border-transparent hover:border-apple-border shadow-sm group"
+            className="p-3 hover:bg-neutral-950/60 rounded-2xl transition-all border border-transparent hover:border-neutral-800 shadow-sm group"
           >
             <ChevronLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
           </button>
@@ -129,26 +129,26 @@ export default function HeroSliderAdmin() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white p-8 rounded-[32px] border border-apple-border shadow-sm space-y-8">
+            <div className="bg-neutral-950/60 p-8 rounded-[32px] border border-neutral-800 shadow-sm space-y-8">
               {/* Titles */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-apple-text-secondary ml-1">Main Headline (EN)</label>
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400 ml-1">Main Headline (EN)</label>
                   <textarea 
                     rows={3}
                     value={formData.title_en}
                     onChange={(e) => setFormData({ ...formData, title_en: e.target.value })}
-                    className="w-full px-5 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all font-bold text-lg leading-tight"
+                    className="w-full px-5 py-4 bg-neutral-900/50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500/50 transition-all font-bold text-lg leading-tight"
                     placeholder="e.g. Next-Gen AI Solutions"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-apple-text-secondary ml-1">Tiêu đề chính (VI)</label>
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400 ml-1">Tiêu đề chính (VI)</label>
                   <textarea 
                     rows={3}
                     value={formData.title_vi}
                     onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })}
-                    className="w-full px-5 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all font-bold text-lg leading-tight"
+                    className="w-full px-5 py-4 bg-neutral-900/50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500/50 transition-all font-bold text-lg leading-tight"
                     placeholder="VD: Giải pháp AI thế hệ mới"
                   />
                 </div>
@@ -157,58 +157,58 @@ export default function HeroSliderAdmin() {
               {/* Subtitles */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-apple-text-secondary ml-1">Description (EN)</label>
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400 ml-1">Description (EN)</label>
                   <textarea 
                     rows={4}
                     value={formData.subtitle_en}
                     onChange={(e) => setFormData({ ...formData, subtitle_en: e.target.value })}
-                    className="w-full px-5 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all text-sm font-medium leading-relaxed"
+                    className="w-full px-5 py-4 bg-neutral-900/50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500/50 transition-all text-sm font-medium leading-relaxed"
                     placeholder="Sub-headline in English..."
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-apple-text-secondary ml-1">Mô tả (VI)</label>
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400 ml-1">Mô tả (VI)</label>
                   <textarea 
                     rows={4}
                     value={formData.subtitle_vi}
                     onChange={(e) => setFormData({ ...formData, subtitle_vi: e.target.value })}
-                    className="w-full px-5 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all text-sm font-medium leading-relaxed"
+                    className="w-full px-5 py-4 bg-neutral-900/50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500/50 transition-all text-sm font-medium leading-relaxed"
                     placeholder="Phụ đề bằng Tiếng Việt..."
                   />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white p-8 rounded-[32px] border border-apple-border shadow-sm space-y-6">
+            <div className="bg-neutral-950/60 p-8 rounded-[32px] border border-neutral-800 shadow-sm space-y-6">
               <h3 className="text-sm font-bold flex items-center gap-2 px-1">
                 <LinkIcon className="w-4 h-4" /> Action Button (CTA)
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-apple-text-secondary">Text (EN)</label>
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">Text (EN)</label>
                   <input 
                     type="text"
                     value={formData.cta_text_en}
                     onChange={(e) => setFormData({ ...formData, cta_text_en: e.target.value })}
-                    className="w-full px-4 py-3 bg-[#f5f5f7] border-none rounded-xl focus:ring-2 focus:ring-apple-accent transition-all font-bold"
+                    className="w-full px-4 py-3 bg-neutral-900/50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/50 transition-all font-bold"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-apple-text-secondary">Text (VI)</label>
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">Text (VI)</label>
                   <input 
                     type="text"
                     value={formData.cta_text_vi}
                     onChange={(e) => setFormData({ ...formData, cta_text_vi: e.target.value })}
-                    className="w-full px-4 py-3 bg-[#f5f5f7] border-none rounded-xl focus:ring-2 focus:ring-apple-accent transition-all font-bold"
+                    className="w-full px-4 py-3 bg-neutral-900/50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/50 transition-all font-bold"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-apple-text-secondary">Link (e.g. /projects)</label>
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">Link (e.g. /projects)</label>
                   <input 
                     type="text"
                     value={formData.cta_link}
                     onChange={(e) => setFormData({ ...formData, cta_link: e.target.value })}
-                    className="w-full px-4 py-3 bg-[#f5f5f7] border-none rounded-xl focus:ring-2 focus:ring-apple-accent transition-all font-bold"
+                    className="w-full px-4 py-3 bg-neutral-900/50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/50 transition-all font-bold"
                   />
                 </div>
               </div>
@@ -216,34 +216,34 @@ export default function HeroSliderAdmin() {
           </div>
 
           <div className="space-y-6">
-            <div className="bg-white p-8 rounded-[32px] border border-apple-border shadow-sm">
+            <div className="bg-neutral-950/60 p-8 rounded-[32px] border border-neutral-800 shadow-sm">
               <div className="flex flex-col items-center justify-center py-6 text-center">
-                <div className="w-16 h-16 bg-apple-accent/10 rounded-full flex items-center justify-center mb-4">
-                  <Sparkles className="w-8 h-8 text-apple-accent" />
+                <div className="w-16 h-16 bg-blue-600/10 rounded-full flex items-center justify-center mb-4">
+                  <Sparkles className="w-8 h-8 text-blue-400" />
                 </div>
-                <p className="text-xs font-bold text-apple-text-secondary uppercase tracking-widest px-4">
+                <p className="text-xs font-bold text-neutral-400 uppercase tracking-widest px-4">
                   Using 3D Tech Background
                 </p>
-                <p className="text-[10px] text-apple-text-secondary mt-2 px-6 opacity-60">
+                <p className="text-[10px] text-neutral-400 mt-2 px-6 opacity-60">
                   This slide will be rendered over the Futuristic Globe. No image required.
                 </p>
               </div>
             </div>
 
-            <div className="bg-white p-8 rounded-[32px] border border-apple-border shadow-sm">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-apple-text-secondary ml-1 block mb-3">Slide Order</label>
+            <div className="bg-neutral-950/60 p-8 rounded-[32px] border border-neutral-800 shadow-sm">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400 ml-1 block mb-3">Slide Order</label>
               <input 
                 type="number"
                 value={formData.order_index}
                 onChange={(e) => setFormData({ ...formData, order_index: parseInt(e.target.value) })}
-                className="w-full px-5 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all font-bold text-center text-xl"
+                className="w-full px-5 py-4 bg-neutral-900/50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500/50 transition-all font-bold text-center text-xl"
               />
             </div>
 
             <button 
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="w-full py-5 bg-black text-white rounded-3xl font-bold flex items-center justify-center gap-3 hover:opacity-90 transition-all shadow-xl disabled:opacity-50"
+              className="w-full py-5 bg-blue-600 text-white rounded-3xl font-bold flex items-center justify-center gap-3 hover:opacity-90 transition-all shadow-xl disabled:opacity-50"
             >
               {isSubmitting ? <Loader2 className="w-6 h-6 animate-spin" /> : <Save className="w-6 h-6" />}
               Publish Content
@@ -259,24 +259,24 @@ export default function HeroSliderAdmin() {
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <Layout className="w-5 h-5 text-apple-accent" />
-            <span className="text-[10px] font-black uppercase tracking-widest text-apple-text-secondary">Hero Experience</span>
+            <Layout className="w-5 h-5 text-blue-400" />
+            <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Hero Experience</span>
           </div>
-          <h1 className="text-5xl font-bold tracking-tight text-apple-text">Content Slider</h1>
-          <p className="text-xl text-apple-text-secondary mt-2 font-medium">Manage text-based slides over your 3D Tech Background</p>
+          <h1 className="text-5xl font-bold tracking-tight text-white">Content Slider</h1>
+          <p className="text-xl text-neutral-400 mt-2 font-medium">Manage text-based slides over your 3D Tech Background</p>
         </div>
         
         <div className="flex gap-3">
           <button 
             onClick={handleSeed}
             disabled={isSubmitting}
-            className="px-6 py-4 bg-white text-apple-text border border-apple-border rounded-2xl font-bold flex items-center gap-2 hover:bg-[#f5f5f7] transition-all shadow-sm"
+            className="px-6 py-4 bg-neutral-950/60 text-white border border-neutral-800 rounded-2xl font-bold flex items-center gap-2 hover:bg-neutral-900/50 transition-all shadow-sm"
           >
             <Sparkles className="w-5 h-5 text-yellow-500" /> Seed Samples
           </button>
           <button 
             onClick={handleStartAdd}
-            className="bg-black text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-2 hover:opacity-90 transition-all shadow-2xl"
+            className="bg-blue-600 text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-2 hover:opacity-90 transition-all shadow-2xl"
           >
             <Plus className="w-5 h-5" /> New Slide
           </button>
@@ -287,15 +287,15 @@ export default function HeroSliderAdmin() {
       <div className="grid grid-cols-1 gap-6">
         {loading ? (
           Array(2).fill(0).map((_, i) => (
-            <div key={i} className="h-40 bg-white rounded-[40px] animate-pulse border border-apple-border" />
+            <div key={i} className="h-40 bg-neutral-950/60 rounded-[40px] animate-pulse border border-neutral-800" />
           ))
         ) : slides.length === 0 ? (
-          <div className="py-32 flex flex-col items-center justify-center bg-white rounded-[40px] border border-apple-border border-dashed">
-            <div className="w-20 h-20 bg-[#f5f5f7] rounded-full flex items-center justify-center mb-6">
-              <Type className="w-10 h-10 text-apple-text-secondary" />
+          <div className="py-32 flex flex-col items-center justify-center bg-neutral-950/60 rounded-[40px] border border-neutral-800 border-dashed">
+            <div className="w-20 h-20 bg-neutral-900/50 rounded-full flex items-center justify-center mb-6">
+              <Type className="w-10 h-10 text-neutral-400" />
             </div>
-            <p className="text-xl font-bold text-apple-text">No slides found</p>
-            <p className="text-apple-text-secondary mt-2">Start by adding cinematic text slides.</p>
+            <p className="text-xl font-bold text-white">No slides found</p>
+            <p className="text-neutral-400 mt-2">Start by adding cinematic text slides.</p>
           </div>
         ) : slides.map((slide, index) => (
           <motion.div 
@@ -303,7 +303,7 @@ export default function HeroSliderAdmin() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className="bg-white p-8 rounded-[40px] border border-apple-border shadow-sm flex items-center gap-8 group hover:shadow-xl transition-all"
+            className="bg-neutral-950/60 p-8 rounded-[40px] border border-neutral-800 shadow-sm flex items-center gap-8 group hover:shadow-xl transition-all"
           >
             <div className="w-16 h-16 bg-black rounded-3xl flex items-center justify-center text-white font-bold flex-shrink-0 text-xl">
               {index + 1}
@@ -311,11 +311,11 @@ export default function HeroSliderAdmin() {
 
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-3 mb-2">
-                 <span className="text-[10px] font-black text-apple-text-secondary uppercase tracking-widest bg-[#f5f5f7] px-2 py-1 rounded">Order: {slide.order_index}</span>
-                 {slide.cta_text_en && <span className="text-[10px] font-bold text-apple-accent">Action: {slide.cta_text_en}</span>}
+                 <span className="text-[10px] font-black text-neutral-400 uppercase tracking-widest bg-neutral-900/50 px-2 py-1 rounded">Order: {slide.order_index}</span>
+                 {slide.cta_text_en && <span className="text-[10px] font-bold text-blue-400">Action: {slide.cta_text_en}</span>}
               </div>
-              <h3 className="text-2xl font-bold text-apple-text truncate">{slide.title_en}</h3>
-              <p className="text-apple-text-secondary line-clamp-1 mt-1 font-medium">{slide.subtitle_en}</p>
+              <h3 className="text-2xl font-bold text-white truncate">{slide.title_en}</h3>
+              <p className="text-neutral-400 line-clamp-1 mt-1 font-medium">{slide.subtitle_en}</p>
             </div>
 
             <div className="flex gap-2">
@@ -330,7 +330,7 @@ export default function HeroSliderAdmin() {
               </a>
               <button 
                 onClick={() => handleStartEdit(slide)}
-                className="p-4 hover:bg-[#f5f5f7] rounded-2xl text-apple-text-secondary transition-all"
+                className="p-4 hover:bg-neutral-900/50 rounded-2xl text-neutral-400 transition-all"
               >
                 <Edit3 className="w-6 h-6" />
               </button>

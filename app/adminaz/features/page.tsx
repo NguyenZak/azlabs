@@ -115,10 +115,10 @@ export default function FeaturesAdmin() {
 
   if (isEditing) {
     return (
-      <div className="min-h-screen -m-12 bg-white">
-        <header className="px-12 py-6 border-b border-apple-border flex justify-between items-center sticky top-0 bg-white/80 backdrop-blur-md z-10">
+      <div className="min-h-screen -m-12 bg-neutral-950/60">
+        <header className="px-12 py-6 border-b border-neutral-800 flex justify-between items-center sticky top-0 bg-neutral-950/60/80 backdrop-blur-md z-10">
           <div className="flex items-center gap-6">
-            <button onClick={() => setIsEditing(false)} className="p-2 hover:bg-[#f5f5f7] rounded-full transition-all">
+            <button onClick={() => setIsEditing(false)} className="p-2 hover:bg-neutral-900/50 rounded-full transition-all">
               <ArrowLeft className="w-6 h-6" />
             </button>
             <h1 className="text-2xl font-bold tracking-tight">
@@ -128,14 +128,14 @@ export default function FeaturesAdmin() {
           <div className="flex items-center gap-4">
             <button 
               onClick={() => setIsEditing(false)} 
-              className="px-6 py-2.5 text-apple-text-secondary font-bold hover:bg-[#f5f5f7] rounded-full transition-all"
+              className="px-6 py-2.5 text-neutral-400 font-bold hover:bg-neutral-900/50 rounded-full transition-all"
             >
               Cancel
             </button>
             <button 
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="px-8 py-2.5 bg-black text-white rounded-full font-bold shadow-xl hover:opacity-90 transition-all flex items-center gap-2 disabled:opacity-50"
+              className="px-8 py-2.5 bg-blue-600 text-white rounded-full font-bold shadow-xl hover:opacity-90 transition-all flex items-center gap-2 disabled:opacity-50"
             >
               {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               Save Feature
@@ -146,22 +146,22 @@ export default function FeaturesAdmin() {
         <div className="max-w-4xl mx-auto p-20 grid grid-cols-1 md:grid-cols-3 gap-20">
           <aside className="space-y-8">
             <div>
-              <label className="text-[10px] font-black uppercase tracking-widest text-apple-text-secondary mb-4 block">Visual Representative</label>
+              <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400 mb-4 block">Visual Representative</label>
               <div 
                 onClick={() => setIsMediaPickerOpen(true)}
-                className="aspect-square bg-[#f5f5f7] rounded-[40px] border-2 border-dashed border-apple-border flex flex-col items-center justify-center gap-4 cursor-pointer hover:bg-gray-50 overflow-hidden relative group"
+                className="aspect-square bg-neutral-900/50 rounded-[40px] border-2 border-dashed border-neutral-800 flex flex-col items-center justify-center gap-4 cursor-pointer hover:bg-gray-50 overflow-hidden relative group"
               >
                 {formData.image_url ? (
                   <>
                     <img src={formData.image_url} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <span className="bg-white/90 backdrop-blur px-4 py-2 rounded-full text-xs font-bold shadow-xl">Change Image</span>
+                      <span className="bg-neutral-950/60/90 backdrop-blur px-4 py-2 rounded-full text-xs font-bold shadow-xl">Change Image</span>
                     </div>
                   </>
                 ) : (
                   <div className="flex flex-col items-center gap-2">
-                    <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm">
-                      <ImageIcon className="w-8 h-8 text-apple-accent" />
+                    <div className="w-16 h-16 bg-neutral-950/60 rounded-2xl flex items-center justify-center shadow-sm">
+                      <ImageIcon className="w-8 h-8 text-blue-400" />
                     </div>
                     <span className="text-[10px] font-bold text-gray-400 uppercase mt-2">Pick from Media</span>
                   </div>
@@ -169,8 +169,8 @@ export default function FeaturesAdmin() {
               </div>
             </div>
             
-            <div className="p-6 bg-[#f5f5f7] rounded-[32px]">
-              <p className="text-xs text-apple-text-secondary leading-relaxed italic">
+            <div className="p-6 bg-neutral-900/50 rounded-[32px]">
+              <p className="text-xs text-neutral-400 leading-relaxed italic">
                 "Features define the soul of the product. Use high-quality, descriptive images to maintain the premium AZLABS aesthetic."
               </p>
             </div>
@@ -178,27 +178,27 @@ export default function FeaturesAdmin() {
 
           <div className="md:col-span-2 space-y-12">
             <section className="space-y-6">
-              <h2 className="text-sm font-black uppercase tracking-widest text-apple-text-secondary">Identity & Language</h2>
+              <h2 className="text-sm font-black uppercase tracking-widest text-neutral-400">Identity & Language</h2>
               <div className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-3">
-                    <label className="text-xs font-bold text-apple-text px-1">Title (EN)</label>
-                    <input type="text" value={formData.title_en} onChange={(e) => setFormData({ ...formData, title_en: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent text-lg font-medium" placeholder="Cloud Scalability" />
+                    <label className="text-xs font-bold text-white px-1">Title (EN)</label>
+                    <input type="text" value={formData.title_en} onChange={(e) => setFormData({ ...formData, title_en: e.target.value })} className="w-full p-5 bg-neutral-900/50 rounded-3xl border-none focus:ring-2 focus:ring-blue-500/50 text-lg font-medium" placeholder="Cloud Scalability" />
                   </div>
                   <div className="space-y-3">
-                    <label className="text-xs font-bold text-apple-text px-1">Tiêu đề (VI)</label>
-                    <input type="text" value={formData.title_vi} onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent text-lg font-medium" placeholder="Khả năng mở rộng" />
+                    <label className="text-xs font-bold text-white px-1">Tiêu đề (VI)</label>
+                    <input type="text" value={formData.title_vi} onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })} className="w-full p-5 bg-neutral-900/50 rounded-3xl border-none focus:ring-2 focus:ring-blue-500/50 text-lg font-medium" placeholder="Khả năng mở rộng" />
                   </div>
                 </div>
 
                 <div className="space-y-8 pt-4">
                   <div className="space-y-3">
-                    <label className="text-xs font-bold text-apple-text px-1">Description (EN)</label>
-                    <textarea rows={4} value={formData.description_en} onChange={(e) => setFormData({ ...formData, description_en: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent resize-none leading-relaxed" placeholder="Describe the feature's value in English..." />
+                    <label className="text-xs font-bold text-white px-1">Description (EN)</label>
+                    <textarea rows={4} value={formData.description_en} onChange={(e) => setFormData({ ...formData, description_en: e.target.value })} className="w-full p-5 bg-neutral-900/50 rounded-3xl border-none focus:ring-2 focus:ring-blue-500/50 resize-none leading-relaxed" placeholder="Describe the feature's value in English..." />
                   </div>
                   <div className="space-y-3">
-                    <label className="text-xs font-bold text-apple-text px-1">Mô tả (VI)</label>
-                    <textarea rows={4} value={formData.description_vi} onChange={(e) => setFormData({ ...formData, description_vi: e.target.value })} className="w-full p-5 bg-[#f5f5f7] rounded-3xl border-none focus:ring-2 focus:ring-apple-accent resize-none leading-relaxed" placeholder="Mô tả giá trị tính năng bằng tiếng Việt..." />
+                    <label className="text-xs font-bold text-white px-1">Mô tả (VI)</label>
+                    <textarea rows={4} value={formData.description_vi} onChange={(e) => setFormData({ ...formData, description_vi: e.target.value })} className="w-full p-5 bg-neutral-900/50 rounded-3xl border-none focus:ring-2 focus:ring-blue-500/50 resize-none leading-relaxed" placeholder="Mô tả giá trị tính năng bằng tiếng Việt..." />
                   </div>
                 </div>
               </div>
@@ -219,19 +219,19 @@ export default function FeaturesAdmin() {
     <div className="space-y-12">
       <header className="flex justify-between items-end">
         <div>
-          <h1 className="text-5xl font-bold tracking-tight text-apple-text">AZLABS Features</h1>
-          <p className="text-apple-text-secondary mt-4 text-lg">Define the pillars of your technology ecosystem.</p>
+          <h1 className="text-5xl font-bold tracking-tight text-white">AZLABS Features</h1>
+          <p className="text-neutral-400 mt-4 text-lg">Define the pillars of your technology ecosystem.</p>
         </div>
         <button 
           onClick={() => handleStartEdit()}
-          className="flex items-center gap-3 px-8 py-4 bg-black text-white rounded-full font-bold hover:scale-105 transition-all shadow-2xl"
+          className="flex items-center gap-3 px-8 py-4 bg-blue-600 text-white rounded-full font-bold hover:scale-105 transition-all shadow-2xl"
         >
           <Plus className="w-5 h-5" /> Add New Pillar
         </button>
         <button 
           onClick={handleSeed}
           disabled={isSubmitting}
-          className="flex items-center gap-3 px-8 py-4 bg-white text-apple-accent border-2 border-apple-accent rounded-full font-bold hover:bg-apple-accent hover:text-white transition-all"
+          className="flex items-center gap-3 px-8 py-4 bg-neutral-950/60 text-blue-400 border-2 border-blue-500/50 rounded-full font-bold hover:bg-blue-600 hover:text-white transition-all"
         >
           {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
           Seed Sample Data
@@ -240,8 +240,8 @@ export default function FeaturesAdmin() {
 
       {loading ? (
         <div className="py-40 flex flex-col items-center gap-4">
-          <Loader2 className="w-10 h-10 animate-spin text-apple-accent" />
-          <p className="text-apple-text-secondary font-medium animate-pulse">Loading system architecture...</p>
+          <Loader2 className="w-10 h-10 animate-spin text-blue-400" />
+          <p className="text-neutral-400 font-medium animate-pulse">Loading system architecture...</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-6">
@@ -249,24 +249,24 @@ export default function FeaturesAdmin() {
             <div 
               key={feature.id}
               onClick={() => handleStartEdit(feature)}
-              className="group bg-white p-6 rounded-[32px] border border-apple-border flex items-center gap-8 hover:shadow-xl transition-all cursor-pointer hover:border-black/10"
+              className="group bg-neutral-950/60 p-6 rounded-[32px] border border-neutral-800 flex items-center gap-8 hover:shadow-xl transition-all cursor-pointer hover:border-black/10"
             >
-              <div className="w-24 h-24 bg-[#f5f5f7] rounded-[24px] overflow-hidden flex-shrink-0 border border-apple-border group-hover:scale-105 transition-transform">
+              <div className="w-24 h-24 bg-neutral-900/50 rounded-[24px] overflow-hidden flex-shrink-0 border border-neutral-800 group-hover:scale-105 transition-transform">
                 {feature.image_url ? (
                   <img src={feature.image_url} className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <Sparkles className="w-8 h-8 text-gray-300" />
+                    <Sparkles className="w-8 h-8 text-neutral-600" />
                   </div>
                 )}
               </div>
               
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-xl font-bold text-apple-text">{feature.title_en}</h3>
-                  <ChevronRight className="w-5 h-5 text-apple-text-secondary group-hover:translate-x-1 transition-transform" />
+                  <h3 className="text-xl font-bold text-white">{feature.title_en}</h3>
+                  <ChevronRight className="w-5 h-5 text-neutral-400 group-hover:translate-x-1 transition-transform" />
                 </div>
-                <p className="text-apple-text-secondary text-sm line-clamp-1 max-w-2xl font-medium">{feature.title_vi}</p>
+                <p className="text-neutral-400 text-sm line-clamp-1 max-w-2xl font-medium">{feature.title_vi}</p>
               </div>
 
               <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity pr-4">

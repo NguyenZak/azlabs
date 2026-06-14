@@ -167,26 +167,26 @@ export default function TechStackAdmin() {
     <div className="space-y-8">
       <header className="flex justify-between items-center">
         <div>
-          <h1 className="text-4xl font-bold tracking-tight text-apple-text">Tech Stack</h1>
-          <p className="text-apple-text-secondary mt-1 font-medium">Manage technologies powering your world-class solutions</p>
+          <h1 className="text-4xl font-bold tracking-tight text-white">Tech Stack</h1>
+          <p className="text-neutral-400 mt-1 font-medium">Manage technologies powering your world-class solutions</p>
         </div>
         <div className="flex gap-3">
           <button 
             onClick={() => setIsBulkModalOpen(true)}
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-white text-apple-text border border-apple-border rounded-2xl font-bold hover:bg-apple-bg transition-all shadow-sm text-sm"
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-neutral-950/60 text-white border border-neutral-800 rounded-2xl font-bold hover:bg-apple-bg transition-all shadow-sm text-sm"
           >
             <FileCode className="w-4 h-4" /> Bulk Add
           </button>
           <button 
             onClick={handleSeed}
             disabled={isSubmitting}
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-white text-apple-accent border border-apple-accent rounded-2xl font-bold hover:bg-apple-accent hover:text-white transition-all shadow-sm text-sm"
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-neutral-950/60 text-blue-400 border border-blue-500/50 rounded-2xl font-bold hover:bg-blue-600 hover:text-white transition-all shadow-sm text-sm"
           >
             <Sparkles className="w-4 h-4" /> Seed Samples
           </button>
           <button
             onClick={() => handleOpenModal()}
-            className="bg-black text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:opacity-90 transition-all shadow-xl"
+            className="bg-blue-600 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:opacity-90 transition-all shadow-xl"
           >
             <Plus className="w-5 h-5" /> Add Technology
           </button>
@@ -194,7 +194,7 @@ export default function TechStackAdmin() {
       </header>
 
       {/* Categories Tabs & List */}
-      <div className="bg-white rounded-[40px] border border-apple-border shadow-sm overflow-hidden">
+      <div className="bg-neutral-950/60 rounded-[40px] border border-neutral-800 shadow-sm overflow-hidden">
         <div className="p-10">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
             {loading ? (
@@ -202,7 +202,7 @@ export default function TechStackAdmin() {
                 <div key={i} className="aspect-square bg-gray-50 rounded-3xl animate-pulse" />
               ))
             ) : techs.length === 0 ? (
-              <div className="col-span-full py-20 text-center text-apple-text-secondary font-medium">
+              <div className="col-span-full py-20 text-center text-neutral-400 font-medium">
                 Your tech stack is empty. Start adding some technologies!
               </div>
             ) : techs.map((tech) => (
@@ -211,7 +211,7 @@ export default function TechStackAdmin() {
                 layout
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="group relative aspect-square bg-[#f5f5f7] rounded-[32px] p-6 flex flex-col items-center justify-center gap-3 hover:bg-white hover:shadow-xl transition-all border border-transparent hover:border-apple-border"
+                className="group relative aspect-square bg-neutral-900/50 rounded-[32px] p-6 flex flex-col items-center justify-center gap-3 hover:bg-neutral-950/60 hover:shadow-xl transition-all border border-transparent hover:border-neutral-800"
               >
                 <div className="w-12 h-12 flex items-center justify-center mb-1">
                   {tech.logo_url ? (
@@ -223,12 +223,12 @@ export default function TechStackAdmin() {
                       className="max-w-full max-h-full object-contain transition-all duration-500" 
                     />
                   ) : (
-                    <Cpu className="w-8 h-8 text-gray-300" />
+                    <Cpu className="w-8 h-8 text-neutral-600" />
                   )}
                 </div>
                 <div className="text-center">
-                  <div className="text-xs font-black tracking-tight text-apple-text">{tech.name}</div>
-                  <div className="text-[9px] font-bold text-apple-text-secondary uppercase tracking-widest mt-1 opacity-60">{tech.category}</div>
+                  <div className="text-xs font-black tracking-tight text-white">{tech.name}</div>
+                  <div className="text-[9px] font-bold text-neutral-400 uppercase tracking-widest mt-1 opacity-60">{tech.category}</div>
                 </div>
 
                 <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -237,15 +237,15 @@ export default function TechStackAdmin() {
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
-                    className="p-2 bg-white/80 backdrop-blur shadow-sm rounded-full text-blue-500 hover:text-blue-700 transition-all"
+                    className="p-2 bg-neutral-950/60/80 backdrop-blur shadow-sm rounded-full text-blue-500 hover:text-blue-700 transition-all"
                     title="View on site"
                   >
                     <ExternalLink className="w-3 h-3" />
                   </a>
-                  <button onClick={() => handleOpenModal(tech)} className="p-2 bg-white/80 backdrop-blur shadow-sm rounded-full text-apple-text-secondary hover:text-black transition-all">
+                  <button onClick={() => handleOpenModal(tech)} className="p-2 bg-neutral-950/60/80 backdrop-blur shadow-sm rounded-full text-neutral-400 hover:text-black transition-all">
                     <ImageIcon className="w-3 h-3" />
                   </button>
-                  <button onClick={() => handleDelete(tech.id)} className="p-2 bg-white/80 backdrop-blur shadow-sm rounded-full text-red-400 hover:text-red-600 transition-all">
+                  <button onClick={() => handleDelete(tech.id)} className="p-2 bg-neutral-950/60/80 backdrop-blur shadow-sm rounded-full text-red-400 hover:text-red-600 transition-all">
                     <Trash2 className="w-3 h-3" />
                   </button>
                 </div>
@@ -270,12 +270,12 @@ export default function TechStackAdmin() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-xl bg-white rounded-[40px] shadow-2xl border border-apple-border overflow-hidden"
+              className="relative w-full max-w-xl bg-neutral-950/60 rounded-[40px] shadow-2xl border border-neutral-800 overflow-hidden"
             >
               <div className="p-10">
                 <div className="flex justify-between items-center mb-8">
                   <h2 className="text-2xl font-bold tracking-tight">{currentTech ? "Edit Tech" : "Add Tech"}</h2>
-                  <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-[#f5f5f7] rounded-full transition-all">
+                  <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-neutral-900/50 rounded-full transition-all">
                     <X className="w-5 h-5" />
                   </button>
                 </div>
@@ -284,7 +284,7 @@ export default function TechStackAdmin() {
                   {/* Name */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-apple-text-secondary ml-1">Name</label>
+                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400 ml-1">Name</label>
                       <input
                         type="text"
                         value={formData.name}
@@ -301,12 +301,12 @@ export default function TechStackAdmin() {
                           }));
                         }}
 
-                        className="w-full px-6 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all font-bold"
+                        className="w-full px-6 py-4 bg-neutral-900/50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500/50 transition-all font-bold"
                         placeholder="e.g. Next.js"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-apple-text-secondary ml-1">Icon Slug / Link</label>
+                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400 ml-1">Icon Slug / Link</label>
                       <input
                         type="text"
                         value={formData.slug}
@@ -325,7 +325,7 @@ export default function TechStackAdmin() {
                             }
                           }
                         }}
-                        className="w-full px-6 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all font-bold"
+                        className="w-full px-6 py-4 bg-neutral-900/50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500/50 transition-all font-bold"
                         placeholder="nextdotjs or google.com"
                       />
                     </div>
@@ -333,11 +333,11 @@ export default function TechStackAdmin() {
 
                   {/* Category */}
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-apple-text-secondary ml-1">Category</label>
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400 ml-1">Category</label>
                     <select
                       value={formData.category}
                       onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                      className="w-full px-6 py-4 bg-[#f5f5f7] border-none rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all font-bold appearance-none"
+                      className="w-full px-6 py-4 bg-neutral-900/50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500/50 transition-all font-bold appearance-none"
                     >
                       {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                     </select>
@@ -346,21 +346,21 @@ export default function TechStackAdmin() {
                   {/* Logo URL / Manual */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-apple-text-secondary ml-1">Logo URL / Raw SVG</label>
+                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400 ml-1">Logo URL / Raw SVG</label>
                       <textarea
                         value={formData.logo_url}
                         onChange={(e) => setFormData({ ...formData, logo_url: e.target.value })}
-                        className="w-full px-4 py-3 bg-[#f5f5f7] border-none rounded-xl text-xs font-mono h-20 resize-none"
+                        className="w-full px-4 py-3 bg-neutral-900/50 border-none rounded-xl text-xs font-mono h-20 resize-none"
                         placeholder="Paste URL or raw <svg> code here..."
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-apple-text-secondary ml-1">Order</label>
+                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400 ml-1">Order</label>
                       <input
                         type="number"
                         value={formData.order_index}
                         onChange={(e) => setFormData({ ...formData, order_index: parseInt(e.target.value) || 0 })}
-                        className="w-full px-6 py-3 bg-[#f5f5f7] border-none rounded-xl font-bold"
+                        className="w-full px-6 py-3 bg-neutral-900/50 border-none rounded-xl font-bold"
                         placeholder="0"
                       />
                     </div>
@@ -368,9 +368,9 @@ export default function TechStackAdmin() {
 
                   {/* Logo Preview & Upload */}
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-apple-text-secondary ml-1">Visual Preview</label>
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400 ml-1">Visual Preview</label>
                     <div className="flex items-center gap-4">
-                      <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center border border-apple-border shadow-inner overflow-hidden p-4 group-hover:shadow-lg transition-all">
+                      <div className="w-20 h-20 bg-neutral-950/60 rounded-3xl flex items-center justify-center border border-neutral-800 shadow-inner overflow-hidden p-4 group-hover:shadow-lg transition-all">
                         {formData.logo_url ? (
                           <img 
                             src={formData.logo_url.startsWith('<svg') 
@@ -384,10 +384,10 @@ export default function TechStackAdmin() {
                         )}
                       </div>
                       <div className="flex-1 space-y-2">
-                        <p className="text-[11px] text-apple-text-secondary">Paste a link to a website or a SimpleIcon slug above. We'll try to find the logo automatically.</p>
+                        <p className="text-[11px] text-neutral-400">Paste a link to a website or a SimpleIcon slug above. We'll try to find the logo automatically.</p>
                         <button
                           onClick={() => setIsUploadModalOpen(true)}
-                          className="w-full px-4 py-3 bg-[#f5f5f7] border border-apple-border rounded-xl font-bold text-xs hover:bg-gray-100 transition-all flex items-center justify-center gap-2"
+                          className="w-full px-4 py-3 bg-neutral-900/50 border border-neutral-800 rounded-xl font-bold text-xs hover:bg-neutral-800 transition-all flex items-center justify-center gap-2"
                         >
                           <ImageIcon className="w-4 h-4" /> Custom Upload (Cloudinary)
                         </button>
@@ -406,7 +406,7 @@ export default function TechStackAdmin() {
                   <button
                     onClick={handleSubmit}
                     disabled={isSubmitting}
-                    className="w-full py-4 bg-black text-white rounded-2xl font-bold hover:opacity-90 transition-all shadow-xl disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="w-full py-4 bg-blue-600 text-white rounded-2xl font-bold hover:opacity-90 transition-all shadow-xl disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
                     {currentTech ? "Update Technology" : "Add to Stack"}
@@ -432,12 +432,12 @@ export default function TechStackAdmin() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-white rounded-[40px] shadow-2xl w-full max-w-4xl max-h-[85vh] overflow-hidden flex flex-col relative z-10"
+              className="bg-neutral-950/60 rounded-[40px] shadow-2xl w-full max-w-4xl max-h-[85vh] overflow-hidden flex flex-col relative z-10"
             >
-              <div className="p-8 border-b border-apple-border flex justify-between items-center">
+              <div className="p-8 border-b border-neutral-800 flex justify-between items-center">
                 <div>
-                  <h2 className="text-2xl font-bold text-apple-text">Bulk Add with AI</h2>
-                  <p className="text-apple-text-secondary text-sm">Paste SVGs, links, or names. AI will do the rest.</p>
+                  <h2 className="text-2xl font-bold text-white">Bulk Add with AI</h2>
+                  <p className="text-neutral-400 text-sm">Paste SVGs, links, or names. AI will do the rest.</p>
                 </div>
                 <button onClick={() => setIsBulkModalOpen(false)} className="p-2 hover:bg-apple-bg rounded-full transition-all">
                   <X className="w-6 h-6" />
@@ -446,17 +446,17 @@ export default function TechStackAdmin() {
 
               <div className="flex-1 overflow-y-auto p-8 space-y-8">
                 <div className="space-y-4">
-                  <label className="text-sm font-bold uppercase tracking-widest text-apple-text-secondary">Input Data</label>
+                  <label className="text-sm font-bold uppercase tracking-widest text-neutral-400">Input Data</label>
                   <textarea
                     value={bulkInput}
                     onChange={(e) => setBulkInput(e.target.value)}
                     placeholder="Paste SVG code or list of techs here..."
-                    className="w-full h-48 bg-apple-bg p-6 rounded-3xl border-none focus:ring-2 focus:ring-apple-accent transition-all font-mono text-sm resize-none"
+                    className="w-full h-48 bg-apple-bg p-6 rounded-3xl border-none focus:ring-2 focus:ring-blue-500/50 transition-all font-mono text-sm resize-none"
                   />
                   <button
                     onClick={handleBulkParse}
                     disabled={isParsing || !bulkInput.trim()}
-                    className="w-full py-4 bg-black text-white rounded-2xl font-bold hover:bg-apple-accent transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="w-full py-4 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-600 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     {isParsing ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
                     {isParsing ? "AI is analyzing..." : "Analyze with AI"}
@@ -466,7 +466,7 @@ export default function TechStackAdmin() {
                 {bulkPreview.length > 0 && (
                   <div className="space-y-6">
                     <div className="flex justify-between items-center">
-                      <h3 className="font-bold text-apple-text flex items-center gap-2">
+                      <h3 className="font-bold text-white flex items-center gap-2">
                         <Check className="w-5 h-5 text-green-500" />
                         Detected Technologies ({bulkPreview.length})
                       </h3>
@@ -474,13 +474,13 @@ export default function TechStackAdmin() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {bulkPreview.map((item, idx) => (
-                        <div key={idx} className="flex items-center gap-4 p-4 bg-apple-bg rounded-2xl border border-apple-border">
+                        <div key={idx} className="flex items-center gap-4 p-4 bg-apple-bg rounded-2xl border border-neutral-800">
                           <img src={item.logo_url} className="w-8 h-8 object-contain" alt="" />
                           <div className="flex-1">
                             <p className="font-bold text-sm">{item.name}</p>
-                            <p className="text-[10px] uppercase font-bold text-apple-text-secondary tracking-widest">{item.category}</p>
+                            <p className="text-[10px] uppercase font-bold text-neutral-400 tracking-widest">{item.category}</p>
                           </div>
-                          <button onClick={() => setBulkPreview(bulkPreview.filter((_, i) => i !== idx))} className="text-apple-text-secondary hover:text-red-500">
+                          <button onClick={() => setBulkPreview(bulkPreview.filter((_, i) => i !== idx))} className="text-neutral-400 hover:text-red-500">
                             <X className="w-4 h-4" />
                           </button>
                         </div>
@@ -490,19 +490,19 @@ export default function TechStackAdmin() {
                 )}
 
                 {bulkPreview.length === 0 && !isParsing && bulkInput && (
-                  <div className="flex flex-col items-center justify-center py-12 text-apple-text-secondary">
+                  <div className="flex flex-col items-center justify-center py-12 text-neutral-400">
                     <AlertCircle className="w-12 h-12 mb-4 opacity-20" />
                     <p className="text-sm font-medium">Click "Analyze with AI" to detect technologies.</p>
                   </div>
                 )}
               </div>
 
-              <div className="p-8 border-t border-apple-border bg-apple-bg/50 flex gap-4">
-                <button onClick={() => setIsBulkModalOpen(false)} className="flex-1 py-4 font-bold border border-apple-border rounded-2xl hover:bg-white transition-all">Cancel</button>
+              <div className="p-8 border-t border-neutral-800 bg-apple-bg/50 flex gap-4">
+                <button onClick={() => setIsBulkModalOpen(false)} className="flex-1 py-4 font-bold border border-neutral-800 rounded-2xl hover:bg-neutral-950/60 transition-all">Cancel</button>
                 <button
                   onClick={handleSaveBulk}
                   disabled={isSubmitting || bulkPreview.length === 0}
-                  className="flex-[2] py-4 bg-black text-white rounded-2xl font-bold hover:bg-apple-accent transition-all disabled:opacity-50 shadow-xl"
+                  className="flex-[2] py-4 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-600 transition-all disabled:opacity-50 shadow-xl"
                 >
                   {isSubmitting ? "Saving..." : `Add ${bulkPreview.length} Technologies`}
                 </button>

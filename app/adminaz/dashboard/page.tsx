@@ -61,7 +61,7 @@ const CmsStatCard = ({ label, value, icon: Icon, color, shadow, index }: any) =>
     initial={{ opacity: 0, scale: 0.9, y: 20 }}
     animate={{ opacity: 1, scale: 1, y: 0 }}
     transition={{ delay: index * 0.08, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
-    className="bg-white p-5 md:p-7 rounded-2xl md:rounded-[32px] border border-apple-border shadow-sm hover:shadow-2xl transition-all group overflow-hidden relative"
+    className="bg-neutral-950/60 p-5 md:p-7 rounded-2xl md:rounded-[32px] border border-neutral-900 shadow-sm hover:shadow-[0_0_30px_rgba(59,130,246,0.15)] transition-all group overflow-hidden relative"
   >
     <div className={`absolute top-0 right-0 w-28 h-28 ${color} opacity-[0.04] blur-3xl rounded-full -mr-8 -mt-8`} />
     <div className="flex justify-between items-start mb-4 md:mb-5 relative z-10">
@@ -69,8 +69,8 @@ const CmsStatCard = ({ label, value, icon: Icon, color, shadow, index }: any) =>
         <Icon className="w-5 h-5 md:w-6 md:h-6" />
       </div>
     </div>
-    <p className="text-apple-text-secondary font-semibold text-[10px] uppercase tracking-wider mb-1">{label}</p>
-    <span className="text-2xl md:text-3xl font-black tracking-tighter text-apple-text">{value}</span>
+    <p className="text-neutral-500 font-semibold text-[10px] uppercase tracking-wider mb-1">{label}</p>
+    <span className="text-2xl md:text-3xl font-black tracking-tighter text-white">{value}</span>
   </motion.div>
 );
 
@@ -79,18 +79,18 @@ const ActivityRow = ({ title, desc, time, index }: any) => (
     initial={{ opacity: 0, x: -15 }}
     animate={{ opacity: 1, x: 0 }}
     transition={{ delay: 0.3 + index * 0.08 }}
-    className="flex items-center justify-between p-5 hover:bg-[#fbfbfd] rounded-2xl transition-all group"
+    className="flex items-center justify-between p-5 hover:bg-neutral-900/50 rounded-2xl transition-all group"
   >
     <div className="flex items-center gap-4">
-      <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center shrink-0">
+      <div className="w-10 h-10 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center shrink-0 border border-blue-500/20">
         <Zap className="w-4 h-4" />
       </div>
       <div className="min-w-0">
-        <p className="font-bold text-sm text-apple-text truncate">{title}</p>
-        <p className="text-xs text-apple-text-secondary truncate">{desc}</p>
+        <p className="font-bold text-sm text-white truncate">{title}</p>
+        <p className="text-xs text-neutral-500 truncate">{desc}</p>
       </div>
     </div>
-    <span className="text-[10px] font-bold uppercase tracking-widest text-apple-text-secondary bg-apple-bg-secondary px-3 py-1 rounded-full shrink-0 ml-4">
+    <span className="text-[10px] font-bold uppercase tracking-widest text-neutral-400 bg-neutral-900 px-3 py-1 rounded-full shrink-0 ml-4 border border-neutral-800">
       {time}
     </span>
   </motion.div>
@@ -151,14 +151,14 @@ export default function AdminDashboard() {
             <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
             <span className="text-xs font-bold text-emerald-500 uppercase tracking-[0.2em]">System Online</span>
           </div>
-          <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-apple-text">Control Center</h1>
-          <p className="text-apple-text-secondary mt-1 text-base md:text-lg font-medium">
+          <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-white">Control Center</h1>
+          <p className="text-neutral-500 mt-1 text-base md:text-lg font-medium">
             Real-time overview of AZLABS digital ecosystem.
           </p>
         </motion.div>
 
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}>
-          <select className="bg-white border border-apple-border rounded-2xl px-5 py-3 font-bold text-sm focus:outline-none focus:ring-2 focus:ring-apple-accent/20">
+          <select className="bg-neutral-950 border border-neutral-900 rounded-2xl px-5 py-3 font-bold text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-white">
             <option>Last 7 Days</option>
             <option>Last 30 Days</option>
             <option>All Time</option>
@@ -185,18 +185,18 @@ export default function AdminDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35 + i * 0.08 }}
-            className="bg-white p-7 rounded-[32px] border border-apple-border shadow-sm hover:shadow-xl transition-all group"
+            className="bg-neutral-950/60 p-7 rounded-[32px] border border-neutral-900 shadow-sm hover:shadow-[0_0_30px_rgba(59,130,246,0.15)] transition-all group"
           >
             <div className="flex justify-between items-start mb-5">
-              <div className={`w-12 h-12 ${stat.bg} rounded-2xl flex items-center justify-center ${stat.color}`}>
+              <div className={`w-12 h-12 ${stat.bg.replace('50', '900/30')} border border-${stat.color.split('-')[1]}-500/20 rounded-2xl flex items-center justify-center ${stat.color}`}>
                 <stat.icon className="w-6 h-6" />
               </div>
-              <div className="flex items-center gap-1 text-emerald-500 font-bold text-xs">
+              <div className="flex items-center gap-1 text-emerald-400 font-bold text-xs bg-emerald-950/30 px-2 py-1 rounded-lg border border-emerald-500/20">
                 <TrendingUp className="w-3.5 h-3.5" /> +12%
               </div>
             </div>
-            <p className="text-apple-text-secondary font-semibold text-xs uppercase tracking-wider mb-1">{stat.label}</p>
-            <span className="text-3xl font-black text-apple-text">{stat.value}</span>
+            <p className="text-neutral-500 font-semibold text-xs uppercase tracking-wider mb-1">{stat.label}</p>
+            <span className="text-3xl font-black text-white">{stat.value}</span>
           </motion.div>
         ))}
       </div>
@@ -208,16 +208,16 @@ export default function AdminDashboard() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.5 }}
-          className="bg-white p-6 md:p-10 rounded-[32px] md:rounded-[48px] border border-apple-border shadow-sm"
+          className="bg-neutral-950/60 p-6 md:p-10 rounded-[32px] md:rounded-[48px] border border-neutral-900 shadow-sm"
         >
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 md:mb-8 gap-4">
-            <h2 className="text-lg md:text-xl font-black tracking-tight">Traffic Trends</h2>
+            <h2 className="text-lg md:text-xl font-black tracking-tight text-white">Traffic Trends</h2>
             <div className="flex gap-4">
-              <span className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-widest text-apple-text-secondary">
-                <span className="w-2 h-2 rounded-full bg-[#0071e3]" /> Views
+              <span className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-widest text-neutral-500">
+                <span className="w-2 h-2 rounded-full bg-[#0071e3] shadow-[0_0_10px_rgba(0,113,227,0.8)]" /> Views
               </span>
-              <span className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-widest text-apple-text-secondary">
-                <span className="w-2 h-2 rounded-full bg-emerald-400" /> Clicks
+              <span className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-widest text-neutral-500">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.8)]" /> Clicks
               </span>
             </div>
           </div>
@@ -226,14 +226,14 @@ export default function AdminDashboard() {
               <AreaChart data={trafficData}>
                 <defs>
                   <linearGradient id="gViews" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#0071e3" stopOpacity={0.12} />
+                    <stop offset="5%" stopColor="#0071e3" stopOpacity={0.2} />
                     <stop offset="95%" stopColor="#0071e3" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: "#86868b", fontSize: 10 }} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fill: "#86868b", fontSize: 10 }} />
-                <Tooltip contentStyle={{ borderRadius: 16, border: "none", boxShadow: "0 8px 30px rgba(0,0,0,0.08)" }} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1a1a1a" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: "#666", fontSize: 10 }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: "#666", fontSize: 10 }} />
+                <Tooltip contentStyle={{ borderRadius: 16, border: "1px solid #262626", backgroundColor: "#0a0a0a", color: "#fff", boxShadow: "0 8px 30px rgba(0,0,0,0.5)" }} />
                 <Area type="monotone" dataKey="views" stroke="#0071e3" strokeWidth={2} fill="url(#gViews)" />
                 <Area type="monotone" dataKey="clicks" stroke="#10b981" strokeWidth={2} fillOpacity={0} />
               </AreaChart>
@@ -246,9 +246,9 @@ export default function AdminDashboard() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.6 }}
-          className="bg-white p-10 rounded-[48px] border border-apple-border shadow-sm"
+          className="bg-neutral-950/60 p-10 rounded-[48px] border border-neutral-900 shadow-sm"
         >
-          <h2 className="text-xl font-black tracking-tight mb-8">Platform Distribution</h2>
+          <h2 className="text-xl font-black tracking-tight mb-8 text-white">Platform Distribution</h2>
           <div className="grid grid-cols-2 gap-8 h-[300px]">
             <div className="space-y-6 flex flex-col justify-center">
               {[
@@ -259,11 +259,11 @@ export default function AdminDashboard() {
                 <div key={i} className="space-y-2">
                   <div className="flex justify-between items-center text-sm font-bold">
                     <span className="flex items-center gap-2">
-                      <item.icon className="w-4 h-4 text-apple-text-secondary" /> {item.label}
+                      <item.icon className="w-4 h-4 text-neutral-400" /> {item.label}
                     </span>
                     <span>{item.value}%</span>
                   </div>
-                  <div className="w-full h-2 bg-apple-bg-secondary rounded-full overflow-hidden">
+                  <div className="w-full h-2 bg-neutral-800/50 rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${item.value}%` }}
@@ -299,18 +299,18 @@ export default function AdminDashboard() {
       {/* ── Bottom: Activity + System + Pages ── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Live Feed */}
-        <div className="lg:col-span-5 bg-white p-8 rounded-[48px] border border-apple-border shadow-sm relative overflow-hidden">
+        <div className="lg:col-span-5 bg-neutral-950/60 p-8 rounded-[48px] border border-neutral-900 shadow-sm relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-emerald-500" />
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center text-white">
+              <div className="w-10 h-10 bg-blue-600/20 border border-blue-500/20 rounded-xl flex items-center justify-center text-blue-400">
                 <Activity className="w-5 h-5" />
               </div>
-              <h2 className="text-lg font-black tracking-tight">Live Feed</h2>
+              <h2 className="text-lg font-black tracking-tight text-white">Live Feed</h2>
             </div>
             <Link
               href="/adminaz/contacts"
-              className="group flex items-center gap-1 text-xs font-bold bg-apple-bg-secondary px-4 py-2 rounded-full hover:bg-black hover:text-white transition-all"
+              className="group flex items-center gap-1 text-xs font-bold bg-neutral-900 border border-neutral-800 px-4 py-2 rounded-full hover:bg-blue-600 hover:text-white transition-all text-neutral-400"
             >
               All <ArrowUpRight className="w-3 h-3" />
             </Link>
@@ -320,16 +320,16 @@ export default function AdminDashboard() {
               recentContacts.map((a, i) => <ActivityRow key={i} {...a} index={i} />)
             ) : (
               <div className="py-16 text-center">
-                <Mail className="w-10 h-10 mx-auto text-apple-text-secondary opacity-15 mb-3" />
-                <p className="text-apple-text-secondary text-sm italic">No signals yet.</p>
+                <Mail className="w-10 h-10 mx-auto text-neutral-600 opacity-30 mb-3" />
+                <p className="text-neutral-500 text-sm italic">No signals yet.</p>
               </div>
             )}
           </div>
         </div>
 
         {/* Top Pages */}
-        <div className="lg:col-span-4 bg-white p-8 rounded-[48px] border border-apple-border shadow-sm">
-          <h2 className="text-lg font-black tracking-tight mb-6">Top Pages</h2>
+        <div className="lg:col-span-4 bg-neutral-950/60 p-8 rounded-[48px] border border-neutral-900 shadow-sm">
+          <h2 className="text-lg font-black tracking-tight mb-6 text-white">Top Pages</h2>
           <div className="space-y-3">
             {[
               { path: "/", views: "42,390" },
@@ -340,28 +340,28 @@ export default function AdminDashboard() {
             ].map((page, i) => (
               <div
                 key={i}
-                className="flex items-center justify-between p-4 bg-apple-bg-secondary rounded-2xl group hover:bg-black hover:text-white transition-all"
+                className="flex items-center justify-between p-4 bg-neutral-900/50 border border-neutral-800/50 rounded-2xl group hover:bg-blue-600/10 hover:border-blue-500/30 hover:text-blue-400 transition-all text-neutral-300"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-apple-text group-hover:text-black text-xs font-black">
+                  <div className="w-8 h-8 bg-neutral-800 rounded-lg flex items-center justify-center text-white group-hover:bg-blue-500/20 group-hover:text-blue-400 text-xs font-black transition-colors">
                     {i + 1}
                   </div>
-                  <span className="font-bold text-sm">{page.path}</span>
+                  <span className="font-bold text-sm font-mono">{page.path}</span>
                 </div>
-                <span className="text-xs font-bold opacity-60">{page.views}</span>
+                <span className="text-xs font-bold opacity-60 text-neutral-500 group-hover:text-blue-400/60">{page.views}</span>
               </div>
             ))}
           </div>
         </div>
 
         {/* System Core */}
-        <div className="lg:col-span-3 bg-[#1d1d1f] text-white p-8 rounded-[48px] shadow-2xl relative overflow-hidden">
+        <div className="lg:col-span-3 bg-neutral-950 border border-neutral-900 text-white p-8 rounded-[48px] shadow-[0_0_50px_rgba(59,130,246,0.05)] relative overflow-hidden">
           <div className="absolute top-0 right-0 p-6 opacity-10">
-            <Zap className="w-20 h-20 text-apple-accent" />
+            <Zap className="w-20 h-20 text-blue-500" />
           </div>
           <div className="relative z-10">
             <div className="flex items-center gap-2 mb-6">
-              <Activity className="w-4 h-4 text-apple-accent" />
+              <Activity className="w-4 h-4 text-blue-500" />
               <h2 className="text-sm font-black uppercase tracking-widest">System</h2>
             </div>
 
@@ -376,8 +376,8 @@ export default function AdminDashboard() {
                     <item.icon className="w-3 h-3" /> {item.label}
                   </span>
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] font-bold text-apple-accent uppercase tracking-widest">Online</span>
-                    <div className="w-1.5 h-1.5 bg-apple-accent rounded-full animate-ping" />
+                    <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Online</span>
+                    <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping" />
                   </div>
                 </div>
               ))}
@@ -394,7 +394,7 @@ export default function AdminDashboard() {
                     <span className="text-[10px] opacity-40 font-bold uppercase tracking-widest">{m.label}</span>
                     <span className="text-xs font-bold">{m.value}</span>
                   </div>
-                  <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                  <div className="w-full h-1 bg-neutral-950/60/10 rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${m.pct}%` }}
@@ -417,10 +417,10 @@ export default function AdminDashboard() {
                 <Link
                   key={i}
                   href={lnk.href}
-                  className="flex flex-col items-center p-4 bg-white/5 rounded-2xl gap-2 hover:bg-white hover:text-black transition-all group"
+                  className="flex flex-col items-center p-4 bg-neutral-900/50 border border-neutral-800/50 rounded-2xl gap-2 hover:bg-blue-600/20 hover:border-blue-500/30 hover:text-blue-400 transition-all group text-neutral-400"
                 >
                   <lnk.icon className="w-4 h-4 opacity-50 group-hover:opacity-100 transition-all" />
-                  <span className="text-[10px] font-bold">{lnk.label}</span>
+                  <span className="text-[10px] font-bold tracking-wider uppercase">{lnk.label}</span>
                 </Link>
               ))}
             </div>

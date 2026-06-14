@@ -63,11 +63,11 @@ export default function AdminLayout({
   };
 
   if (pathname === "/adminaz/login") {
-    return <div className="min-h-screen bg-[#f5f5f7]">{children}</div>;
+    return <div className="min-h-screen bg-black">{children}</div>;
   }
 
   return (
-    <div className="flex flex-col h-screen bg-[#f5f5f7]">
+    <div className="flex flex-col h-screen bg-blue-600 text-white font-mono selection:bg-blue-500/30 selection:text-blue-200">
       <MobileHeader />
 
       <div className="flex flex-1 overflow-hidden relative">
@@ -79,7 +79,7 @@ export default function AdminLayout({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsSidebarOpen(false)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[45] md:hidden"
+              className="fixed inset-0 bg-black/60 backdrop-blur-md z-[45] md:hidden"
             />
           )}
         </AnimatePresence>
@@ -87,20 +87,20 @@ export default function AdminLayout({
         {/* Sidebar Component */}
         <aside
           className={cn(
-            "fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-apple-border flex flex-col transition-transform duration-500 ease-apple md:relative md:translate-x-0 shadow-2xl md:shadow-none",
+            "fixed inset-y-0 left-0 z-50 w-72 bg-neutral-950 border-r border-neutral-900 flex flex-col transition-transform duration-500 ease-apple md:relative md:translate-x-0 shadow-2xl shadow-blue-500/5 md:shadow-none",
             isSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
           )}
         >
-          <div className="p-8 border-b border-apple-border flex items-center justify-between">
-            <Link href="/adminaz/dashboard" className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center shadow-lg">
-                <AppleIcon icon={Sparkles} className="text-white w-5 h-5" />
+          <div className="p-8 border-b border-neutral-900 flex items-center justify-between">
+            <Link href="/adminaz/dashboard" className="flex items-center gap-3 group">
+              <div className="w-10 h-10 bg-blue-600/20 border border-blue-500/30 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.3)] group-hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] transition-all">
+                <Sparkles className="text-blue-400 w-5 h-5" />
               </div>
-              <span className="font-bold text-xl tracking-tight text-apple-text">AZLABS CMS</span>
+              <span className="font-bold text-xl tracking-tight text-white uppercase">AZLABS SYS</span>
             </Link>
             <button
               onClick={() => setIsSidebarOpen(false)}
-              className="p-2 -mr-2 text-apple-text-secondary md:hidden"
+              className="p-2 -mr-2 text-neutral-500 hover:text-white transition-colors md:hidden"
             >
               <X className="w-6 h-6" />
             </button>
@@ -112,31 +112,31 @@ export default function AdminLayout({
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium",
+                  "flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm uppercase tracking-wider font-bold",
                   pathname === item.href
-                    ? "bg-black text-white shadow-xl"
-                    : "text-apple-text-secondary hover:bg-[#f5f5f7] hover:text-apple-text"
+                    ? "bg-blue-600 text-white shadow-[0_0_20px_rgba(59,130,246,0.4)]"
+                    : "text-neutral-500 hover:bg-neutral-900/50 hover:text-white"
                 )}
               >
-                <item.icon className="w-5 h-5" />
+                <item.icon className="w-4 h-4" />
                 {item.label}
               </Link>
             ))}
           </nav>
 
-          <div className="p-6 border-t border-apple-border">
+          <div className="p-6 border-t border-neutral-900">
             <button
               onClick={handleSignOut}
-              className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-red-500 hover:bg-red-50 font-medium transition-all"
+              className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-red-500/70 hover:text-red-400 hover:bg-red-500/10 font-bold uppercase tracking-wider text-sm transition-all"
             >
-              <LogOut className="w-5 h-5" />
+              <LogOut className="w-4 h-4" />
               Sign Out
             </button>
           </div>
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 lg:p-12 pb-24 md:pb-12">
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 lg:p-12 pb-24 md:pb-12 bg-black">
           <div className="max-w-6xl mx-auto">
             {children}
           </div>

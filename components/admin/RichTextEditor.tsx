@@ -41,22 +41,22 @@ const MenuBar = ({ editor, onImageClick }: { editor: any, onImageClick?: () => v
   };
 
   return (
-    <div className="flex flex-wrap gap-1 p-2 bg-[#f5f5f7] border-b border-apple-border rounded-t-2xl">
+    <div className="flex flex-wrap gap-1 p-2 bg-neutral-900/50 border-b border-neutral-800 rounded-t-2xl">
       <button
         onClick={() => editor.chain().focus().toggleBold().run()}
-        className={`p-2 rounded-lg transition-all ${editor.isActive('bold') ? 'bg-black text-white' : 'hover:bg-white text-apple-text-secondary'}`}
+        className={`p-2 rounded-lg transition-all ${editor.isActive('bold') ? 'bg-blue-600 text-white' : 'hover:bg-neutral-950/80 text-neutral-400'}`}
       >
         <Bold className="w-4 h-4" />
       </button>
       <button
         onClick={() => editor.chain().focus().toggleItalic().run()}
-        className={`p-2 rounded-lg transition-all ${editor.isActive('italic') ? 'bg-black text-white' : 'hover:bg-white text-apple-text-secondary'}`}
+        className={`p-2 rounded-lg transition-all ${editor.isActive('italic') ? 'bg-blue-600 text-white' : 'hover:bg-neutral-950/80 text-neutral-400'}`}
       >
         <Italic className="w-4 h-4" />
       </button>
       <button
         onClick={() => editor.chain().focus().toggleUnderline().run()}
-        className={`p-2 rounded-lg transition-all ${editor.isActive('underline') ? 'bg-black text-white' : 'hover:bg-white text-apple-text-secondary'}`}
+        className={`p-2 rounded-lg transition-all ${editor.isActive('underline') ? 'bg-blue-600 text-white' : 'hover:bg-neutral-950/80 text-neutral-400'}`}
       >
         <UnderlineIcon className="w-4 h-4" />
       </button>
@@ -65,13 +65,13 @@ const MenuBar = ({ editor, onImageClick }: { editor: any, onImageClick?: () => v
 
       <button
         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-        className={`p-2 rounded-lg transition-all ${editor.isActive('heading', { level: 1 }) ? 'bg-black text-white' : 'hover:bg-white text-apple-text-secondary'}`}
+        className={`p-2 rounded-lg transition-all ${editor.isActive('heading', { level: 1 }) ? 'bg-blue-600 text-white' : 'hover:bg-neutral-950/80 text-neutral-400'}`}
       >
         <Heading1 className="w-4 h-4" />
       </button>
       <button
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-        className={`p-2 rounded-lg transition-all ${editor.isActive('heading', { level: 2 }) ? 'bg-black text-white' : 'hover:bg-white text-apple-text-secondary'}`}
+        className={`p-2 rounded-lg transition-all ${editor.isActive('heading', { level: 2 }) ? 'bg-blue-600 text-white' : 'hover:bg-neutral-950/80 text-neutral-400'}`}
       >
         <Heading2 className="w-4 h-4" />
       </button>
@@ -80,20 +80,20 @@ const MenuBar = ({ editor, onImageClick }: { editor: any, onImageClick?: () => v
 
       <button
         onClick={() => editor.chain().focus().toggleBulletList().run()}
-        className={`p-2 rounded-lg transition-all ${editor.isActive('bulletList') ? 'bg-black text-white' : 'hover:bg-white text-apple-text-secondary'}`}
+        className={`p-2 rounded-lg transition-all ${editor.isActive('bulletList') ? 'bg-blue-600 text-white' : 'hover:bg-neutral-950/80 text-neutral-400'}`}
       >
         <List className="w-4 h-4" />
       </button>
       <button
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        className={`p-2 rounded-lg transition-all ${editor.isActive('orderedList') ? 'bg-black text-white' : 'hover:bg-white text-apple-text-secondary'}`}
+        className={`p-2 rounded-lg transition-all ${editor.isActive('orderedList') ? 'bg-blue-600 text-white' : 'hover:bg-neutral-950/80 text-neutral-400'}`}
       >
         <ListOrdered className="w-4 h-4" />
       </button>
 
       <button
         onClick={onImageClick}
-        className="p-2 hover:bg-white rounded-lg text-apple-text-secondary transition-all"
+        className="p-2 hover:bg-neutral-950/80 rounded-lg text-neutral-400 transition-all"
         title="Insert image from Media"
       >
         <ImageIcon className="w-4 h-4" />
@@ -101,17 +101,17 @@ const MenuBar = ({ editor, onImageClick }: { editor: any, onImageClick?: () => v
 
       <button
         onClick={toggleLink}
-        className={`p-2 rounded-lg transition-all ${editor.isActive('link') ? 'bg-blue-500 text-white' : 'hover:bg-white text-apple-text-secondary'}`}
+        className={`p-2 rounded-lg transition-all ${editor.isActive('link') ? 'bg-blue-500 text-white' : 'hover:bg-neutral-950/80 text-neutral-400'}`}
       >
         <LinkIcon className="w-4 h-4" />
       </button>
 
       <div className="flex-1" />
 
-      <button onClick={() => editor.chain().focus().undo().run()} className="p-2 hover:bg-white rounded-lg text-apple-text-secondary">
+      <button onClick={() => editor.chain().focus().undo().run()} className="p-2 hover:bg-neutral-950/80 rounded-lg text-neutral-400">
         <Undo className="w-4 h-4" />
       </button>
-      <button onClick={() => editor.chain().focus().redo().run()} className="p-2 hover:bg-white rounded-lg text-apple-text-secondary">
+      <button onClick={() => editor.chain().focus().redo().run()} className="p-2 hover:bg-neutral-950/80 rounded-lg text-neutral-400">
         <Redo className="w-4 h-4" />
       </button>
     </div>
@@ -125,13 +125,13 @@ export default function RichTextEditor({ content, onChange, onImageClick, placeh
       Underline,
       Image.configure({
         HTMLAttributes: {
-          class: 'rounded-[32px] shadow-2xl border border-apple-border my-8 mx-auto block max-w-full',
+          class: 'rounded-[32px] shadow-2xl border border-neutral-800 my-8 mx-auto block max-w-full',
         },
       }),
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
-          class: 'text-apple-accent underline underline-offset-4 cursor-pointer',
+          class: 'text-blue-400 underline underline-offset-4 cursor-pointer',
         },
       }),
       Placeholder.configure({
@@ -144,7 +144,7 @@ export default function RichTextEditor({ content, onChange, onImageClick, placeh
     },
     editorProps: {
       attributes: {
-        class: 'prose prose-sm md:prose-base max-w-none focus:outline-none min-h-[300px] px-6 py-8 leading-relaxed font-serif text-lg text-apple-text',
+        class: 'prose prose-sm md:prose-base max-w-none focus:outline-none min-h-[300px] px-6 py-8 leading-relaxed font-serif text-lg text-white',
       },
     },
   });
@@ -156,7 +156,7 @@ export default function RichTextEditor({ content, onChange, onImageClick, placeh
   }, [content, editor]);
 
   return (
-    <div className="border border-apple-border rounded-2xl bg-white overflow-hidden focus-within:ring-2 focus-within:ring-apple-accent transition-all">
+    <div className="border border-neutral-800 rounded-2xl bg-neutral-950/80 overflow-hidden focus-within:ring-2 focus-within:ring-blue-500/50 transition-all">
       <MenuBar editor={editor} onImageClick={onImageClick} />
       <EditorContent editor={editor} />
       <style jsx global>{`

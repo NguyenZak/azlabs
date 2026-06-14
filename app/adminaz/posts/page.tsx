@@ -169,58 +169,58 @@ export default function PostsAdmin() {
           >
             <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
-                <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-apple-text">Blog Posts</h1>
-                <p className="text-sm text-apple-text-secondary mt-1">Manage and create stories for AZLABS.</p>
+                <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white">Blog Posts</h1>
+                <p className="text-sm text-neutral-400 mt-1">Manage and create stories for AZLABS.</p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                 <button 
                   onClick={handleSeed}
                   disabled={isSubmitting}
-                  className="flex items-center justify-center gap-2 px-6 py-3 bg-white text-apple-accent border border-apple-accent rounded-xl font-bold hover:bg-apple-accent hover:text-white transition-all shadow-sm text-sm"
+                  className="flex items-center justify-center gap-2 px-6 py-3 bg-neutral-950/60 text-blue-400 border border-blue-500/50 rounded-xl font-bold hover:bg-blue-600 hover:text-white transition-all shadow-sm text-sm"
                 >
                   <Sparkles className="w-4 h-4" /> Seed Samples
                 </button>
                 <button 
                   onClick={() => handleOpenModal()}
-                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-black text-white rounded-xl font-bold hover:opacity-90 transition-all shadow-xl"
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl font-bold hover:opacity-90 transition-all shadow-xl"
                 >
                   <Plus className="w-5 h-5" /> New Article
                 </button>
               </div>
             </header>
 
-            <div className="bg-white rounded-2xl md:rounded-[32px] border border-apple-border shadow-sm overflow-hidden">
-              <div className="p-4 md:p-6 border-b border-apple-border">
+            <div className="bg-neutral-950/60 rounded-2xl md:rounded-[32px] border border-neutral-800 shadow-sm overflow-hidden">
+              <div className="p-4 md:p-6 border-b border-neutral-800">
                 <div className="relative">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-apple-text-secondary" />
-                  <input type="text" placeholder="Search articles..." className="w-full pl-12 pr-4 py-3 bg-[#f5f5f7] border-none rounded-xl focus:ring-2 focus:ring-apple-accent" />
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
+                  <input type="text" placeholder="Search articles..." className="w-full pl-12 pr-4 py-3 bg-neutral-900/50 border-none rounded-xl focus:ring-2 focus:ring-blue-500/50" />
                 </div>
               </div>
 
               {/* Mobile View: Cards */}
               <div className="block md:hidden divide-y divide-apple-border">
                 {loading ? (
-                  <div className="p-12 text-center"><Loader2 className="w-8 h-8 animate-spin mx-auto text-apple-accent" /></div>
+                  <div className="p-12 text-center"><Loader2 className="w-8 h-8 animate-spin mx-auto text-blue-400" /></div>
                 ) : posts.length === 0 ? (
-                  <div className="p-12 text-center text-apple-text-secondary text-sm">No articles yet.</div>
+                  <div className="p-12 text-center text-neutral-400 text-sm">No articles yet.</div>
                 ) : posts.map((post) => (
                   <div key={post.id} className="p-4 space-y-4">
                     <div className="flex gap-4">
-                      <div className="w-20 h-14 rounded-lg bg-gray-100 overflow-hidden border border-apple-border flex-shrink-0">
-                        {post.image_url ? <img src={post.image_url} className="w-full h-full object-cover" alt="" /> : <div className="w-full h-full flex items-center justify-center text-gray-300"><ImageIcon className="w-5 h-5" /></div>}
+                      <div className="w-20 h-14 rounded-lg bg-neutral-800 overflow-hidden border border-neutral-800 flex-shrink-0">
+                        {post.image_url ? <img src={post.image_url} className="w-full h-full object-cover" alt="" /> : <div className="w-full h-full flex items-center justify-center text-neutral-600"><ImageIcon className="w-5 h-5" /></div>}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2">
                           <span className="font-bold text-base truncate">{post.title_en}</span>
-                          {post.is_published ? <span className="px-1.5 py-0.5 bg-green-50 text-green-600 rounded text-[8px] font-bold uppercase shrink-0">Live</span> : <span className="px-1.5 py-0.5 bg-gray-100 text-gray-400 rounded text-[8px] font-bold uppercase shrink-0">Draft</span>}
+                          {post.is_published ? <span className="px-1.5 py-0.5 bg-green-50 text-green-600 rounded text-[8px] font-bold uppercase shrink-0">Live</span> : <span className="px-1.5 py-0.5 bg-neutral-800 text-gray-400 rounded text-[8px] font-bold uppercase shrink-0">Draft</span>}
                         </div>
-                        <p className="text-xs text-apple-text-secondary mt-1">/{post.slug}</p>
+                        <p className="text-xs text-neutral-400 mt-1">/{post.slug}</p>
                       </div>
                     </div>
                     <div className="flex gap-2">
                       <button 
                         onClick={() => handleOpenModal(post)}
-                        className="flex-1 py-2 bg-apple-bg-secondary text-apple-text rounded-lg text-sm font-bold flex items-center justify-center gap-2"
+                        className="flex-1 py-2 bg-neutral-800/50 text-white rounded-lg text-sm font-bold flex items-center justify-center gap-2"
                       >
                         <Edit3 className="w-4 h-4" /> Edit
                       </button>
@@ -247,22 +247,22 @@ export default function PostsAdmin() {
               <table className="hidden md:table w-full text-left">
                 <tbody className="divide-y divide-apple-border">
                   {loading ? (
-                    <tr><td className="px-8 py-20 text-center"><Loader2 className="w-8 h-8 animate-spin mx-auto text-apple-accent" /></td></tr>
+                    <tr><td className="px-8 py-20 text-center"><Loader2 className="w-8 h-8 animate-spin mx-auto text-blue-400" /></td></tr>
                   ) : posts.length === 0 ? (
-                    <tr><td className="px-8 py-20 text-center text-apple-text-secondary">No articles yet.</td></tr>
+                    <tr><td className="px-8 py-20 text-center text-neutral-400">No articles yet.</td></tr>
                   ) : posts.map((post) => (
-                    <tr key={post.id} className="group hover:bg-[#fbfbfd] transition-colors">
+                    <tr key={post.id} className="group hover:bg-neutral-900 transition-colors">
                       <td className="px-8 py-6">
                         <div className="flex items-center gap-6">
-                          <div className="w-20 h-14 rounded-lg bg-gray-100 overflow-hidden border border-apple-border flex-shrink-0">
-                            {post.image_url ? <img src={post.image_url} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-gray-300"><ImageIcon className="w-5 h-5" /></div>}
+                          <div className="w-20 h-14 rounded-lg bg-neutral-800 overflow-hidden border border-neutral-800 flex-shrink-0">
+                            {post.image_url ? <img src={post.image_url} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-neutral-600"><ImageIcon className="w-5 h-5" /></div>}
                           </div>
                           <div>
                             <div className="flex items-center gap-3">
                               <span className="font-bold text-lg">{post.title_en}</span>
-                              {post.is_published ? <span className="px-2 py-0.5 bg-green-50 text-green-600 rounded text-[10px] font-bold">Published</span> : <span className="px-2 py-0.5 bg-gray-100 text-gray-400 rounded text-[10px] font-bold">Draft</span>}
+                              {post.is_published ? <span className="px-2 py-0.5 bg-green-50 text-green-600 rounded text-[10px] font-bold">Published</span> : <span className="px-2 py-0.5 bg-neutral-800 text-gray-400 rounded text-[10px] font-bold">Draft</span>}
                             </div>
-                            <p className="text-sm text-apple-text-secondary">/{post.slug} • {new Date(post.created_at).toLocaleDateString()}</p>
+                            <p className="text-sm text-neutral-400">/{post.slug} • {new Date(post.created_at).toLocaleDateString()}</p>
                           </div>
                         </div>
                       </td>
@@ -277,7 +277,7 @@ export default function PostsAdmin() {
                           >
                             <ExternalLink className="w-5 h-5" />
                           </a>
-                          <button onClick={() => handleOpenModal(post)} className="p-2 hover:bg-gray-100 rounded-lg"><Edit3 className="w-5 h-5" /></button>
+                          <button onClick={() => handleOpenModal(post)} className="p-2 hover:bg-neutral-800 rounded-lg"><Edit3 className="w-5 h-5" /></button>
                           <button onClick={() => handleDelete(post.id)} className="p-2 hover:bg-red-50 text-red-400 rounded-lg"><Trash2 className="w-5 h-5" /></button>
                         </div>
                       </td>
@@ -297,24 +297,24 @@ export default function PostsAdmin() {
             className="flex flex-col gap-8"
           >
             {/* Sticky Header */}
-            <header className="sticky top-0 md:top-0 z-[41] flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 bg-[#f5f5f7]/80 backdrop-blur-md gap-4">
+            <header className="sticky top-0 md:top-0 z-[41] flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 bg-neutral-900/50/80 backdrop-blur-md gap-4">
               <button 
                 onClick={() => setIsModalOpen(false)}
-                className="flex items-center gap-2 text-apple-text-secondary hover:text-apple-text transition-colors font-medium text-sm"
+                className="flex items-center gap-2 text-neutral-400 hover:text-white transition-colors font-medium text-sm"
               >
                 <X className="w-4 h-4" /> Back
               </button>
               <div className="flex items-center justify-between w-full sm:w-auto gap-3">
-                <div className="flex bg-white p-1 rounded-xl border border-apple-border shadow-sm">
+                <div className="flex bg-neutral-950/60 p-1 rounded-xl border border-neutral-800 shadow-sm">
                   <button 
                     onClick={() => setActiveTab("content")}
-                    className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'content' ? 'bg-black text-white' : 'text-apple-text-secondary'}`}
+                    className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'content' ? 'bg-blue-600 text-white' : 'text-neutral-400'}`}
                   >
                     Editor
                   </button>
                   <button 
                     onClick={() => setActiveTab("seo")}
-                    className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'seo' ? 'bg-black text-white' : 'text-apple-text-secondary'}`}
+                    className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'seo' ? 'bg-blue-600 text-white' : 'text-neutral-400'}`}
                   >
                     SEO
                   </button>
@@ -322,7 +322,7 @@ export default function PostsAdmin() {
                 <button 
                   onClick={handleSubmit}
                   disabled={isSubmitting}
-                  className="px-4 py-2.5 bg-black text-white rounded-xl font-bold shadow-xl hover:opacity-90 flex items-center gap-2 disabled:opacity-50 text-xs"
+                  className="px-4 py-2.5 bg-blue-600 text-white rounded-xl font-bold shadow-xl hover:opacity-90 flex items-center gap-2 disabled:opacity-50 text-xs"
                 >
                   {isSubmitting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />}
                   Save
@@ -344,14 +344,14 @@ export default function PostsAdmin() {
                     placeholder="e.g. Next.js 15 performance optimization tips..." 
                     value={aiPrompt}
                     onChange={(e) => setAiPrompt(e.target.value)}
-                    className="w-full mt-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl md:rounded-2xl px-4 md:px-6 py-3 md:py-4 text-white placeholder:text-white/40 focus:ring-2 focus:ring-white/50 transition-all outline-none text-sm md:text-base"
+                    className="w-full mt-2 bg-neutral-950/60/10 backdrop-blur-md border border-white/20 rounded-xl md:rounded-2xl px-4 md:px-6 py-3 md:py-4 text-white placeholder:text-white/40 focus:ring-2 focus:ring-white/50 transition-all outline-none text-sm md:text-base"
                   />
                 </div>
                 <div className="flex flex-col gap-3">
                   <button 
                     onClick={handleAIGenerate}
                     disabled={isGeneratingAI}
-                    className="px-6 md:px-10 py-4 md:py-6 bg-white text-indigo-600 rounded-2xl md:rounded-[28px] font-black shadow-2xl hover:scale-[1.02] transition-all flex items-center justify-center gap-3 disabled:opacity-50 text-base md:text-lg group"
+                    className="px-6 md:px-10 py-4 md:py-6 bg-neutral-950/60 text-indigo-600 rounded-2xl md:rounded-[28px] font-black shadow-2xl hover:scale-[1.02] transition-all flex items-center justify-center gap-3 disabled:opacity-50 text-base md:text-lg group"
                   >
                     {isGeneratingAI ? <Loader2 className="w-5 h-5 md:w-6 md:h-6 animate-spin" /> : <Sparkles className="w-5 h-5 md:w-6 md:h-6 group-hover:rotate-12 transition-transform" />}
                     Magic Write
@@ -380,7 +380,7 @@ export default function PostsAdmin() {
                             className="space-y-12"
                           >
                             <div className="space-y-4">
-                              <label className="text-[10px] font-black uppercase tracking-widest text-apple-text-secondary">Tiêu đề bài viết (VI)</label>
+                              <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Tiêu đề bài viết (VI)</label>
                               <input 
                                 type="text" 
                                 value={formData.title_vi}
@@ -394,12 +394,12 @@ export default function PostsAdmin() {
                                   }));
                                 }}
 
-                                className="w-full text-3xl md:text-5xl font-bold tracking-tight border-none p-0 focus:ring-0 bg-transparent placeholder:text-gray-300" 
+                                className="w-full text-3xl md:text-5xl font-bold tracking-tight border-none p-0 focus:ring-0 bg-transparent placeholder:text-neutral-600" 
                                 placeholder="Nhập tiêu đề tiếng Việt..." 
                               />
                             </div>
                             <div className="space-y-3">
-                              <label className="text-[10px] font-black uppercase tracking-widest text-apple-text-secondary">Nội dung (VI)</label>
+                              <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Nội dung (VI)</label>
                               <RichTextEditor 
                                 content={formData.content_vi} 
                                 onChange={(c) => setFormData({ ...formData, content_vi: c })} 
@@ -418,7 +418,7 @@ export default function PostsAdmin() {
                             className="space-y-12"
                           >
                             <div className="space-y-4">
-                              <label className="text-[10px] font-black uppercase tracking-widest text-apple-text-secondary">Post Title (EN)</label>
+                              <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Post Title (EN)</label>
                               <input 
                                 type="text" 
                                 value={formData.title_en}
@@ -432,12 +432,12 @@ export default function PostsAdmin() {
                                   }));
                                 }}
 
-                                className="w-full text-3xl md:text-5xl font-bold tracking-tight border-none p-0 focus:ring-0 bg-transparent placeholder:text-gray-300" 
+                                className="w-full text-3xl md:text-5xl font-bold tracking-tight border-none p-0 focus:ring-0 bg-transparent placeholder:text-neutral-600" 
                                 placeholder="Enter English title..." 
                               />
                             </div>
                             <div className="space-y-3">
-                              <label className="text-[10px] font-black uppercase tracking-widest text-apple-text-secondary">Body Content (EN)</label>
+                              <label className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Body Content (EN)</label>
                               <RichTextEditor 
                                 content={formData.content_en} 
                                 onChange={(c) => setFormData({ ...formData, content_en: c })} 
@@ -455,27 +455,27 @@ export default function PostsAdmin() {
                     <motion.div key="seo" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-12">
                       <LanguageTabs activeLang={activeLang} onChange={setActiveLang} />
                       
-                      <div className="bg-white p-12 rounded-[40px] border border-apple-border">
+                      <div className="bg-neutral-950/60 p-12 rounded-[40px] border border-neutral-800">
                         {activeLang === "vi" ? (
                           <div className="grid grid-cols-1 gap-8">
                             <div className="space-y-2">
                               <label className="text-xs font-bold uppercase">Meta Title (VI)</label>
-                              <input type="text" value={formData.meta_title_vi} onChange={(e) => setFormData({ ...formData, meta_title_vi: e.target.value })} className="w-full p-4 bg-[#f5f5f7] rounded-xl border-none" />
+                              <input type="text" value={formData.meta_title_vi} onChange={(e) => setFormData({ ...formData, meta_title_vi: e.target.value })} className="w-full p-4 bg-neutral-900/50 rounded-xl border-none" />
                             </div>
                             <div className="space-y-2">
                               <label className="text-xs font-bold uppercase">Meta Description (VI)</label>
-                              <textarea rows={4} value={formData.meta_description_vi} onChange={(e) => setFormData({ ...formData, meta_description_vi: e.target.value })} className="w-full p-4 bg-[#f5f5f7] rounded-xl border-none resize-none" />
+                              <textarea rows={4} value={formData.meta_description_vi} onChange={(e) => setFormData({ ...formData, meta_description_vi: e.target.value })} className="w-full p-4 bg-neutral-900/50 rounded-xl border-none resize-none" />
                             </div>
                           </div>
                         ) : (
                           <div className="grid grid-cols-1 gap-8">
                             <div className="space-y-2">
                               <label className="text-xs font-bold uppercase">Meta Title (EN)</label>
-                              <input type="text" value={formData.meta_title_en} onChange={(e) => setFormData({ ...formData, meta_title_en: e.target.value })} className="w-full p-4 bg-[#f5f5f7] rounded-xl border-none" />
+                              <input type="text" value={formData.meta_title_en} onChange={(e) => setFormData({ ...formData, meta_title_en: e.target.value })} className="w-full p-4 bg-neutral-900/50 rounded-xl border-none" />
                             </div>
                             <div className="space-y-2">
                               <label className="text-xs font-bold uppercase">Meta Description (EN)</label>
-                              <textarea rows={4} value={formData.meta_description_en} onChange={(e) => setFormData({ ...formData, meta_description_en: e.target.value })} className="w-full p-4 bg-[#f5f5f7] rounded-xl border-none resize-none" />
+                              <textarea rows={4} value={formData.meta_description_en} onChange={(e) => setFormData({ ...formData, meta_description_en: e.target.value })} className="w-full p-4 bg-neutral-900/50 rounded-xl border-none resize-none" />
                             </div>
                           </div>
                         )}
@@ -487,10 +487,10 @@ export default function PostsAdmin() {
 
               {/* Sidebar */}
               <div className="lg:col-span-4 space-y-8">
-                <div className="bg-white p-8 rounded-[40px] border border-apple-border space-y-8">
+                <div className="bg-neutral-950/60 p-8 rounded-[40px] border border-neutral-800 space-y-8">
                   <div className="space-y-3">
-                    <label className="text-xs font-bold uppercase text-apple-text-secondary">Post Settings</label>
-                    <div className="flex items-center justify-between p-4 bg-[#f5f5f7] rounded-2xl">
+                    <label className="text-xs font-bold uppercase text-neutral-400">Post Settings</label>
+                    <div className="flex items-center justify-between p-4 bg-neutral-900/50 rounded-2xl">
                       <span className="font-medium">Published</span>
                       <input 
                         type="checkbox" 
@@ -502,8 +502,8 @@ export default function PostsAdmin() {
                   </div>
 
                   <div className="space-y-3">
-                    <label className="text-xs font-bold uppercase text-apple-text-secondary">Slug</label>
-                    <div className="flex items-center gap-2 p-4 bg-[#f5f5f7] rounded-2xl">
+                    <label className="text-xs font-bold uppercase text-neutral-400">Slug</label>
+                    <div className="flex items-center gap-2 p-4 bg-neutral-900/50 rounded-2xl">
                       <Hash className="w-4 h-4 text-gray-400" />
                       <input 
                         type="text" 
@@ -516,16 +516,16 @@ export default function PostsAdmin() {
                   </div>
 
                   <div className="space-y-3">
-                    <label className="text-xs font-bold uppercase text-apple-text-secondary">Featured Image</label>
+                    <label className="text-xs font-bold uppercase text-neutral-400">Featured Image</label>
                     <div 
                       onClick={() => setIsUploadModalOpen(true)} 
-                      className="aspect-video bg-[#f5f5f7] rounded-3xl border-2 border-dashed border-apple-border flex items-center justify-center cursor-pointer hover:bg-gray-50 overflow-hidden relative"
+                      className="aspect-video bg-neutral-900/50 rounded-3xl border-2 border-dashed border-neutral-800 flex items-center justify-center cursor-pointer hover:bg-gray-50 overflow-hidden relative"
                     >
                       {formData.image_url ? (
                         <img src={formData.image_url} className="w-full h-full object-cover" />
                       ) : (
                         <div className="flex flex-col items-center gap-2">
-                          <ImageIcon className="w-6 h-6 text-gray-300" />
+                          <ImageIcon className="w-6 h-6 text-neutral-600" />
                           <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Upload Cover</span>
                         </div>
                       )}

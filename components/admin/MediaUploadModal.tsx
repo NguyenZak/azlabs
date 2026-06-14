@@ -200,19 +200,19 @@ export default function MediaUploadModal({ isOpen, onClose, onUploadSuccess }: M
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="relative w-full max-w-2xl bg-white rounded-[40px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+            className="relative w-full max-w-2xl bg-neutral-950/80 rounded-[40px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
           >
             <div className="p-8 flex-1 overflow-y-auto">
               <div className="flex justify-between items-center mb-8">
                 <div>
-                  <h2 className="text-3xl font-black tracking-tight text-apple-text">Upload Assets</h2>
-                  <p className="text-apple-text-secondary text-sm font-medium">Multiple files & automatic WebP conversion enabled</p>
+                  <h2 className="text-3xl font-black tracking-tight text-white">Upload Assets</h2>
+                  <p className="text-neutral-400 text-sm font-medium">Multiple files & automatic WebP conversion enabled</p>
                 </div>
                 <button
                   onClick={handleClose}
-                  className="p-3 hover:bg-gray-100 rounded-full transition-all"
+                  className="p-3 hover:bg-neutral-800 rounded-full transition-all"
                 >
-                  <X className="w-6 h-6 text-apple-text-secondary" />
+                  <X className="w-6 h-6 text-neutral-400" />
                 </button>
               </div>
 
@@ -229,8 +229,8 @@ export default function MediaUploadModal({ isOpen, onClose, onUploadSuccess }: M
                     flex flex-col items-center justify-center gap-6
                     transition-all duration-500
                     ${dragActive 
-                      ? "border-apple-accent bg-apple-accent/5 scale-[0.98]" 
-                      : "border-gray-200 hover:border-apple-accent hover:bg-gray-50"
+                      ? "border-blue-500/50 bg-blue-600/5 scale-[0.98]" 
+                      : "border-gray-200 hover:border-blue-500/50 hover:bg-gray-50"
                     }
                   `}
                 >
@@ -242,12 +242,12 @@ export default function MediaUploadModal({ isOpen, onClose, onUploadSuccess }: M
                     accept="image/*"
                     onChange={handleFileChange}
                   />
-                  <div className="w-20 h-20 bg-gray-100 rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform group-hover:rotate-12 duration-500">
-                    <Upload className="w-10 h-10 text-apple-text-secondary" />
+                  <div className="w-20 h-20 bg-neutral-800 rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform group-hover:rotate-12 duration-500">
+                    <Upload className="w-10 h-10 text-neutral-400" />
                   </div>
                   <div className="text-center">
-                    <p className="text-xl font-bold text-apple-text">Drop your files here</p>
-                    <p className="text-sm text-apple-text-secondary mt-2 font-medium">Any image format will be converted to WebP automatically</p>
+                    <p className="text-xl font-bold text-white">Drop your files here</p>
+                    <p className="text-sm text-neutral-400 mt-2 font-medium">Any image format will be converted to WebP automatically</p>
                   </div>
                 </div>
               ) : (
@@ -261,21 +261,21 @@ export default function MediaUploadModal({ isOpen, onClose, onUploadSuccess }: M
                         key={f.id} 
                         className={`
                           flex items-center gap-4 p-4 rounded-3xl border transition-all
-                          ${f.status === "success" ? "bg-green-50 border-green-100" : "bg-[#f5f5f7] border-transparent"}
+                          ${f.status === "success" ? "bg-green-50 border-green-100" : "bg-neutral-900/50 border-transparent"}
                         `}
                       >
-                        <div className="w-16 h-16 rounded-2xl overflow-hidden bg-white border border-apple-border flex-shrink-0">
+                        <div className="w-16 h-16 rounded-2xl overflow-hidden bg-neutral-950/80 border border-neutral-800 flex-shrink-0">
                           <img src={f.preview} className="w-full h-full object-cover" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-bold text-apple-text truncate">{f.file.name}</p>
-                          <p className="text-[10px] font-bold text-apple-text-secondary uppercase tracking-widest mt-1">
+                          <p className="text-sm font-bold text-white truncate">{f.file.name}</p>
+                          <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mt-1">
                             {f.status === "uploading" ? "Uploading..." : f.status === "success" ? "Converted & Uploaded" : f.status === "error" ? "Failed" : "Ready"}
                           </p>
                         </div>
                         <div className="flex items-center gap-2">
                           {f.status === "uploading" ? (
-                            <Loader2 className="w-5 h-5 animate-spin text-apple-accent" />
+                            <Loader2 className="w-5 h-5 animate-spin text-blue-400" />
                           ) : f.status === "success" ? (
                             <CheckCircle2 className="w-6 h-6 text-green-500" />
                           ) : f.status === "error" ? (
@@ -283,7 +283,7 @@ export default function MediaUploadModal({ isOpen, onClose, onUploadSuccess }: M
                           ) : (
                             <button 
                               onClick={() => removeFile(f.id)}
-                              className="p-2 hover:bg-white rounded-full text-red-400 transition-all"
+                              className="p-2 hover:bg-neutral-950/80 rounded-full text-red-400 transition-all"
                             >
                               <Trash2 className="w-5 h-5" />
                             </button>
@@ -293,18 +293,18 @@ export default function MediaUploadModal({ isOpen, onClose, onUploadSuccess }: M
                     ))}
                   </div>
 
-                  <div className="pt-6 border-t border-apple-border flex gap-4">
+                  <div className="pt-6 border-t border-neutral-800 flex gap-4">
                     <button
                       onClick={() => fileInputRef.current?.click()}
                       disabled={isUploading}
-                      className="flex-1 py-4 px-6 bg-[#f5f5f7] text-apple-text rounded-2xl font-bold hover:bg-gray-200 transition-all disabled:opacity-50"
+                      className="flex-1 py-4 px-6 bg-neutral-900/50 text-white rounded-2xl font-bold hover:bg-gray-200 transition-all disabled:opacity-50"
                     >
                       Add More
                     </button>
                     <button
                       onClick={handleUpload}
                       disabled={isUploading || files.every(f => f.status === "success")}
-                      className="flex-[2] py-4 px-6 bg-black text-white rounded-2xl font-bold hover:opacity-90 transition-all shadow-xl disabled:opacity-50 flex items-center justify-center gap-3"
+                      className="flex-[2] py-4 px-6 bg-blue-600 text-white rounded-2xl font-bold hover:opacity-90 transition-all shadow-xl disabled:opacity-50 flex items-center justify-center gap-3"
                     >
                       {isUploading ? (
                         <>

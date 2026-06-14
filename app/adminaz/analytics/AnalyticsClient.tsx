@@ -56,11 +56,11 @@ export default function AnalyticsClient({ stats, contacts, projects }: { stats: 
       <header className="flex justify-between items-end">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <BarChart3 className="w-5 h-5 text-apple-accent" />
-            <span className="text-xs font-bold text-apple-accent uppercase tracking-widest">Intelligence</span>
+            <BarChart3 className="w-5 h-5 text-blue-400" />
+            <span className="text-xs font-bold text-blue-400 uppercase tracking-widest">Intelligence</span>
           </div>
-          <h1 className="text-4xl font-black tracking-tighter text-apple-text">Analytics Overview</h1>
-          <p className="text-apple-text-secondary mt-2">Diving deep into real-time content and lead performance.</p>
+          <h1 className="text-4xl font-black tracking-tighter text-white">Analytics Overview</h1>
+          <p className="text-neutral-400 mt-2">Diving deep into real-time content and lead performance.</p>
         </div>
       </header>
 
@@ -77,18 +77,18 @@ export default function AnalyticsClient({ stats, contacts, projects }: { stats: 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="bg-white p-8 rounded-[40px] border border-apple-border shadow-sm group hover:shadow-xl transition-all"
+            className="bg-neutral-950/60 p-8 rounded-[40px] border border-neutral-800 shadow-sm group hover:shadow-xl transition-all"
           >
             <div className="flex justify-between items-start mb-6">
-              <div className={`w-12 h-12 bg-apple-bg-secondary rounded-2xl flex items-center justify-center ${stat.color}`}>
+              <div className={`w-12 h-12 bg-neutral-800/50 rounded-2xl flex items-center justify-center ${stat.color}`}>
                 <stat.icon className="w-6 h-6" />
               </div>
               <div className="flex items-center gap-1 text-emerald-500 font-bold text-sm">
                 Live
               </div>
             </div>
-            <p className="text-apple-text-secondary font-medium mb-1">{stat.label}</p>
-            <h3 className="text-3xl font-black text-apple-text">{stat.value}</h3>
+            <p className="text-neutral-400 font-medium mb-1">{stat.label}</p>
+            <h3 className="text-3xl font-black text-white">{stat.value}</h3>
           </motion.div>
         ))}
       </div>
@@ -99,15 +99,15 @@ export default function AnalyticsClient({ stats, contacts, projects }: { stats: 
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-white p-10 rounded-[48px] border border-apple-border shadow-sm"
+          className="bg-neutral-950/60 p-10 rounded-[48px] border border-neutral-800 shadow-sm"
         >
           <div className="flex justify-between items-center mb-10">
             <h2 className="text-2xl font-black tracking-tight">Activity Trends</h2>
             <div className="flex gap-4">
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-apple-text-secondary">
-                <div className="w-2 h-2 rounded-full bg-apple-accent" /> Content
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-neutral-400">
+                <div className="w-2 h-2 rounded-full bg-blue-600" /> Content
               </div>
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-apple-text-secondary">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-neutral-400">
                 <div className="w-2 h-2 rounded-full bg-emerald-400" /> Leads
               </div>
             </div>
@@ -140,19 +140,19 @@ export default function AnalyticsClient({ stats, contacts, projects }: { stats: 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.2 }}
-          className="bg-white p-10 rounded-[48px] border border-apple-border shadow-sm"
+          className="bg-neutral-950/60 p-10 rounded-[48px] border border-neutral-800 shadow-sm"
         >
           <h2 className="text-2xl font-black tracking-tight mb-10">Recent Projects</h2>
           <div className="space-y-4">
             {projects.slice(0, 5).map((project, i) => (
-              <div key={i} className="flex items-center justify-between p-4 bg-apple-bg-secondary rounded-2xl">
+              <div key={i} className="flex items-center justify-between p-4 bg-neutral-800/50 rounded-2xl">
                 <div className="flex items-center gap-4">
-                   <div className="w-10 h-10 rounded-lg overflow-hidden border border-apple-border">
+                   <div className="w-10 h-10 rounded-lg overflow-hidden border border-neutral-800">
                      <img src={project.image_url} alt="" className="w-full h-full object-cover" />
                    </div>
                    <span className="font-bold text-sm truncate max-w-[150px]">{project.title_en}</span>
                 </div>
-                <span className="px-3 py-1 bg-white rounded-full text-[10px] font-bold uppercase tracking-widest opacity-60">
+                <span className="px-3 py-1 bg-neutral-950/60 rounded-full text-[10px] font-bold uppercase tracking-widest opacity-60">
                   {project.category_en}
                 </span>
               </div>
@@ -162,14 +162,14 @@ export default function AnalyticsClient({ stats, contacts, projects }: { stats: 
       </div>
 
       {/* Leads Table */}
-      <div className="bg-white p-10 rounded-[48px] border border-apple-border shadow-sm">
+      <div className="bg-neutral-950/60 p-10 rounded-[48px] border border-neutral-800 shadow-sm">
         <h2 className="text-2xl font-black tracking-tight mb-8">Recent Inquiries & Leads</h2>
         <div className="space-y-4">
           {contacts.length > 0 ? (
             contacts.slice(0, 5).map((contact, i) => (
-              <div key={i} className="flex items-center justify-between p-6 bg-apple-bg-secondary rounded-3xl group hover:bg-black hover:text-white transition-all">
+              <div key={i} className="flex items-center justify-between p-6 bg-neutral-800/50 rounded-3xl group hover:bg-black hover:text-white transition-all">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-apple-text group-hover:text-black font-black">
+                  <div className="w-12 h-12 bg-neutral-950/60 rounded-2xl flex items-center justify-center text-white group-hover:text-black font-black">
                     {contact.name.charAt(0)}
                   </div>
                   <div>
@@ -184,7 +184,7 @@ export default function AnalyticsClient({ stats, contacts, projects }: { stats: 
                   </div>
                   <div className="text-right">
                     <p className="opacity-40 uppercase tracking-widest text-[10px]">Status</p>
-                    <p className="text-apple-accent">{contact.status}</p>
+                    <p className="text-blue-400">{contact.status}</p>
                   </div>
                   <div className="text-right hidden md:block">
                     <p className="opacity-40 uppercase tracking-widest text-[10px]">Date</p>
@@ -194,7 +194,7 @@ export default function AnalyticsClient({ stats, contacts, projects }: { stats: 
               </div>
             ))
           ) : (
-            <div className="p-10 text-center text-apple-text-secondary font-medium">No inquiries yet.</div>
+            <div className="p-10 text-center text-neutral-400 font-medium">No inquiries yet.</div>
           )}
         </div>
       </div>

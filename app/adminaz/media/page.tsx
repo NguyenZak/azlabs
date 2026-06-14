@@ -85,12 +85,12 @@ export default function MediaPage() {
     <div className="space-y-8">
       <header className="flex justify-between items-center">
         <div>
-          <h1 className="text-4xl font-bold tracking-tight text-apple-text">Media Library</h1>
-          <p className="text-apple-text-secondary mt-2">Manage your visual assets for AZLABS.</p>
+          <h1 className="text-4xl font-bold tracking-tight text-white">Media Library</h1>
+          <p className="text-neutral-400 mt-2">Manage your visual assets for AZLABS.</p>
         </div>
         <button 
           onClick={() => setIsUploadModalOpen(true)}
-          className="flex items-center gap-2 px-6 py-3 bg-black text-white rounded-xl font-bold hover:opacity-90 transition-all shadow-xl active:scale-95"
+          className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl font-bold hover:opacity-90 transition-all shadow-xl active:scale-95"
         >
           <Plus className="w-5 h-5" /> Upload Media
         </button>
@@ -105,17 +105,17 @@ export default function MediaPage() {
       {/* Toolbar */}
       <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="relative flex-1 w-full">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-apple-text-secondary" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
           <input 
             type="text" 
             placeholder="Search by filename..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 bg-white border border-apple-border rounded-2xl focus:ring-2 focus:ring-apple-accent transition-all"
+            className="w-full pl-12 pr-4 py-3 bg-neutral-950/60 border border-neutral-800 rounded-2xl focus:ring-2 focus:ring-blue-500/50 transition-all"
           />
         </div>
         <div className="flex gap-2 w-full md:w-auto">
-          <button className="flex items-center gap-2 px-6 py-3 bg-white border border-apple-border rounded-xl text-apple-text-secondary font-bold hover:bg-gray-50 transition-all">
+          <button className="flex items-center gap-2 px-6 py-3 bg-neutral-950/60 border border-neutral-800 rounded-xl text-neutral-400 font-bold hover:bg-gray-50 transition-all">
             <Filter className="w-4 h-4" /> Filters
           </button>
         </div>
@@ -124,15 +124,15 @@ export default function MediaPage() {
       {/* Media Grid */}
       {loading ? (
         <div className="py-20 flex flex-col items-center gap-4">
-          <Loader2 className="w-8 h-8 animate-spin text-apple-accent" />
-          <p className="text-apple-text-secondary font-medium">Scanning library...</p>
+          <Loader2 className="w-8 h-8 animate-spin text-blue-400" />
+          <p className="text-neutral-400 font-medium">Scanning library...</p>
         </div>
       ) : filteredMedia.length === 0 ? (
-        <div className="py-20 text-center bg-white rounded-[40px] border border-apple-border border-dashed">
+        <div className="py-20 text-center bg-neutral-950/60 rounded-[40px] border border-neutral-800 border-dashed">
           <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <ImageIcon className="w-8 h-8 text-gray-300" />
+            <ImageIcon className="w-8 h-8 text-neutral-600" />
           </div>
-          <p className="text-apple-text-secondary font-medium">No media found. Upload your first asset!</p>
+          <p className="text-neutral-400 font-medium">No media found. Upload your first asset!</p>
         </div>
       ) : (
         <motion.div 
@@ -147,7 +147,7 @@ export default function MediaPage() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                className="group relative aspect-square bg-white rounded-3xl border border-apple-border overflow-hidden shadow-sm hover:shadow-xl transition-all"
+                className="group relative aspect-square bg-neutral-950/60 rounded-3xl border border-neutral-800 overflow-hidden shadow-sm hover:shadow-xl transition-all"
               >
                 <img 
                   src={item.url} 
@@ -160,7 +160,7 @@ export default function MediaPage() {
                   <div className="flex justify-end gap-2">
                     <button 
                       onClick={() => window.open(item.url, '_blank')}
-                      className="p-2 bg-white/20 hover:bg-white/40 rounded-lg text-white backdrop-blur-md transition-all"
+                      className="p-2 bg-neutral-950/60/20 hover:bg-neutral-950/60/40 rounded-lg text-white backdrop-blur-md transition-all"
                     >
                       <ExternalLink className="w-4 h-4" />
                     </button>
@@ -173,7 +173,7 @@ export default function MediaPage() {
                     <div className="flex gap-2">
                       <button 
                         onClick={() => copyToClipboard(item.url, item.id)}
-                        className="flex-1 flex items-center justify-center gap-2 py-2 bg-white text-black rounded-xl text-[10px] font-bold hover:bg-gray-100 transition-all"
+                        className="flex-1 flex items-center justify-center gap-2 py-2 bg-neutral-950/60 text-black rounded-xl text-[10px] font-bold hover:bg-neutral-800 transition-all"
                       >
                         {copiedId === item.id ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                         {copiedId === item.id ? "Copied" : "Copy URL"}

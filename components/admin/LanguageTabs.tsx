@@ -12,19 +12,19 @@ interface LanguageTabsProps {
 const LanguageTabs: React.FC<LanguageTabsProps> = ({ activeLang, onChange }) => {
   return (
     <div className="flex items-center gap-4 mb-6">
-      <div className="flex bg-[#f5f5f7] p-1 rounded-2xl border border-apple-border shadow-inner">
+      <div className="flex bg-neutral-900/50 p-1 rounded-2xl border border-neutral-800 shadow-inner">
         <button
           onClick={() => onChange("vi")}
           className={`relative px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
             activeLang === "vi"
               ? "text-black"
-              : "text-apple-text-secondary hover:text-apple-text"
+              : "text-neutral-400 hover:text-white"
           }`}
         >
           {activeLang === "vi" && (
             <motion.div
               layoutId="active-lang-bg"
-              className="absolute inset-0 bg-white rounded-xl shadow-sm border border-apple-border"
+              className="absolute inset-0 bg-neutral-950/80 rounded-xl shadow-sm border border-neutral-800"
               transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
             />
           )}
@@ -37,13 +37,13 @@ const LanguageTabs: React.FC<LanguageTabsProps> = ({ activeLang, onChange }) => 
           className={`relative px-6 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
             activeLang === "en"
               ? "text-black"
-              : "text-apple-text-secondary hover:text-apple-text"
+              : "text-neutral-400 hover:text-white"
           }`}
         >
           {activeLang === "en" && (
             <motion.div
               layoutId="active-lang-bg"
-              className="absolute inset-0 bg-white rounded-xl shadow-sm border border-apple-border"
+              className="absolute inset-0 bg-neutral-950/80 rounded-xl shadow-sm border border-neutral-800"
               transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
             />
           )}
